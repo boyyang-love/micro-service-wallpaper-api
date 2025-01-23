@@ -1,0 +1,10 @@
+Name: wallpaper_pc_backend
+Host: 0.0.0.0
+Port: 8888
+
+#文件上传
+UploadRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: upload.rpc
