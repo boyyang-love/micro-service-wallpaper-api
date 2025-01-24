@@ -11,6 +11,7 @@ type Base struct {
 type FileUploadReq struct {
 	FileName string `json:"file_name,optional"`
 	FilePath string `json:"file_path,optional"`
+	Type     string `json:"type,optional"`
 }
 
 type FileUploadRes struct {

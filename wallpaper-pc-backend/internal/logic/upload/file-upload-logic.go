@@ -22,7 +22,16 @@ func NewFileUploadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FileUp
 }
 
 func (l *FileUploadLogic) FileUpload(req *types.FileUploadReq) (resp *types.FileUploadRes, err error) {
-	// todo: add your logic here and delete this line
 
-	return
+	return &types.FileUploadRes{
+		Base: types.Base{
+			Code: 1,
+			Msg:  "图片上传成功",
+		},
+		Data: types.FileUploadResdata{
+			FileName:   req.FileName,
+			Path:       req.FilePath,
+			OriginPath: "",
+		},
+	}, err
 }
