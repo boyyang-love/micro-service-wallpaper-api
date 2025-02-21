@@ -18,10 +18,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/file/upload",
-				Handler: upload.FileUploadHandler(serverCtx),
+				Path:    "/image/upload",
+				Handler: upload.ImageUploadHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
 		rest.WithMaxBytes(20971520),
 	)

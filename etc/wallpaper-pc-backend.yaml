@@ -1,0 +1,30 @@
+Name: wallpaper_pc_backend
+Host: 0.0.0.0
+Port: 8888
+Timeout: 30000
+
+Auth:
+  AccessSecret: wallpaper
+  AccessExpire: 86_400_000
+
+Log:
+  Mode: file
+
+# mysql
+MySQLConf:
+  Host: 47.109.86.251
+  Port: 3306
+  Database: wallpaper
+  Username: wallpaper
+  Password: XwW4GSaskAby3zJe
+  Charset: utf8mb4
+  Collation: utf8mb4_unicode_ci
+  Timeout: 10s
+
+#文件上传
+UploadRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: upload.rpc
+  Timeout: 30000

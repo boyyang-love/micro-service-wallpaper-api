@@ -1,0 +1,1 @@
+goctl api go -api root.api -dir=../ -style=go-zero
