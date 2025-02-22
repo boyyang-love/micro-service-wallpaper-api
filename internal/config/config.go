@@ -24,6 +24,7 @@ type Auth struct {
 type Config struct {
 	rest.RestConf
 	Auth      Auth
-	UploadRpc zrpc.RpcClientConf
 	MySQLConf MySQLConf
+	UploadRpc zrpc.RpcClientConf
+	UserRpc   zrpc.RpcClientConf
 }

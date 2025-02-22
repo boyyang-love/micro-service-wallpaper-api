@@ -21,10 +21,16 @@ MySQLConf:
   Collation: utf8mb4_unicode_ci
   Timeout: 10s
 
-#文件上传
 UploadRpc:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
     Key: upload.rpc
+  Timeout: 30000
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
   Timeout: 30000

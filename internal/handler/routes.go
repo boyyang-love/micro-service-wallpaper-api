@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
 	upload "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/upload"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 
@@ -14,6 +15,23 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/signin",
+				Handler: login.SignInHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/signup",
+				Handler: login.SignUpHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+		rest.WithMaxBytes(20971520),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{

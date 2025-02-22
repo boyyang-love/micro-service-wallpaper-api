@@ -5,6 +5,8 @@ go 1.23.1
 require (
 	github.com/boyyang-love/micro-service-wallpaper-models v0.0.0-20250221062514-2277a387f783
 	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250221091437-55d17179f0f2
+	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250221124632-e1de2beb2e21
+	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/minio/minio-go/v7 v7.0.87
 	github.com/nickalie/go-webpbin v0.0.0-20220110095747-f10016bf2dc1
 	github.com/zeromicro/go-zero v1.8.0
@@ -35,7 +37,6 @@ require (
 	github.com/go-sql-driver/mysql v1.9.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect

@@ -10,6 +10,8 @@ github.com/boyyang-love/micro-service-wallpaper-models v0.0.0-20250221062514-227
 github.com/boyyang-love/micro-service-wallpaper-models v0.0.0-20250221062514-2277a387f783/go.mod h1:8mZ4ek1s2AY8BMYIyLLQZBcjOrLlRIhPoo2mGmAGkMs=
 github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250221091437-55d17179f0f2 h1:5ReHbUQ0gSOSdBA8yPy5wrge9iUPYJqo+6ZkTHFn3+I=
 github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250221091437-55d17179f0f2/go.mod h1:oaXlu6PVuYjU4apGXQfUyQ11jw47+V4PivgemjGEyxA=
+github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250221124632-e1de2beb2e21 h1:K3MZ6rdmGZVZkLxBX0LiSUWjaCwi9El2bVyvF5Qe83o=
+github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250221124632-e1de2beb2e21/go.mod h1:cSY7UvxFDG4hOQ06CAYfrwhZ9s7M2VtezD55Ff4TQsc=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
 github.com/bsm/gomega v1.27.10 h1:yeMWxP2pV2fG3FgAODIY8EiRE3dy0aeFYt4l7wh6yKA=
@@ -85,7 +87,6 @@ github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db h1:097atOisP2aRj7vFgY
 github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db/go.mod h1:vavhavw2zAxS5dIdcRluK6cSGGPlZynqzFM8NdvU144=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/grpc-ecosystem/grpc-gateway v1.16.0 h1:gmcG1KaJ57LophUzW0Hy8NmPhnMZb4M0+kPpLofRdBo=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.1 h1:e9Rjr40Z98/clHv5Yg79Is0NtosR5LXRvdr7o/6NwbA=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.1/go.mod h1:tIxuGz/9mpox++sgp9fJjHO0+q1X9/UOWd798aAm22M=
 github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542 h1:2VTzZjLZBgl62/EtslCrtky5vbi9dd7HrQPQIx6wqiw=

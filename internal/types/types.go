@@ -27,3 +27,39 @@ type ImageUploadResdata struct {
 	Path       string `json:"path"`
 	OriginPath string `json:"origin_path"`
 }
+
+type SignInReq struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type SignInRes struct {
+	Base
+	Data SignInResData `json:"data"`
+}
+
+type SignInResData struct {
+	Token    string                `json:"token"`
+	UserInfo SignInResDataUserInfo `json:"user_info"`
+}
+
+type SignInResDataUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Motto    string `json:"motto"`
+	Address  string `json:"address"`
+	Tel      string `json:"tel"`
+	Email    string `json:"email"`
+	QQ       string `json:"qq"`
+	Wechat   string `json:"wechat"`
+	GitHub   string `json:"git_hub"`
+	Role     string `json:"role"`
+	Avatar   string `json:"avatar"`
+	Cover    string `json:"cover"`
+}
+
+type SignUpReq struct {
+}
+
+type SignUpRes struct {
+}

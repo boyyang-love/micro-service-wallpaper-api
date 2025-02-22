@@ -1,0 +1,52 @@
+syntax = "v1"
+
+import "./base.api"
+
+type (
+    SignInReq {
+        Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	SignInRes {
+		Base
+		Data SignInResData `json:"data"`
+	}
+	SignInResData {
+		Token    string                `json:"token"`
+		UserInfo SignInResDataUserInfo `json:"user_info"`
+	}
+	SignInResDataUserInfo {
+	    Id       string `json:"id"`
+		Username string `json:"username"`
+		Motto    string `json:"motto"`
+		Address  string `json:"address"`
+		Tel      string `json:"tel"`
+		Email    string `json:"email"`
+		QQ       string `json:"qq"`
+		Wechat   string `json:"wechat"`
+		GitHub   string `json:"git_hub"`
+		Role     string `json:"role"`
+		Avatar   string `json:"avatar"`
+		Cover    string `json:"cover"`
+	}
+)
+
+type (
+	SignUpReq  {
+
+	}
+	SignUpRes  {}
+)
+
+@server (
+	group:    login
+	maxBytes: 20971520
+	timeout:  20s
+)
+service wallpaper_pc_backend {
+	@handler SignIn
+	post /signin (SignInReq) returns (SignInRes)
+	@handler SignUp
+	post /signup (SignUpReq) returns (SignUpRes)
+}
+

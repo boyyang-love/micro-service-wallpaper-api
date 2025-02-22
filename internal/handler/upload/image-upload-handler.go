@@ -56,7 +56,6 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		hash := helper.MakeImageFileHashByBytes(originBuffer.Bytes())
 
-		//nameNoExt := helper.FileNameNoExt(fileHeader.Filename)
 		ext := helper.FileNameExt(fileHeader.Filename)
 
 		oriPath := fmt.Sprintf("/%s/%s/%s/%s/%s%s", req.RootDir, req.Dir, userid, "original", hash, ext)
@@ -129,14 +128,6 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			})
 			return
 		}
-
-		//l := upload.NewImageUploadLogic(r.Context(), svcCtx)
-		//resp, err := l.ImageUpload(&req)
-		//if err != nil {
-		//	httpx.ErrorCtx(r.Context(), w, err)
-		//} else {
-		//	httpx.OkJsonCtx(r.Context(), w, resp)
-		//}
 	}
 }
 
