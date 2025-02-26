@@ -58,8 +58,8 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		ext := helper.FileNameExt(fileHeader.Filename)
 
-		oriPath := fmt.Sprintf("/%s/%s/%s/%s/%s%s", req.RootDir, req.Dir, userid, "original", hash, ext)
-		comPath := fmt.Sprintf("/%s/%s/%s/%s/%s%s", req.RootDir, req.Dir, userid, "compress", hash, ".webp")
+		oriPath := fmt.Sprintf("%s/%s/%s/%s/%s%s", req.RootDir, req.Dir, userid, "original", hash, ext)
+		comPath := fmt.Sprintf("%s/%s/%s/%s/%s%s", req.RootDir, req.Dir, userid, "compress", hash, ".webp")
 
 		is, info := Is(svcCtx.DB, hash, oriPath)
 
@@ -108,7 +108,7 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 					Type:           req.Type,
 					W:              img.Bounds().Dx(),
 					H:              img.Bounds().Dy(),
-					Status:         false,
+					Status:         req.Status,
 					UserId:         userid,
 				}).Error; err != nil {
 				httpx.ErrorCtx(r.Context(), w, err)

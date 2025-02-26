@@ -36,6 +36,21 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/image/delete",
+				Handler: upload.ImageDeleteHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/image/info",
+				Handler: upload.ImageInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/image/update",
+				Handler: upload.ImageUpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/image/upload",
 				Handler: upload.ImageUploadHandler(serverCtx),
 			},

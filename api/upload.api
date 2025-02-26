@@ -3,33 +3,99 @@ syntax = "v1"
 import "./base.api"
 
 type (
-	ImageUploadReq {
-		FileName   string `form:"file_name"`
-		Type       string `form:"type,optional"`
-		RootDir    string `form:"root_dir"`
-		Dir        string `form:"dir"`
-		BucketName string `form:"bucket_name"`
-		Quality    uint32 `form:"quality"`
-	}
-	ImageUploadRes {
-		Base
-		Data ImageUploadResdata `json:"data"`
-	}
-	ImageUploadResdata {
-		FileName   string `json:"file_name"`
-		Path       string `json:"path"`
-		OriginPath string `json:"origin_path"`
-	}
+    ImageUploadReq {
+        FileName string `form:"file_name"`
+        Type string `form:"type,optional"`
+        RootDir string `form:"root_dir"`
+        Dir string `form:"dir"`
+        BucketName string `form:"bucket_name"`
+        Quality uint32 `form:"quality"`
+        Status int `form:"status"`
+    }
+    ImageUploadRes {
+        Base
+        Data ImageUploadResdata `json:"data"`
+    }
+    ImageUploadResdata {
+        FileName string `json:"file_name"`
+        Path string `json:"path"`
+        OriginPath string `json:"origin_path"`
+    }
 )
 
-@server (
-	jwt:      Auth
-	group:    upload
-	maxBytes: 20971520
-	timeout:  20s
+type (
+    ImageInfoReq {
+        Page int `form:"page"`
+        Limit int `form:"limit"`
+        FileName string `form:"file_name,optional"`
+        Type string `form:"type,optional"`
+        Status int `form:"status,optional"`
+    }
+    ImageInfoRes {
+        Base
+        Data ImageInfoResdata `json:"data"`
+    }
+    ImageInfoResdata {
+        Page int `json:"page"`
+        Limit int `json:"limit"`
+        Total int64 `json:"total"`
+        Records []ImageInfo `json:"records"`
+    }
+    ImageInfo {
+        Id string `json:"id"`
+        Hash string `json:"hash"`
+        FileName string `json:"file_name"`
+        OriginFileSize int64 `json:"origin_file_size"`
+        FileSize int64 `json:"file_size"`
+        OriginType string `json:"origin_type"`
+        FileType string `json:"file_type"`
+        OriginFilePath string `json:"origin_file_path"`
+        FilePath string `json:"file_path"`
+        Type string `json:"type"`
+        W int `json:"w"`
+        H int `json:"h"`
+        Status int `json:"status"`
+        UserId string `json:"user_id"`
+    }
+)
+
+type (
+    ImageUpdateReq {
+        Id string `json:"id"`
+        FileName string `json:"file_name"`
+        Type string `json:"type"`
+        Status int `json:"status"`
+    }
+    ImageUpdateRes {
+        Base
+    }
+)
+
+type (
+    ImageDeleteReq {
+        BucketName string `json:"bucket_name"`
+        Id string `json:"id"`
+        Paths []string `json:"paths"`
+    }
+    ImageDeleteRes {
+        Base
+    }
+)
+
+@server(
+    jwt: Auth
+    group: upload
+    maxBytes: 20971520
+    timeout:  20s
 )
 service wallpaper_pc_backend {
-	@handler ImageUpload
-	post /image/upload (ImageUploadReq) returns (ImageUploadRes)
+    @handler ImageUpload
+    post /image/upload (ImageUploadReq) returns (ImageUploadRes)
+    @handler ImageInfo
+    get /image/info (ImageInfoReq) returns (ImageInfoRes)
+    @handler ImageUpdate
+    post /image/update (ImageUpdateReq) returns (ImageUpdateRes)
+    @handler ImageDelete
+    post /image/delete (ImageDeleteReq) returns (ImageDeleteRes)
 }
 
