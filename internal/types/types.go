@@ -8,6 +8,31 @@ type Base struct {
 	Msg  string `json:"msg"`
 }
 
+type BasePage struct {
+	Page  int `form:"page"`
+	Limit int `form:"limit"`
+}
+
+type BaseRecord struct {
+	Page  int   `json:"page"`
+	Limit int   `json:"limit"`
+	Total int64 `json:"total"`
+}
+
+type BaseTime struct {
+	Created int64 `json:"created"`
+	Updated int64 `json:"updated"`
+}
+
+type CreateTagReq struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+type CreateTagRes struct {
+	Base
+}
+
 type ImageDeleteReq struct {
 	BucketName string   `json:"bucket_name"`
 	Id         string   `json:"id"`
@@ -19,25 +44,26 @@ type ImageDeleteRes struct {
 }
 
 type ImageInfo struct {
-	Id             string `json:"id"`
-	Hash           string `json:"hash"`
-	FileName       string `json:"file_name"`
-	OriginFileSize int64  `json:"origin_file_size"`
-	FileSize       int64  `json:"file_size"`
-	OriginType     string `json:"origin_type"`
-	FileType       string `json:"file_type"`
-	OriginFilePath string `json:"origin_file_path"`
-	FilePath       string `json:"file_path"`
-	Type           string `json:"type"`
-	W              int    `json:"w"`
-	H              int    `json:"h"`
-	Status         int    `json:"status"`
-	UserId         string `json:"user_id"`
+	BaseTime
+	Id             string    `json:"id"`
+	Hash           string    `json:"hash"`
+	FileName       string    `json:"file_name"`
+	OriginFileSize int64     `json:"origin_file_size"`
+	FileSize       int64     `json:"file_size"`
+	OriginType     string    `json:"origin_type"`
+	FileType       string    `json:"file_type"`
+	OriginFilePath string    `json:"origin_file_path"`
+	FilePath       string    `json:"file_path"`
+	Type           string    `json:"type"`
+	W              int       `json:"w"`
+	H              int       `json:"h"`
+	Status         int       `json:"status"`
+	UserId         string    `json:"user_id"`
+	Tags           []TagInfo `json:"tags"`
 }
 
 type ImageInfoReq struct {
-	Page     int    `form:"page"`
-	Limit    int    `form:"limit"`
+	BasePage
 	FileName string `form:"file_name,optional"`
 	Type     string `form:"type,optional"`
 	Status   int    `form:"status,optional"`
@@ -49,17 +75,16 @@ type ImageInfoRes struct {
 }
 
 type ImageInfoResdata struct {
-	Page    int         `json:"page"`
-	Limit   int         `json:"limit"`
-	Total   int64       `json:"total"`
+	BaseRecord
 	Records []ImageInfo `json:"records"`
 }
 
 type ImageUpdateReq struct {
-	Id       string `json:"id"`
-	FileName string `json:"file_name"`
-	Type     string `json:"type"`
-	Status   int    `json:"status"`
+	Id       string   `json:"id"`
+	FileName string   `json:"file_name"`
+	Type     string   `json:"type"`
+	Status   int      `json:"status"`
+	Tags     []string `json:"tags,optional"`
 }
 
 type ImageUpdateRes struct {
@@ -74,6 +99,7 @@ type ImageUploadReq struct {
 	BucketName string `form:"bucket_name"`
 	Quality    uint32 `form:"quality"`
 	Status     int    `form:"status"`
+	Tags       string `form:"tags,optional"`
 }
 
 type ImageUploadRes struct {
@@ -85,6 +111,14 @@ type ImageUploadResdata struct {
 	FileName   string `json:"file_name"`
 	Path       string `json:"path"`
 	OriginPath string `json:"origin_path"`
+}
+
+type RemoveTagReq struct {
+	Id string `json:"id"`
+}
+
+type RemoveTagRes struct {
+	Base
 }
 
 type SignInReq struct {
@@ -121,4 +155,37 @@ type SignUpReq struct {
 }
 
 type SignUpRes struct {
+}
+
+type TagInfo struct {
+	BaseTime
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+type TagInfoReq struct {
+	BasePage
+	Name string `form:"name,optional"`
+	Type string `form:"type,optional"`
+}
+
+type TagInfoRes struct {
+	Base
+	Data TagInfoResData `json:"data"`
+}
+
+type TagInfoResData struct {
+	BaseRecord
+	Records []TagInfo `json:"records"`
+}
+
+type UpdateTagReq struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+type UpdateTagRes struct {
+	Base
 }

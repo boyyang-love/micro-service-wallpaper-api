@@ -3,10 +3,11 @@ module github.com/boyyang-love/micro-service-wallpaper-api
 go 1.23.1
 
 require (
-	github.com/boyyang-love/micro-service-wallpaper-models v0.0.0-20250225121405-f25068867b48
-	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250224121903-a48682c33061
-	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250224121903-a48682c33061
+	github.com/boyyang-love/micro-service-wallpaper-models v0.0.0-20250227085056-d1013230909b
+	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250227053040-ae874cc67436
+	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250227053040-ae874cc67436
 	github.com/golang-jwt/jwt/v4 v4.5.1
+	github.com/jinzhu/copier v0.4.0
 	github.com/minio/minio-go/v7 v7.0.87
 	github.com/nickalie/go-webpbin v0.0.0-20220110095747-f10016bf2dc1
 	github.com/zeromicro/go-zero v1.8.0
@@ -25,7 +26,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/emicklei/go-restful/v3 v3.12.1 // indirect
+	github.com/emicklei/go-restful/v3 v3.12.2 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect

@@ -2,11 +2,10 @@ package upload
 
 import (
 	"context"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
-
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -14,6 +13,15 @@ type ImageInfoLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+}
+
+type Upload struct {
+	models.Upload
+	Tags []Tag `json:"tags" gorm:"many2many:upload_tag;"`
+}
+
+type Tag struct {
+	models.Tag
 }
 
 func NewImageInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ImageInfoLogic {
@@ -25,11 +33,14 @@ func NewImageInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ImageIn
 }
 
 func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageInfoRes, err error) {
-	var uploadInfo []types.ImageInfo
+	var uploadInfo []Upload
+	var imageInfo []types.ImageInfo
 	var count int64
 	DB := l.svcCtx.
 		DB.
-		Model(&models.Upload{}).
+		Debug().
+		Preload("Tags").
+		Model(&Upload{}).
 		Order("created  desc")
 
 	if req.Status == 1 || req.Status == 2 {
@@ -53,16 +64,20 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 		return nil, err
 	}
 
+	_ = copier.Copy(&imageInfo, &uploadInfo)
+
 	return &types.ImageInfoRes{
 		Base: types.Base{
 			Code: 1,
 			Msg:  "ok",
 		},
 		Data: types.ImageInfoResdata{
-			Page:    req.Page,
-			Limit:   req.Limit,
-			Total:   count,
-			Records: uploadInfo,
+			BaseRecord: types.BaseRecord{
+				Page:  req.Page,
+				Limit: req.Limit,
+				Total: count,
+			},
+			Records: imageInfo,
 		},
 	}, nil
 }

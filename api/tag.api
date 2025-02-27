@@ -1,0 +1,71 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    CreateTagReq {
+        Name string `json:"name"`
+        Type string `json:"type"`
+    }
+    CreateTagRes {
+        Base
+    }
+)
+
+type (
+    UpdateTagReq {
+        Id string `json:"id"`
+        Name string `json:"name"`
+        Type string `json:"type"`
+    }
+    UpdateTagRes {
+        Base
+    }
+)
+
+type (
+    RemoveTagReq {
+        Id string `json:"id"`
+    }
+    RemoveTagRes {
+        Base
+    }
+)
+
+type (
+    TagInfoReq {
+        BasePage
+        Name string `form:"name,optional"`
+        Type string `form:"type,optional"`
+    }
+    TagInfoRes {
+        Base
+        Data TagInfoResData `json:"data"`
+    }
+    TagInfoResData {
+        BaseRecord
+        Records []TagInfo `json:"records"`
+    }
+    TagInfo {
+        BaseTime
+        Id string `json:"id"`
+        Name string `json:"name"`
+        Type string `json:"type"`
+    }
+)
+
+@server(
+    group: tag
+    timeout:  20s
+)
+
+service wallpaper_pc_backend {
+    @handler CreateTag
+    post /tag/create (CreateTagReq) returns (CreateTagRes)
+    @handler UpdateTag
+    post /tag/update (UpdateTagReq) returns (UpdateTagRes)
+    @handler RemoveTag
+    post /tag/remove (RemoveTagReq) returns (RemoveTagRes)
+    @handler InfoTag
+    get /tag/info (TagInfoReq) returns (TagInfoRes)
+}

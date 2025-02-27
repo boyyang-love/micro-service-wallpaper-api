@@ -39,6 +39,36 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 		Error; err != nil {
 		return nil, err
 	}
+
+	if len(req.Tags) > 0 {
+		if err := l.svcCtx.DB.
+			Model(&models.UploadTag{}).
+			Where("upload_id = ?", req.Id).
+			Delete(&models.UploadTag{}).
+			Error; err != nil {
+			return nil, err
+		}
+
+		var uploadTags []models.UploadTag
+
+		for _, v := range req.Tags {
+			uploadTags = append(
+				uploadTags,
+				models.UploadTag{
+					UploadId: req.Id,
+					TagId:    v,
+				},
+			)
+		}
+
+		if err := l.svcCtx.DB.
+			Model(&models.UploadTag{}).
+			Create(&uploadTags).
+			Error; err != nil {
+			return nil, err
+		}
+	}
+
 	return &types.ImageUpdateRes{
 		Base: types.Base{
 			Code: 1,

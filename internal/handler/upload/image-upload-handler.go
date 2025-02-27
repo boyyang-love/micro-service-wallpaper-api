@@ -12,6 +12,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"net/http"
+	"strings"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -93,26 +94,51 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				return
 			}
 
+			uploadInfo := models.Upload{
+				Hash:           imageUpload.Data.OriETag,
+				FileName:       fileHeader.Filename,
+				OriginFileSize: int64(imageUpload.Data.OriSize),
+				FileSize:       int64(imageUpload.Data.Size),
+				OriginType:     imgType,
+				FileType:       "webp",
+				OriginFilePath: oriPath,
+				FilePath:       comPath,
+				Type:           req.Type,
+				W:              img.Bounds().Dx(),
+				H:              img.Bounds().Dy(),
+				Status:         req.Status,
+				UserId:         userid,
+			}
 			if err := svcCtx.
 				DB.
 				Model(&models.Upload{}).
-				Create(&models.Upload{
-					Hash:           imageUpload.Data.OriETag,
-					FileName:       fileHeader.Filename,
-					OriginFileSize: int64(imageUpload.Data.OriSize),
-					FileSize:       int64(imageUpload.Data.Size),
-					OriginType:     imgType,
-					FileType:       "webp",
-					OriginFilePath: oriPath,
-					FilePath:       comPath,
-					Type:           req.Type,
-					W:              img.Bounds().Dx(),
-					H:              img.Bounds().Dy(),
-					Status:         req.Status,
-					UserId:         userid,
-				}).Error; err != nil {
+				Create(&uploadInfo).Error; err != nil {
 				httpx.ErrorCtx(r.Context(), w, err)
 				return
+			}
+
+			fmt.Println(uploadInfo.Id, req.Tags, "sbbbb")
+
+			if req.Tags != "" {
+				var uploadTags []models.UploadTag
+
+				for _, v := range strings.Split(req.Tags, ",") {
+					uploadTags = append(
+						uploadTags,
+						models.UploadTag{
+							UploadId: uploadInfo.Id,
+							TagId:    v,
+						},
+					)
+				}
+
+				if err = svcCtx.DB.
+					Model(&models.UploadTag{}).
+					Create(&uploadTags).
+					Error; err != nil {
+					httpx.ErrorCtx(r.Context(), w, err)
+					return
+				}
 			}
 
 			httpx.OkJsonCtx(r.Context(), w, &types.ImageUploadRes{

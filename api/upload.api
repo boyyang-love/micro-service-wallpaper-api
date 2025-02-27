@@ -1,6 +1,7 @@
 syntax = "v1"
 
-import "./base.api"
+import "base.api"
+import "tag.api"
 
 type (
     ImageUploadReq {
@@ -11,6 +12,7 @@ type (
         BucketName string `form:"bucket_name"`
         Quality uint32 `form:"quality"`
         Status int `form:"status"`
+        Tags string `form:"tags,optional"`
     }
     ImageUploadRes {
         Base
@@ -25,8 +27,7 @@ type (
 
 type (
     ImageInfoReq {
-        Page int `form:"page"`
-        Limit int `form:"limit"`
+        BasePage
         FileName string `form:"file_name,optional"`
         Type string `form:"type,optional"`
         Status int `form:"status,optional"`
@@ -36,12 +37,11 @@ type (
         Data ImageInfoResdata `json:"data"`
     }
     ImageInfoResdata {
-        Page int `json:"page"`
-        Limit int `json:"limit"`
-        Total int64 `json:"total"`
+        BaseRecord
         Records []ImageInfo `json:"records"`
     }
     ImageInfo {
+        BaseTime
         Id string `json:"id"`
         Hash string `json:"hash"`
         FileName string `json:"file_name"`
@@ -56,7 +56,9 @@ type (
         H int `json:"h"`
         Status int `json:"status"`
         UserId string `json:"user_id"`
+        Tags []TagInfo `json:"tags"`
     }
+
 )
 
 type (
@@ -65,6 +67,7 @@ type (
         FileName string `json:"file_name"`
         Type string `json:"type"`
         Status int `json:"status"`
+        Tags []string `json:"tags,optional"`
     }
     ImageUpdateRes {
         Base

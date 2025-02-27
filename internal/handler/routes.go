@@ -8,6 +8,7 @@ import (
 	"time"
 
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
+	tag "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/tag"
 	upload "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/upload"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 
@@ -30,6 +31,32 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithTimeout(20000*time.Millisecond),
 		rest.WithMaxBytes(20971520),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/tag/create",
+				Handler: tag.CreateTagHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/tag/info",
+				Handler: tag.InfoTagHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/tag/remove",
+				Handler: tag.RemoveTagHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/tag/update",
+				Handler: tag.UpdateTagHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
 	)
 
 	server.AddRoutes(
