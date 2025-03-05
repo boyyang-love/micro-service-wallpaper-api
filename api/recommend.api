@@ -1,0 +1,88 @@
+syntax = "v1"
+
+import "./base.api"
+
+type (
+    RecommendInfoReq {
+        BasePage
+        Name string `form:"name,optional"`
+    }
+    RecommendInfoRes {
+        Base
+        Data RecommendInfoData `json:"data"`
+    }
+
+    RecommendInfoData {
+        BaseRecord
+        Records []RecommendInfo `json:"records"`
+    }
+    RecommendInfo {
+        BaseRecord
+        Id string `json:"id"`
+        Name string `json:"name"`
+    }
+
+    RecommendCreateReq {
+        Name string `json:"name"`
+    }
+    RecommendCreateRes {
+        Base
+    }
+
+    RecommendUpdateReq {
+        Id string `json:"id"`
+        Name string `json:"name"`
+    }
+    RecommendUpdateRes {
+        Base
+    }
+
+    RecommendRemoveReq {
+        Id string `json:"id"`
+    }
+    RecommendRemoveRes {
+        Base
+    }
+)
+
+
+type (
+    RecommendListReq {
+        BasePage
+        Id string `form:"id"`
+        Type string `form:"type"`
+    }
+
+    RecommendListRes {
+        Base
+        Data RecommendListResData `json:"data"`
+    }
+
+    RecommendListResData {
+        BaseRecord
+        Records []RecommendListInfo `json:"records"`
+    }
+
+    RecommendListInfo {
+        BaseTime
+        Id string `json:"id"`
+        FilePath string `json:"file_path"`
+    }
+)
+
+@server(
+    group: recommend
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler RecommendInfo
+    get /recommend/info (RecommendInfoReq) returns (RecommendInfoRes)
+    @handler RecommendCreate
+    post /recommend/create (RecommendCreateReq) returns (RecommendCreateRes)
+    @handler RecommendUpdate
+    post /recommend/update (RecommendUpdateReq) returns (RecommendUpdateRes)
+    @handler RecommendRemove
+    post /recommend/remove (RecommendRemoveReq) returns (RecommendRemoveRes)
+    @handler RecommendList
+    get /recommend/list (RecommendListReq) returns (RecommendListRes)
+}

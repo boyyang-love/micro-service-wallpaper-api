@@ -24,6 +24,52 @@ type BaseTime struct {
 	Updated int64 `json:"updated"`
 }
 
+type CategoryCreateReq struct {
+	Name string `json:"name"`
+}
+
+type CategoryCreateRes struct {
+	Base
+}
+
+type CategoryInfo struct {
+	BaseRecord
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type CategoryInfoData struct {
+	BaseRecord
+	Records []CategoryInfo `json:"records"`
+}
+
+type CategoryInfoReq struct {
+	BasePage
+	Name string `form:"name,optional"`
+}
+
+type CategoryInfoRes struct {
+	Base
+	Data CategoryInfoData `json:"data"`
+}
+
+type CategoryRemoveReq struct {
+	Id string `json:"id"`
+}
+
+type CategoryRemoveRes struct {
+	Base
+}
+
+type CategoryUpdateReq struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type CategoryUpdateRes struct {
+	Base
+}
+
 type CreateTagReq struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
@@ -45,21 +91,32 @@ type ImageDeleteRes struct {
 
 type ImageInfo struct {
 	BaseTime
-	Id             string    `json:"id"`
-	Hash           string    `json:"hash"`
-	FileName       string    `json:"file_name"`
-	OriginFileSize int64     `json:"origin_file_size"`
-	FileSize       int64     `json:"file_size"`
-	OriginType     string    `json:"origin_type"`
-	FileType       string    `json:"file_type"`
-	OriginFilePath string    `json:"origin_file_path"`
-	FilePath       string    `json:"file_path"`
-	Type           string    `json:"type"`
-	W              int       `json:"w"`
-	H              int       `json:"h"`
-	Status         int       `json:"status"`
-	UserId         string    `json:"user_id"`
-	Tags           []TagInfo `json:"tags"`
+	Id             string          `json:"id"`
+	Hash           string          `json:"hash"`
+	FileName       string          `json:"file_name"`
+	OriginFileSize int64           `json:"origin_file_size"`
+	FileSize       int64           `json:"file_size"`
+	OriginType     string          `json:"origin_type"`
+	FileType       string          `json:"file_type"`
+	OriginFilePath string          `json:"origin_file_path"`
+	FilePath       string          `json:"file_path"`
+	Type           string          `json:"type"`
+	W              int             `json:"w"`
+	H              int             `json:"h"`
+	Status         int             `json:"status"`
+	UserId         string          `json:"user_id"`
+	Tags           []TagInfo       `json:"tags"`
+	Category       []CategoryInfo  `json:"category"`
+	Recommend      []RecommendInfo `json:"recommend,optional"`
+}
+
+type ImageInfoByIdReq struct {
+	Id string `form:"id"`
+}
+
+type ImageInfoByIdRes struct {
+	Base
+	Data ImageInfo `json:"data"`
 }
 
 type ImageInfoReq struct {
@@ -80,11 +137,13 @@ type ImageInfoResdata struct {
 }
 
 type ImageUpdateReq struct {
-	Id       string   `json:"id"`
-	FileName string   `json:"file_name"`
-	Type     string   `json:"type"`
-	Status   int      `json:"status"`
-	Tags     []string `json:"tags,optional"`
+	Id        string   `json:"id"`
+	FileName  string   `json:"file_name"`
+	Type      string   `json:"type"`
+	Status    int      `json:"status"`
+	Tags      []string `json:"tags,optional"`
+	Category  []string `json:"category,optional"`
+	Recommend []string `json:"recommend,optional"`
 }
 
 type ImageUpdateRes struct {
@@ -100,6 +159,8 @@ type ImageUploadReq struct {
 	Quality    uint32 `form:"quality"`
 	Status     int    `form:"status"`
 	Tags       string `form:"tags,optional"`
+	Category   string `form:"category,optional"`
+	Recommend  string `form:"recommend,optional"`
 }
 
 type ImageUploadRes struct {
@@ -111,6 +172,83 @@ type ImageUploadResdata struct {
 	FileName   string `json:"file_name"`
 	Path       string `json:"path"`
 	OriginPath string `json:"origin_path"`
+}
+
+type LikeCreateOrUpdateReq struct {
+	UploadId string `json:"upload_id"`
+	Status   bool   `json:"status"`
+}
+
+type LikeCreateOrUpdateRes struct {
+	Base
+}
+
+type RecommendCreateReq struct {
+	Name string `json:"name"`
+}
+
+type RecommendCreateRes struct {
+	Base
+}
+
+type RecommendInfo struct {
+	BaseRecord
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type RecommendInfoData struct {
+	BaseRecord
+	Records []RecommendInfo `json:"records"`
+}
+
+type RecommendInfoReq struct {
+	BasePage
+	Name string `form:"name,optional"`
+}
+
+type RecommendInfoRes struct {
+	Base
+	Data RecommendInfoData `json:"data"`
+}
+
+type RecommendListInfo struct {
+	BaseTime
+	Id       string `json:"id"`
+	FilePath string `json:"file_path"`
+}
+
+type RecommendListReq struct {
+	BasePage
+	Id   string `form:"id"`
+	Type string `form:"type"`
+}
+
+type RecommendListRes struct {
+	Base
+	Data RecommendListResData `json:"data"`
+}
+
+type RecommendListResData struct {
+	BaseRecord
+	Records []RecommendListInfo `json:"records"`
+}
+
+type RecommendRemoveReq struct {
+	Id string `json:"id"`
+}
+
+type RecommendRemoveRes struct {
+	Base
+}
+
+type RecommendUpdateReq struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type RecommendUpdateRes struct {
+	Base
 }
 
 type RemoveTagReq struct {

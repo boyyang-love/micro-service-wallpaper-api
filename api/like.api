@@ -1,0 +1,22 @@
+syntax = "v1"
+
+import "./base.api"
+
+type (
+    LikeCreateOrUpdateReq {
+        UploadId string `json:"upload_id"`
+        Status bool `json:"status"`
+    }
+    LikeCreateOrUpdateRes {
+        Base
+    }
+)
+
+@server(
+    group: like
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler LikeCreate
+    post /like/create (LikeCreateOrUpdateReq) returns (LikeCreateOrUpdateRes)
+}

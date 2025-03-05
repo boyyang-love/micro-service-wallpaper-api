@@ -117,8 +117,6 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				return
 			}
 
-			fmt.Println(uploadInfo.Id, req.Tags, "sbbbb")
-
 			if req.Tags != "" {
 				var uploadTags []models.UploadTag
 
@@ -135,6 +133,50 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				if err = svcCtx.DB.
 					Model(&models.UploadTag{}).
 					Create(&uploadTags).
+					Error; err != nil {
+					httpx.ErrorCtx(r.Context(), w, err)
+					return
+				}
+			}
+
+			if req.Category != "" {
+				var uploadCategory []models.UploadCategory
+
+				for _, v := range strings.Split(req.Category, ",") {
+					uploadCategory = append(
+						uploadCategory,
+						models.UploadCategory{
+							UploadId:   uploadInfo.Id,
+							CategoryId: v,
+						},
+					)
+				}
+
+				if err = svcCtx.DB.
+					Model(&models.UploadCategory{}).
+					Create(&uploadCategory).
+					Error; err != nil {
+					httpx.ErrorCtx(r.Context(), w, err)
+					return
+				}
+			}
+
+			if req.Recommend != "" {
+				var uploadRecommend []models.UploadRecommend
+
+				for _, v := range strings.Split(req.Recommend, ",") {
+					uploadRecommend = append(
+						uploadRecommend,
+						models.UploadRecommend{
+							UploadId:    uploadInfo.Id,
+							RecommendId: v,
+						},
+					)
+				}
+
+				if err = svcCtx.DB.
+					Model(&models.UploadRecommend{}).
+					Create(&uploadRecommend).
 					Error; err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
 					return

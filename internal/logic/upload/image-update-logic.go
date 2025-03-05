@@ -69,6 +69,64 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 		}
 	}
 
+	if len(req.Category) > 0 {
+		if err := l.svcCtx.DB.
+			Model(&models.UploadCategory{}).
+			Where("upload_id = ?", req.Id).
+			Delete(&models.UploadCategory{}).
+			Error; err != nil {
+			return nil, err
+		}
+
+		var uploadCategory []models.UploadCategory
+
+		for _, v := range req.Category {
+			uploadCategory = append(
+				uploadCategory,
+				models.UploadCategory{
+					UploadId:   req.Id,
+					CategoryId: v,
+				},
+			)
+		}
+
+		if err := l.svcCtx.DB.
+			Model(&models.UploadCategory{}).
+			Create(&uploadCategory).
+			Error; err != nil {
+			return nil, err
+		}
+	}
+
+	if len(req.Recommend) > 0 {
+		if err := l.svcCtx.DB.
+			Model(&models.UploadRecommend{}).
+			Where("upload_id = ?", req.Id).
+			Delete(&models.UploadRecommend{}).
+			Error; err != nil {
+			return nil, err
+		}
+
+		var uploadRecommend []models.UploadRecommend
+
+		for _, v := range req.Recommend {
+			uploadRecommend = append(
+				uploadRecommend,
+				models.UploadRecommend{
+					UploadId:    req.Id,
+					RecommendId: v,
+				},
+			)
+		}
+
+		if err := l.svcCtx.DB.
+			Model(&models.UploadRecommend{}).
+			Create(&uploadRecommend).
+			Error; err != nil {
+			return nil, err
+		}
+	}
+
 	return &types.ImageUpdateRes{
 		Base: types.Base{
 			Code: 1,

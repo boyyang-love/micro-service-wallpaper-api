@@ -17,11 +17,21 @@ type ImageInfoLogic struct {
 
 type Upload struct {
 	models.Upload
-	Tags []Tag `json:"tags" gorm:"many2many:upload_tag;"`
+	Tags      []Tag       `json:"tags" gorm:"many2many:upload_tag;"`
+	Category  []Category  `json:"category" gorm:"many2many:upload_category;"`
+	Recommend []Recommend `json:"recommend" gorm:"many2many:upload_recommend;"`
 }
 
 type Tag struct {
 	models.Tag
+}
+
+type Category struct {
+	models.Category
+}
+
+type Recommend struct {
+	models.Recommend
 }
 
 func NewImageInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ImageInfoLogic {
@@ -40,6 +50,8 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 		DB.
 		Debug().
 		Preload("Tags").
+		Preload("Category").
+		Preload("Recommend").
 		Model(&Upload{}).
 		Order("created  desc")
 

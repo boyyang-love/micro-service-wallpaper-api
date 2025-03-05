@@ -1,4 +1,4 @@
-package tag
+package recommend
 
 import (
 	"context"
@@ -10,60 +10,51 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type InfoTagLogic struct {
+type RecommendInfoLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewInfoTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InfoTagLogic {
-	return &InfoTagLogic{
+func NewRecommendInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RecommendInfoLogic {
+	return &RecommendInfoLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *InfoTagLogic) InfoTag(req *types.TagInfoReq) (resp *types.TagInfoRes, err error) {
-	var records []types.TagInfo
-	var total int64
-
-	DB := l.svcCtx.
-		DB.
-		Order("created desc").
-		Model(&models.Tag{}).
-		Select("id", "name", "type", "created", "updated")
+func (l *RecommendInfoLogic) RecommendInfo(req *types.RecommendInfoReq) (resp *types.RecommendInfoRes, err error) {
+	DB := l.svcCtx.DB.Model(&models.Recommend{}).Order("created desc")
 
 	if req.Name != "" {
 		DB = DB.Where("name LIKE ?", "%"+req.Name+"%")
 	}
 
-	if req.Type != "" {
-		DB = DB.Where("type = ?", req.Type)
-	}
-
+	var recommendInfo []types.RecommendInfo
+	var count int64
 	if err = DB.
-		Limit(req.Limit).
+		Select("id", "name", "created", "updated").
 		Offset((req.Page - 1) * req.Limit).
-		Find(&records).
+		Find(&recommendInfo).
 		Offset(-1).
-		Count(&total).
+		Count(&count).
 		Error; err != nil {
 		return nil, err
 	}
 
-	return &types.TagInfoRes{
+	return &types.RecommendInfoRes{
 		Base: types.Base{
 			Code: 1,
 			Msg:  "ok",
 		},
-		Data: types.TagInfoResData{
+		Data: types.RecommendInfoData{
 			BaseRecord: types.BaseRecord{
 				Page:  req.Page,
 				Limit: req.Limit,
-				Total: total,
+				Total: count,
 			},
-			Records: records,
+			Records: recommendInfo,
 		},
 	}, nil
 }

@@ -1,0 +1,70 @@
+syntax = "v1"
+
+import "./base.api"
+
+type (
+    CategoryInfoReq {
+        BasePage
+        Name string `form:"name,optional"`
+    }
+    CategoryInfoRes {
+        Base
+        Data CategoryInfoData `json:"data"`
+    }
+    CategoryInfoData {
+        BaseRecord
+        Records []CategoryInfo `json:"records"`
+    }
+    CategoryInfo {
+        BaseRecord
+        Id string `json:"id"`
+        Name string `json:"name"`
+    }
+)
+
+type (
+    CategoryCreateReq {
+        name string `json:"name"`
+    }
+    CategoryCreateRes {
+        Base
+    }
+)
+
+type (
+    CategoryUpdateReq {
+        id string `json:"id"`
+        name string `json:"name"`
+    }
+    CategoryUpdateRes {
+        Base
+    }
+)
+
+type (
+    CategoryRemoveReq {
+        id string `json:"id"`
+    }
+    CategoryRemoveRes {
+        Base
+    }
+)
+
+
+@server(
+    group: category
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler CategoryInfo
+    get /category/info (CategoryInfoReq) returns (CategoryInfoRes)
+
+    @handler CategoryCreate
+    post /category/create (CategoryCreateReq) returns (CategoryCreateRes)
+
+    @handler CategoryUpdate
+    post /category/update (CategoryUpdateReq) returns (CategoryUpdateRes)
+
+    @handler CategoryRemove
+    post /category/remove (CategoryRemoveReq) returns (CategoryRemoveRes)
+}

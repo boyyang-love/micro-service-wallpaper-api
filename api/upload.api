@@ -2,6 +2,8 @@ syntax = "v1"
 
 import "base.api"
 import "tag.api"
+import "category.api"
+import "recommend.api"
 
 type (
     ImageUploadReq {
@@ -13,6 +15,8 @@ type (
         Quality uint32 `form:"quality"`
         Status int `form:"status"`
         Tags string `form:"tags,optional"`
+        Category string `form:"category,optional"`
+        Recommend string `form:"recommend,optional"`
     }
     ImageUploadRes {
         Base
@@ -57,8 +61,19 @@ type (
         Status int `json:"status"`
         UserId string `json:"user_id"`
         Tags []TagInfo `json:"tags"`
+        Category []CategoryInfo `json:"category"`
+        Recommend []RecommendInfo `json:"recommend,optional"`
     }
+)
 
+type (
+    ImageInfoByIdReq {
+        Id string `form:"id"`
+    }
+    ImageInfoByIdRes {
+        Base
+        Data ImageInfo `json:"data"`
+    }
 )
 
 type (
@@ -68,6 +83,8 @@ type (
         Type string `json:"type"`
         Status int `json:"status"`
         Tags []string `json:"tags,optional"`
+        Category []string `json:"category,optional"`
+        Recommend []string `json:"recommend,optional"`
     }
     ImageUpdateRes {
         Base
@@ -86,16 +103,25 @@ type (
 )
 
 @server(
+    group: upload
+    timeout:  30s
+)
+service wallpaper_pc_backend {
+    @handler ImageInfo
+    get /image/info (ImageInfoReq) returns (ImageInfoRes)
+    @handler ImageInfoById
+    get /image/info/id (ImageInfoByIdReq) returns (ImageInfoByIdRes)
+}
+
+@server(
     jwt: Auth
     group: upload
     maxBytes: 20971520
-    timeout:  20s
+    timeout:  30s
 )
 service wallpaper_pc_backend {
     @handler ImageUpload
     post /image/upload (ImageUploadReq) returns (ImageUploadRes)
-    @handler ImageInfo
-    get /image/info (ImageInfoReq) returns (ImageInfoRes)
     @handler ImageUpdate
     post /image/update (ImageUpdateReq) returns (ImageUpdateRes)
     @handler ImageDelete

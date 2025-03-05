@@ -7,7 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	category "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/category"
+	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
+	recommend "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/recommend"
 	tag "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/tag"
 	upload "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/upload"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
@@ -16,6 +19,43 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/category/create",
+				Handler: category.CategoryCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/category/info",
+				Handler: category.CategoryInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/category/remove",
+				Handler: category.CategoryRemoveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/category/update",
+				Handler: category.CategoryUpdateHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/like/create",
+				Handler: like.LikeCreateHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{
@@ -31,6 +71,37 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithTimeout(20000*time.Millisecond),
 		rest.WithMaxBytes(20971520),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/recommend/create",
+				Handler: recommend.RecommendCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/recommend/info",
+				Handler: recommend.RecommendInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/recommend/list",
+				Handler: recommend.RecommendListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/recommend/remove",
+				Handler: recommend.RecommendRemoveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/recommend/update",
+				Handler: recommend.RecommendUpdateHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
 	)
 
 	server.AddRoutes(
@@ -62,14 +133,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
-				Path:    "/image/delete",
-				Handler: upload.ImageDeleteHandler(serverCtx),
-			},
-			{
 				Method:  http.MethodGet,
 				Path:    "/image/info",
 				Handler: upload.ImageInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/image/info/id",
+				Handler: upload.ImageInfoByIdHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(30000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/image/delete",
+				Handler: upload.ImageDeleteHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -83,7 +165,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
-		rest.WithTimeout(20000*time.Millisecond),
+		rest.WithTimeout(30000*time.Millisecond),
 		rest.WithMaxBytes(20971520),
 	)
 }

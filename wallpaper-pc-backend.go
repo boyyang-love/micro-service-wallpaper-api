@@ -26,6 +26,7 @@ func main() {
 			corsMidFn,
 			notAllowedFn,
 			[]string{
+				"http://localhost:3000",
 				"http://localhost:9527",
 				"https://www.boyyang.cn",
 			}...,

@@ -42,6 +42,11 @@ func AutoMigrate(db *gorm.DB) (err error) {
 		&models.Upload{},
 		&models.Tag{},
 		&models.UploadTag{},
+		&models.Like{},
+		&models.Category{},
+		&models.Recommend{},
+		&models.UploadCategory{},
+		&models.UploadRecommend{},
 	}
 
 	for _, table := range tables {
