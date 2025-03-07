@@ -47,6 +47,7 @@ func (l *RecommendCreateLogic) RecommendCreate(req *types.RecommendCreateReq) (r
 		Model(&models.Recommend{}).
 		Create(&models.Recommend{
 			Name: req.Name,
+			Sort: req.Sort,
 		}).
 		Error; err != nil {
 		return nil, err

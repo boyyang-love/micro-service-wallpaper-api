@@ -47,6 +47,7 @@ func (l *CategoryCreateLogic) CategoryCreate(req *types.CategoryCreateReq) (resp
 		Model(&models.Category{}).
 		Create(&models.Category{
 			Name: req.Name,
+			Sort: req.Sort,
 		}).
 		Error; err != nil {
 		return nil, err

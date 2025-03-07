@@ -32,6 +32,7 @@ func (l *CategoryUpdateLogic) CategoryUpdate(req *types.CategoryUpdateReq) (resp
 		Where("id = ?", req.Id).
 		Updates(&models.Category{
 			Name: req.Name,
+			Sort: req.Sort,
 		}).Error; err != nil {
 		return nil, err
 	}

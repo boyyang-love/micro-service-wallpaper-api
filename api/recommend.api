@@ -24,6 +24,7 @@ type (
 
     RecommendCreateReq {
         Name string `json:"name"`
+        Sort int `json:"sort":"sort"`
     }
     RecommendCreateRes {
         Base
@@ -32,6 +33,7 @@ type (
     RecommendUpdateReq {
         Id string `json:"id"`
         Name string `json:"name"`
+        Sort int `json:"sort"`
     }
     RecommendUpdateRes {
         Base
@@ -67,6 +69,7 @@ type (
         BaseTime
         Id string `json:"id"`
         FilePath string `json:"file_path"`
+        FileName string `json:"file_name"`
     }
 )
 

@@ -96,7 +96,7 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 			uploadInfo := models.Upload{
 				Hash:           imageUpload.Data.OriETag,
-				FileName:       fileHeader.Filename,
+				FileName:       req.FileName,
 				OriginFileSize: int64(imageUpload.Data.OriSize),
 				FileSize:       int64(imageUpload.Data.Size),
 				OriginType:     imgType,

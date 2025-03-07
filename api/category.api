@@ -25,6 +25,7 @@ type (
 type (
     CategoryCreateReq {
         name string `json:"name"`
+        Sort int `json:"sort"`
     }
     CategoryCreateRes {
         Base
@@ -33,8 +34,9 @@ type (
 
 type (
     CategoryUpdateReq {
-        id string `json:"id"`
-        name string `json:"name"`
+        Id string `json:"id"`
+        Name string `json:"name"`
+        Sort int `json:"sort"`
     }
     CategoryUpdateRes {
         Base
@@ -50,6 +52,29 @@ type (
     }
 )
 
+type (
+    CategorySummaryListReq {
+        BasePage
+        Type string `form:"type"`
+    }
+    CategorySummaryListRes {
+        Base
+        Data CategorySummaryListData `json:"data"`
+    }
+    CategorySummaryListData {
+        BaseRecord
+        Records []CategorySummary `json:"records"`
+    }
+    CategorySummary {
+        BaseRecord
+        Id string `json:"id"`
+        Name string `json:"name"`
+        Upload []CategorySummaryUploadInfo `json:"upload"`
+    }
+    CategorySummaryUploadInfo {
+        Id string `json:"id"`
+    }
+)
 
 @server(
     group: category
@@ -67,4 +92,7 @@ service wallpaper_pc_backend {
 
     @handler CategoryRemove
     post /category/remove (CategoryRemoveReq) returns (CategoryRemoveRes)
+
+    @handler CategorySummaryList
+    get /category/summary/list (CategorySummaryListReq) returns (CategorySummaryListRes)
 }

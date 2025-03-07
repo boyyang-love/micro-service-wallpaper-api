@@ -48,7 +48,6 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 	var count int64
 	DB := l.svcCtx.
 		DB.
-		Debug().
 		Preload("Tags").
 		Preload("Category").
 		Preload("Recommend").
@@ -62,6 +61,7 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 	if req.FileName != "" {
 		DB = DB.Where("file_name LIKE ? ", "%"+req.FileName+"%")
 	}
+
 	if req.Type != "" {
 		DB = DB.Where("type = ? ", req.Type)
 	}

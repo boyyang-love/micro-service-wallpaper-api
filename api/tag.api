@@ -6,6 +6,7 @@ type (
     CreateTagReq {
         Name string `json:"name"`
         Type string `json:"type"`
+        Sort int `json:"sort"`
     }
     CreateTagRes {
         Base
@@ -17,6 +18,7 @@ type (
         Id string `json:"id"`
         Name string `json:"name"`
         Type string `json:"type"`
+        Sort int `json:"sort"`
     }
     UpdateTagRes {
         Base

@@ -77,6 +77,31 @@ type (
 )
 
 type (
+    ImageInfoByCategoryReq {
+        BasePage
+        Type string `form:"type"`
+        CategoryId string `form:"category_id,optional"`
+    }
+
+    ImageInfoByCategoryRes {
+        Base
+        Data ImageInfoByCategoryResdata `json:"data"`
+    }
+    ImageInfoByCategoryResdata {
+        BaseRecord
+        Records []ImageInfoCategory `json:"records"`
+    }
+    ImageInfoCategory {
+        BaseTime
+        Id string `json:"id"`
+        FileName string `json:"file_name"`
+        FilePath string `json:"file_path"`
+        W int `json:"w"`
+        H int `json:"h"`
+    }
+)
+
+type (
     ImageUpdateReq {
         Id string `json:"id"`
         FileName string `json:"file_name"`
@@ -111,12 +136,14 @@ service wallpaper_pc_backend {
     get /image/info (ImageInfoReq) returns (ImageInfoRes)
     @handler ImageInfoById
     get /image/info/id (ImageInfoByIdReq) returns (ImageInfoByIdRes)
+    @handler ImageInfoByCategory
+    get /image/info/category (ImageInfoByCategoryReq) returns (ImageInfoByCategoryRes)
 }
 
 @server(
     jwt: Auth
     group: upload
-    maxBytes: 20971520
+    maxBytes: 52428800
     timeout:  30s
 )
 service wallpaper_pc_backend {

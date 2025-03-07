@@ -30,6 +30,8 @@ func (l *ImageInfoByIdLogic) ImageInfoById(req *types.ImageInfoByIdReq) (resp *t
 	if err = l.svcCtx.
 		DB.
 		Preload("Tags").
+		Preload("Category").
+		Preload("Recommend").
 		Model(&Upload{}).
 		Where("id", req.Id).
 		First(&uploadInfo).

@@ -37,6 +37,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: category.CategoryRemoveHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodGet,
+				Path:    "/category/summary/list",
+				Handler: category.CategorySummaryListHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/category/update",
 				Handler: category.CategoryUpdateHandler(serverCtx),
@@ -139,6 +144,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/image/info/category",
+				Handler: upload.ImageInfoByCategoryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/image/info/id",
 				Handler: upload.ImageInfoByIdHandler(serverCtx),
 			},
@@ -166,6 +176,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(30000*time.Millisecond),
-		rest.WithMaxBytes(20971520),
+		rest.WithMaxBytes(52428800),
 	)
 }

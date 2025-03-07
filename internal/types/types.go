@@ -26,6 +26,7 @@ type BaseTime struct {
 
 type CategoryCreateReq struct {
 	Name string `json:"name"`
+	Sort int    `json:"sort"`
 }
 
 type CategoryCreateRes struct {
@@ -61,9 +62,36 @@ type CategoryRemoveRes struct {
 	Base
 }
 
+type CategorySummary struct {
+	BaseRecord
+	Id     string                      `json:"id"`
+	Name   string                      `json:"name"`
+	Upload []CategorySummaryUploadInfo `json:"upload"`
+}
+
+type CategorySummaryListData struct {
+	BaseRecord
+	Records []CategorySummary `json:"records"`
+}
+
+type CategorySummaryListReq struct {
+	BasePage
+	Type string `form:"type"`
+}
+
+type CategorySummaryListRes struct {
+	Base
+	Data CategorySummaryListData `json:"data"`
+}
+
+type CategorySummaryUploadInfo struct {
+	Id string `json:"id"`
+}
+
 type CategoryUpdateReq struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Sort int    `json:"sort"`
 }
 
 type CategoryUpdateRes struct {
@@ -73,6 +101,7 @@ type CategoryUpdateRes struct {
 type CreateTagReq struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
+	Sort int    `json:"sort"`
 }
 
 type CreateTagRes struct {
@@ -110,6 +139,22 @@ type ImageInfo struct {
 	Recommend      []RecommendInfo `json:"recommend,optional"`
 }
 
+type ImageInfoByCategoryReq struct {
+	BasePage
+	Type       string `form:"type"`
+	CategoryId string `form:"category_id,optional"`
+}
+
+type ImageInfoByCategoryRes struct {
+	Base
+	Data ImageInfoByCategoryResdata `json:"data"`
+}
+
+type ImageInfoByCategoryResdata struct {
+	BaseRecord
+	Records []ImageInfoCategory `json:"records"`
+}
+
 type ImageInfoByIdReq struct {
 	Id string `form:"id"`
 }
@@ -117,6 +162,15 @@ type ImageInfoByIdReq struct {
 type ImageInfoByIdRes struct {
 	Base
 	Data ImageInfo `json:"data"`
+}
+
+type ImageInfoCategory struct {
+	BaseTime
+	Id       string `json:"id"`
+	FileName string `json:"file_name"`
+	FilePath string `json:"file_path"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
 }
 
 type ImageInfoReq struct {
@@ -185,6 +239,7 @@ type LikeCreateOrUpdateRes struct {
 
 type RecommendCreateReq struct {
 	Name string `json:"name"`
+	Sort int    `json:"sort":"sort"`
 }
 
 type RecommendCreateRes struct {
@@ -216,6 +271,7 @@ type RecommendListInfo struct {
 	BaseTime
 	Id       string `json:"id"`
 	FilePath string `json:"file_path"`
+	FileName string `json:"file_name"`
 }
 
 type RecommendListReq struct {
@@ -245,6 +301,7 @@ type RecommendRemoveRes struct {
 type RecommendUpdateReq struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Sort int    `json:"sort"`
 }
 
 type RecommendUpdateRes struct {
@@ -322,6 +379,7 @@ type UpdateTagReq struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Type string `json:"type"`
+	Sort int    `json:"sort"`
 }
 
 type UpdateTagRes struct {

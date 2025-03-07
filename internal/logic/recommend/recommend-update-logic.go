@@ -43,7 +43,10 @@ func (l *RecommendUpdateLogic) RecommendUpdate(req *types.RecommendUpdateReq) (r
 		DB.
 		Model(&models.Recommend{}).
 		Where("id = ?", req.Id).
-		Update("name", req.Name).
+		Updates(&models.Recommend{
+			Name: req.Name,
+			Sort: req.Sort,
+		}).
 		Error; err != nil {
 		return nil, err
 	}
