@@ -20,6 +20,7 @@ type (
         BaseRecord
         Id string `json:"id"`
         Name string `json:"name"`
+        Sort int `json:"sort"`
     }
 
     RecommendCreateReq {
@@ -73,6 +74,19 @@ type (
     }
 )
 
+type (
+    RecommendSortReq {
+        SortData []RecommendSortInfo `json:"sort_data"`
+    }
+    RecommendSortInfo {
+        Id string `json:"id"`
+        Sort int `json:"sort"`
+    }
+    RecommendSortRes {
+        Base
+    }
+)
+
 @server(
     group: recommend
     timeout:  20s
@@ -80,12 +94,19 @@ type (
 service wallpaper_pc_backend {
     @handler RecommendInfo
     get /recommend/info (RecommendInfoReq) returns (RecommendInfoRes)
+
     @handler RecommendCreate
     post /recommend/create (RecommendCreateReq) returns (RecommendCreateRes)
+
     @handler RecommendUpdate
     post /recommend/update (RecommendUpdateReq) returns (RecommendUpdateRes)
+
     @handler RecommendRemove
     post /recommend/remove (RecommendRemoveReq) returns (RecommendRemoveRes)
+
     @handler RecommendList
     get /recommend/list (RecommendListReq) returns (RecommendListRes)
+
+    @handler RecommendSort
+    post /recommend/sort (RecommendSortReq) returns (RecommendSortRes)
 }

@@ -30,9 +30,9 @@ func (l *InfoTagLogic) InfoTag(req *types.TagInfoReq) (resp *types.TagInfoRes, e
 
 	DB := l.svcCtx.
 		DB.
-		Order("created desc").
+		Order("sort asc").
 		Model(&models.Tag{}).
-		Select("id", "name", "type", "created", "updated")
+		Select("id", "name", "type", "created", "updated", "sort")
 
 	if req.Name != "" {
 		DB = DB.Where("name LIKE ?", "%"+req.Name+"%")

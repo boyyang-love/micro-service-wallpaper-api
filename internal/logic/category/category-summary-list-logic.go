@@ -41,6 +41,7 @@ func (l *CategorySummaryListLogic) CategorySummaryList(req *types.CategorySummar
 	var count int64
 	if err := l.svcCtx.
 		DB.
+		Order("sort").
 		Model(Category{}).
 		Preload("Upload", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id").Where("type = ?", req.Type)

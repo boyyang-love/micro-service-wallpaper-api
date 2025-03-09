@@ -26,7 +26,7 @@ func NewCategoryInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cate
 
 func (l *CategoryInfoLogic) CategoryInfo(req *types.CategoryInfoReq) (resp *types.CategoryInfoRes, err error) {
 
-	DB := l.svcCtx.DB.Model(&models.Category{}).Order("created desc")
+	DB := l.svcCtx.DB.Model(&models.Category{}).Order("sort asc")
 
 	if req.Name != "" {
 		DB = DB.Where("name LIKE ?", "%"+req.Name+"%")
@@ -35,7 +35,7 @@ func (l *CategoryInfoLogic) CategoryInfo(req *types.CategoryInfoReq) (resp *type
 	var categoryInfo []types.CategoryInfo
 	var count int64
 	if err = DB.
-		Select("id", "name", "created", "updated").
+		Select("id", "name", "created", "updated", "sort").
 		Offset((req.Page - 1) * req.Limit).
 		Find(&categoryInfo).
 		Offset(-1).

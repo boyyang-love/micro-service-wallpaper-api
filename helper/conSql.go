@@ -50,9 +50,10 @@ func AutoMigrate(db *gorm.DB) (err error) {
 	}
 
 	for _, table := range tables {
-		if !db.Migrator().HasTable(table) {
-			err = db.AutoMigrate(table)
-		}
+		err = db.AutoMigrate(table)
+		//if !db.Migrator().HasTable(table) {
+		//	err = db.AutoMigrate(table)
+		//}
 	}
 
 	return err

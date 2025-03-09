@@ -53,6 +53,20 @@ type (
         Id string `json:"id"`
         Name string `json:"name"`
         Type string `json:"type"`
+        Sort int `json:"sort"`
+    }
+)
+
+type (
+    TagSortReq {
+        SortData []TagSortInfo `json:"sort_data"`
+    }
+    TagSortInfo {
+        Id string `json:"id"`
+        Sort int `json:"sort"`
+    }
+    TagSortRes {
+        Base
     }
 )
 
@@ -64,10 +78,16 @@ type (
 service wallpaper_pc_backend {
     @handler CreateTag
     post /tag/create (CreateTagReq) returns (CreateTagRes)
+
     @handler UpdateTag
     post /tag/update (UpdateTagReq) returns (UpdateTagRes)
+
     @handler RemoveTag
     post /tag/remove (RemoveTagReq) returns (RemoveTagRes)
+
     @handler InfoTag
     get /tag/info (TagInfoReq) returns (TagInfoRes)
+
+    @handler SortTag
+    post /tag/sort (TagSortReq) returns (TagSortRes)
 }

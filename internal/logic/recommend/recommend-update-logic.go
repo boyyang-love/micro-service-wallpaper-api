@@ -62,7 +62,7 @@ func (l *RecommendUpdateLogic) IsExist(req *types.RecommendUpdateReq) (is bool, 
 		DB.
 		Model(&models.Recommend{}).
 		Select("name").
-		Where("name = ?", req.Name).
+		Where("name = ? and id != ?", req.Name, req.Id).
 		First(&recommend).
 		Error; err != nil {
 		if errors.As(err, &gorm.ErrRecordNotFound) {

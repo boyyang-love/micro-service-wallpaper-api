@@ -46,6 +46,7 @@ type (
 service wallpaper_pc_backend {
 	@handler SignIn
 	post /signin (SignInReq) returns (SignInRes)
+
 	@handler SignUp
 	post /signup (SignUpReq) returns (SignUpRes)
 }

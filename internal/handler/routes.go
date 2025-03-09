@@ -37,6 +37,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: category.CategoryRemoveHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodPost,
+				Path:    "/category/sort",
+				Handler: category.CategorySortHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodGet,
 				Path:    "/category/summary/list",
 				Handler: category.CategorySummaryListHandler(serverCtx),
@@ -102,6 +107,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/recommend/sort",
+				Handler: recommend.RecommendSortHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/recommend/update",
 				Handler: recommend.RecommendUpdateHandler(serverCtx),
 			},
@@ -125,6 +135,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/tag/remove",
 				Handler: tag.RemoveTagHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/tag/sort",
+				Handler: tag.SortTagHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,

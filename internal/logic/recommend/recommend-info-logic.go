@@ -27,7 +27,7 @@ func NewRecommendInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Rec
 func (l *RecommendInfoLogic) RecommendInfo(req *types.RecommendInfoReq) (resp *types.RecommendInfoRes, err error) {
 	DB := l.svcCtx.
 		DB.
-		Order("created desc").
+		Order("sort asc").
 		Model(&models.Recommend{})
 
 	if req.Name != "" {
@@ -37,7 +37,7 @@ func (l *RecommendInfoLogic) RecommendInfo(req *types.RecommendInfoReq) (resp *t
 	var recommendInfo []types.RecommendInfo
 	var count int64
 	if err = DB.
-		Select("id", "name", "created", "updated").
+		Select("id", "name", "created", "updated", "sort").
 		Offset((req.Page - 1) * req.Limit).
 		Limit(req.Limit).
 		Find(&recommendInfo).

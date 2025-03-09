@@ -149,8 +149,10 @@ service wallpaper_pc_backend {
 service wallpaper_pc_backend {
     @handler ImageUpload
     post /image/upload (ImageUploadReq) returns (ImageUploadRes)
+
     @handler ImageUpdate
     post /image/update (ImageUpdateReq) returns (ImageUpdateRes)
+
     @handler ImageDelete
     post /image/delete (ImageDeleteReq) returns (ImageDeleteRes)
 }

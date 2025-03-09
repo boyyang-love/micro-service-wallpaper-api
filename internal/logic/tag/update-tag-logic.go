@@ -29,8 +29,8 @@ func (l *UpdateTagLogic) UpdateTag(req *types.UpdateTagReq) (resp *types.UpdateT
 		DB.
 		Model(&models.Tag{}).
 		Where("id = ?", req.Id).
-		Select("name", "type").
-		Updates(&models.Tag{Name: req.Name, Type: req.Type}).
+		Select("name", "type", "sort").
+		Updates(&models.Tag{Name: req.Name, Type: req.Type, Sort: req.Sort}).
 		Error; err != nil {
 		return nil, err
 	}

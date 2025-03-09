@@ -27,7 +27,7 @@ func NewCreateTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateT
 }
 
 func (l *CreateTagLogic) CreateTag(req *types.CreateTagReq) (resp *types.CreateTagRes, err error) {
-	userid := fmt.Sprintf("%s", l.ctx.Value("id"))
+	userid := fmt.Sprintf("%s", l.ctx.Value("Id"))
 
 	is, err := l.IsTagExist(req)
 	if err != nil {
@@ -49,6 +49,7 @@ func (l *CreateTagLogic) CreateTag(req *types.CreateTagReq) (resp *types.CreateT
 		Create(&models.Tag{
 			Name:   req.Name,
 			Type:   req.Type,
+			Sort:   req.Sort,
 			UserId: userid,
 		}).Error; err != nil {
 		return nil, err

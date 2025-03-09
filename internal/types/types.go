@@ -37,6 +37,7 @@ type CategoryInfo struct {
 	BaseRecord
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Sort int    `json:"sort"`
 }
 
 type CategoryInfoData struct {
@@ -59,6 +60,19 @@ type CategoryRemoveReq struct {
 }
 
 type CategoryRemoveRes struct {
+	Base
+}
+
+type CategorySortInfo struct {
+	Id   string `json:"id"`
+	Sort int    `json:"sort"`
+}
+
+type CategorySortReq struct {
+	SortData []CategorySortInfo `json:"sort_data"`
+}
+
+type CategorySortRes struct {
 	Base
 }
 
@@ -250,6 +264,7 @@ type RecommendInfo struct {
 	BaseRecord
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Sort int    `json:"sort"`
 }
 
 type RecommendInfoData struct {
@@ -295,6 +310,19 @@ type RecommendRemoveReq struct {
 }
 
 type RecommendRemoveRes struct {
+	Base
+}
+
+type RecommendSortInfo struct {
+	Id   string `json:"id"`
+	Sort int    `json:"sort"`
+}
+
+type RecommendSortReq struct {
+	SortData []RecommendSortInfo `json:"sort_data"`
+}
+
+type RecommendSortRes struct {
 	Base
 }
 
@@ -357,6 +385,7 @@ type TagInfo struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Type string `json:"type"`
+	Sort int    `json:"sort"`
 }
 
 type TagInfoReq struct {
@@ -373,6 +402,19 @@ type TagInfoRes struct {
 type TagInfoResData struct {
 	BaseRecord
 	Records []TagInfo `json:"records"`
+}
+
+type TagSortInfo struct {
+	Id   string `json:"id"`
+	Sort int    `json:"sort"`
+}
+
+type TagSortReq struct {
+	SortData []TagSortInfo `json:"sort_data"`
+}
+
+type TagSortRes struct {
+	Base
 }
 
 type UpdateTagReq struct {

@@ -19,6 +19,7 @@ type (
         BaseRecord
         Id string `json:"id"`
         Name string `json:"name"`
+        Sort int `json:"sort"`
     }
 )
 
@@ -76,6 +77,19 @@ type (
     }
 )
 
+type (
+    CategorySortReq {
+        SortData []CategorySortInfo `json:"sort_data"`
+    }
+    CategorySortInfo {
+        Id string `json:"id"`
+        Sort int `json:"sort"`
+    }
+    CategorySortRes {
+        Base
+    }
+)
+
 @server(
     group: category
     timeout:  20s
@@ -95,4 +109,7 @@ service wallpaper_pc_backend {
 
     @handler CategorySummaryList
     get /category/summary/list (CategorySummaryListReq) returns (CategorySummaryListRes)
+
+    @handler CategorySort
+    post /category/sort (CategorySortReq) returns (CategorySortRes)
 }
