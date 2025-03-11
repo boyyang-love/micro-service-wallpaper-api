@@ -92,6 +92,16 @@ type (
     timeout:  20s
 )
 service wallpaper_pc_backend {
+    @handler RecommendList
+    get /recommend/list (RecommendListReq) returns (RecommendListRes)
+}
+
+@server(
+    jwt: Auth
+    group: recommend
+    timeout:  20s
+)
+service wallpaper_pc_backend {
     @handler RecommendInfo
     get /recommend/info (RecommendInfoReq) returns (RecommendInfoRes)
 
@@ -103,9 +113,6 @@ service wallpaper_pc_backend {
 
     @handler RecommendRemove
     post /recommend/remove (RecommendRemoveReq) returns (RecommendRemoveRes)
-
-    @handler RecommendList
-    get /recommend/list (RecommendListReq) returns (RecommendListRes)
 
     @handler RecommendSort
     post /recommend/sort (RecommendSortReq) returns (RecommendSortRes)

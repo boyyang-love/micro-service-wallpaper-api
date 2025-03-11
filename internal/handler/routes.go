@@ -22,6 +22,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/category/summary/list",
+				Handler: category.CategorySummaryListHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
 				Method:  http.MethodPost,
 				Path:    "/category/create",
 				Handler: category.CategoryCreateHandler(serverCtx),
@@ -42,16 +53,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: category.CategorySortHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodGet,
-				Path:    "/category/summary/list",
-				Handler: category.CategorySummaryListHandler(serverCtx),
-			},
-			{
 				Method:  http.MethodPost,
 				Path:    "/category/update",
 				Handler: category.CategoryUpdateHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 
@@ -63,6 +70,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: like.LikeCreateHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 
@@ -86,6 +94,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/recommend/list",
+				Handler: recommend.RecommendListHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
 				Method:  http.MethodPost,
 				Path:    "/recommend/create",
 				Handler: recommend.RecommendCreateHandler(serverCtx),
@@ -94,11 +113,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/recommend/info",
 				Handler: recommend.RecommendInfoHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/recommend/list",
-				Handler: recommend.RecommendListHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -116,6 +130,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: recommend.RecommendUpdateHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/tag/info",
+				Handler: tag.InfoTagHandler(serverCtx),
+			},
+		},
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 
@@ -125,11 +151,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/tag/create",
 				Handler: tag.CreateTagHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/tag/info",
-				Handler: tag.InfoTagHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -147,6 +168,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: tag.UpdateTagHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 
@@ -166,6 +188,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/image/info/id",
 				Handler: upload.ImageInfoByIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/image/summary/update",
+				Handler: upload.ImageSummaryUpdateHandler(serverCtx),
 			},
 		},
 		rest.WithTimeout(30000*time.Millisecond),

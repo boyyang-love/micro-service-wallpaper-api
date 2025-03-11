@@ -2,6 +2,8 @@ package like
 
 import (
 	"context"
+	"fmt"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -24,7 +26,26 @@ func NewLikeCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeCr
 }
 
 func (l *LikeCreateLogic) LikeCreate(req *types.LikeCreateOrUpdateReq) (resp *types.LikeCreateOrUpdateRes, err error) {
-	// todo: add your logic here and delete this line
+	userid := fmt.Sprintf("%s", l.ctx.Value("Id"))
 
-	return
+	if l.svcCtx.
+		DB.
+		Model(&models.Like{}).
+		Where("upload_id = ? and user_id = ?", req.UploadId, userid).
+		Update("status", req.Status).
+		RowsAffected == 0 {
+		if err := l.svcCtx.DB.Create(&models.Like{
+			UploadId: req.UploadId,
+			UserId:   userid,
+			Status:   req.Status,
+		}).Error; err != nil {
+			return nil, err
+		}
+	}
+	return &types.LikeCreateOrUpdateRes{
+		Base: types.Base{
+			Code: 1,
+			Msg:  "ok",
+		},
+	}, nil
 }

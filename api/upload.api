@@ -60,6 +60,8 @@ type (
         H int `json:"h"`
         Status int `json:"status"`
         UserId string `json:"user_id"`
+        Download int `json:"download"`
+        View int `json:"view"`
         Tags []TagInfo `json:"tags"`
         Category []CategoryInfo `json:"category"`
         Recommend []RecommendInfo `json:"recommend,optional"`
@@ -127,6 +129,16 @@ type (
     }
 )
 
+type (
+    ImageSummaryUpdateReq {
+        Id string `json:"id"`
+        Type string `json:"type,options=download|view"`
+    }
+    ImageSummaryUpdateRes {
+        Base
+    }
+)
+
 @server(
     group: upload
     timeout:  30s
@@ -134,10 +146,15 @@ type (
 service wallpaper_pc_backend {
     @handler ImageInfo
     get /image/info (ImageInfoReq) returns (ImageInfoRes)
+
     @handler ImageInfoById
     get /image/info/id (ImageInfoByIdReq) returns (ImageInfoByIdRes)
+
     @handler ImageInfoByCategory
     get /image/info/category (ImageInfoByCategoryReq) returns (ImageInfoByCategoryRes)
+
+    @handler ImageSummaryUpdate
+    post /image/summary/update (ImageSummaryUpdateReq) returns (ImageSummaryUpdateRes)
 }
 
 @server(

@@ -13,6 +13,7 @@ type (
 )
 
 @server(
+    jwt: Auth
     group: like
     timeout:  20s
 )

@@ -95,6 +95,16 @@ type (
     timeout:  20s
 )
 service wallpaper_pc_backend {
+    @handler CategorySummaryList
+    get /category/summary/list (CategorySummaryListReq) returns (CategorySummaryListRes)
+}
+
+@server(
+    jwt: Auth
+    group: category
+    timeout:  20s
+)
+service wallpaper_pc_backend {
     @handler CategoryInfo
     get /category/info (CategoryInfoReq) returns (CategoryInfoRes)
 
@@ -106,9 +116,6 @@ service wallpaper_pc_backend {
 
     @handler CategoryRemove
     post /category/remove (CategoryRemoveReq) returns (CategoryRemoveRes)
-
-    @handler CategorySummaryList
-    get /category/summary/list (CategorySummaryListReq) returns (CategorySummaryListRes)
 
     @handler CategorySort
     post /category/sort (CategorySortReq) returns (CategorySortRes)

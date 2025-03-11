@@ -76,6 +76,17 @@ type (
 )
 
 service wallpaper_pc_backend {
+    @handler InfoTag
+    get /tag/info (TagInfoReq) returns (TagInfoRes)
+}
+
+@server(
+    jwt: Auth
+    group: tag
+    timeout:  20s
+)
+
+service wallpaper_pc_backend {
     @handler CreateTag
     post /tag/create (CreateTagReq) returns (CreateTagRes)
 
@@ -84,9 +95,6 @@ service wallpaper_pc_backend {
 
     @handler RemoveTag
     post /tag/remove (RemoveTagReq) returns (RemoveTagRes)
-
-    @handler InfoTag
-    get /tag/info (TagInfoReq) returns (TagInfoRes)
 
     @handler SortTag
     post /tag/sort (TagSortReq) returns (TagSortRes)

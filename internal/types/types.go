@@ -148,6 +148,8 @@ type ImageInfo struct {
 	H              int             `json:"h"`
 	Status         int             `json:"status"`
 	UserId         string          `json:"user_id"`
+	Download       int             `json:"download"`
+	View           int             `json:"view"`
 	Tags           []TagInfo       `json:"tags"`
 	Category       []CategoryInfo  `json:"category"`
 	Recommend      []RecommendInfo `json:"recommend,optional"`
@@ -202,6 +204,15 @@ type ImageInfoRes struct {
 type ImageInfoResdata struct {
 	BaseRecord
 	Records []ImageInfo `json:"records"`
+}
+
+type ImageSummaryUpdateReq struct {
+	Id   string `json:"id"`
+	Type string `json:"type,options=download|view"`
+}
+
+type ImageSummaryUpdateRes struct {
+	Base
 }
 
 type ImageUpdateReq struct {
