@@ -30,7 +30,7 @@ func (l *ImageInfoByCategoryLogic) ImageInfoByCategory(req *types.ImageInfoByCat
 		DB.
 		Order("created desc").
 		Model(&models.Upload{}).
-		Select("id", "file_name", "file_path", "w", "h")
+		Select("id", "file_name", "file_path", "w", "h", "created", "updated")
 
 	if req.CategoryId != "" {
 		ids, err := l.UploadIds(req)
@@ -61,7 +61,7 @@ func (l *ImageInfoByCategoryLogic) ImageInfoByCategory(req *types.ImageInfoByCat
 	var uploadInfo []types.ImageInfoCategory
 	var count int64
 	if err := DB.
-		Where("type = ?", req.Type).
+		Where("type = ? and status = ?", req.Type, 1).
 		Offset((req.Page - 1) * req.Limit).
 		Limit(req.Limit).
 		Find(&uploadInfo).

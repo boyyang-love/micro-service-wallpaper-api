@@ -8,6 +8,7 @@ import (
 	"time"
 
 	category "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/category"
+	download "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/download"
 	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
 	recommend "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/recommend"
@@ -65,9 +66,37 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/download/url",
+				Handler: download.DownloadUrlHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/like/num",
+				Handler: like.LikeNumHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
 				Method:  http.MethodPost,
 				Path:    "/like/create",
 				Handler: like.LikeCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/like/list",
+				Handler: like.LikeListHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

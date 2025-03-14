@@ -35,6 +35,11 @@ func (l *ImageDeleteLogic) ImageDelete(req *types.ImageDeleteReq) (resp *types.I
 		return nil, err
 	}
 
+	// 删除标签、分类、推荐
+	if err := l.DelTagCategoryRecommend(req); err != nil {
+		return nil, err
+	}
+
 	_, err = l.svcCtx.UploadService.ImageDelete(l.ctx, &uploadclient.ImageDeleteReq{
 		BucketName: req.BucketName,
 		Paths:      req.Paths,
@@ -49,4 +54,36 @@ func (l *ImageDeleteLogic) ImageDelete(req *types.ImageDeleteReq) (resp *types.I
 			Msg:  "删除成功",
 		},
 	}, nil
+}
+
+func (l *ImageDeleteLogic) DelTagCategoryRecommend(req *types.ImageDeleteReq) error {
+
+	if err := l.svcCtx.
+		DB.
+		Model(&models.UploadTag{}).
+		Where("upload_id in (?)", req.Id).
+		Delete(&models.UploadTag{}).
+		Error; err != nil {
+		return err
+	}
+
+	if err := l.svcCtx.
+		DB.
+		Model(&models.UploadCategory{}).
+		Where("upload_id in (?)", req.Id).
+		Delete(&models.UploadCategory{}).
+		Error; err != nil {
+		return err
+	}
+
+	if err := l.svcCtx.
+		DB.
+		Model(&models.UploadRecommend{}).
+		Where("upload_id in (?)", req.Id).
+		Delete(&models.UploadRecommend{}).
+		Error; err != nil {
+		return err
+	}
+
+	return nil
 }

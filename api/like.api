@@ -1,6 +1,6 @@
 syntax = "v1"
 
-import "./base.api"
+import "base.api"
 
 type (
     LikeCreateOrUpdateReq {
@@ -12,6 +12,38 @@ type (
     }
 )
 
+type (
+    LikeListReq {
+        UploadId string `form:"upload_id"`
+    }
+    LikeListRes {
+        Base
+        Data []string `json:"data"`
+    }
+)
+
+type (
+    LikeNumReq {
+        UploadId string `form:"upload_id"`
+    }
+    LikeNumRes {
+        Base
+        Data LikeNumResData `json:"data"`
+    }
+    LikeNumResData {
+        Num int64 `json:"num"`
+    }
+)
+
+@server(
+    group: like
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler LikeNum
+    get /like/num (LikeNumReq) returns (LikeNumRes)
+}
+
 @server(
     jwt: Auth
     group: like
@@ -20,4 +52,7 @@ type (
 service wallpaper_pc_backend {
     @handler LikeCreate
     post /like/create (LikeCreateOrUpdateReq) returns (LikeCreateOrUpdateRes)
+
+    @handler LikeList
+    get /like/list (LikeListReq) returns (LikeListRes)
 }

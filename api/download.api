@@ -1,0 +1,28 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    DownloadUrlReq {
+        Id string `form:"id"`
+    }
+    DownloadUrlRes {
+        Base
+        Data DownloadUrlData `json:"data"`
+    }
+    DownloadUrlData {
+        FileName string `json:"file_name"`
+        OriginType string `json:"origin_type"`
+        OriginFilePath string `json:"origin_file_path"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: download
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler DownloadUrl
+    get /download/url (DownloadUrlReq) returns (DownloadUrlRes)
+}

@@ -122,6 +122,21 @@ type CreateTagRes struct {
 	Base
 }
 
+type DownloadUrlData struct {
+	FileName       string `json:"file_name"`
+	OriginType     string `json:"origin_type"`
+	OriginFilePath string `json:"origin_file_path"`
+}
+
+type DownloadUrlReq struct {
+	Id string `form:"id"`
+}
+
+type DownloadUrlRes struct {
+	Base
+	Data DownloadUrlData `json:"data"`
+}
+
 type ImageDeleteReq struct {
 	BucketName string   `json:"bucket_name"`
 	Id         string   `json:"id"`
@@ -262,6 +277,28 @@ type LikeCreateOrUpdateRes struct {
 	Base
 }
 
+type LikeListReq struct {
+	UploadId string `form:"upload_id"`
+}
+
+type LikeListRes struct {
+	Base
+	Data []string `json:"data"`
+}
+
+type LikeNumReq struct {
+	UploadId string `form:"upload_id"`
+}
+
+type LikeNumRes struct {
+	Base
+	Data LikeNumResData `json:"data"`
+}
+
+type LikeNumResData struct {
+	Num int64 `json:"num"`
+}
+
 type RecommendCreateReq struct {
 	Name string `json:"name"`
 	Sort int    `json:"sort":"sort"`
@@ -386,9 +423,14 @@ type SignInResDataUserInfo struct {
 }
 
 type SignUpReq struct {
+	Account  string `json:"account"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Code     string `json:"code"`
 }
 
 type SignUpRes struct {
+	Base
 }
 
 type TagInfo struct {
