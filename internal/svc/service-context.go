@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/config"
+	"github.com/boyyang-love/micro-service-wallpaper-rpc/email/emailclient"
 	"github.com/boyyang-love/micro-service-wallpaper-rpc/upload/uploadclient"
 	"github.com/boyyang-love/micro-service-wallpaper-rpc/user/userclient"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -15,6 +16,7 @@ type ServiceContext struct {
 	DB            *gorm.DB
 	UploadService uploadclient.Upload
 	UserService   userclient.User
+	EmailService  emailclient.Email
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -27,11 +29,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	uploadClient := zrpc.MustNewClient(c.UploadRpc)
 	userClient := zrpc.MustNewClient(c.UserRpc)
+	emailClient := zrpc.MustNewClient(c.EmailRpc)
 
 	return &ServiceContext{
 		Config:        c,
 		DB:            db,
 		UploadService: uploadclient.NewUpload(uploadClient),
 		UserService:   userclient.NewUser(userClient),
+		EmailService:  emailclient.NewEmail(emailClient),
 	}
 }

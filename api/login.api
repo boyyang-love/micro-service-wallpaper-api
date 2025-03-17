@@ -43,6 +43,34 @@ type (
     }
 )
 
+type (
+    SignUpCodeReq {
+        Account string `json:"account"`
+    }
+    SignUpCodeRes {
+        Base
+    }
+)
+
+type (
+    SignInByQqReq {
+        Code string `form:"code"`
+    }
+    SignInByQqRes {
+        Base
+        Data SignInByQqResData `json:"data"`
+    }
+    SignInByQqResData {
+        Token string `json:"token"`
+        UserInfo SignInByQqUserInfo `json:"user_info"`
+    }
+    SignInByQqUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+    }
+)
+
 @server(
     group: login
     maxBytes: 20971520
@@ -54,5 +82,11 @@ service wallpaper_pc_backend {
 
     @handler SignUp
     post /signup (SignUpReq) returns (SignUpRes)
+
+    @handler SignUpCode
+    post /signup/code (SignUpCodeReq) returns (SignUpCodeRes)
+
+    @handler SignInByQq
+    get /signin/qq (SignInByQqReq) returns (SignInByQqRes)
 }
 

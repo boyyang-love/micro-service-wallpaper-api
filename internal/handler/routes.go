@@ -111,9 +111,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: login.SignInHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodGet,
+				Path:    "/signin/qq",
+				Handler: login.SignInByQqHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/signup",
 				Handler: login.SignUpHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/signup/code",
+				Handler: login.SignUpCodeHandler(serverCtx),
 			},
 		},
 		rest.WithTimeout(20000*time.Millisecond),

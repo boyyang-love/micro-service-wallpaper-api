@@ -21,6 +21,12 @@ MySQLConf:
   Collation: utf8mb4_unicode_ci
   Timeout: 10s
 
+# QQ登录
+QqLoginConf:
+  AppId: "101827468"
+  AppKey: 0d2d856e48e0ebf6b98e0d0c879fe74d
+  RedirectURI: https://www.boyyang.cn
+
 UploadRpc:
   Etcd:
     Hosts:
@@ -33,4 +39,11 @@ UserRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: user.rpc
+  Timeout: 30000
+
+EmailRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: email.rpc
   Timeout: 30000

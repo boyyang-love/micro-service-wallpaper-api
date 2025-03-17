@@ -1,13 +1,12 @@
 module github.com/boyyang-love/micro-service-wallpaper-api
 
-go 1.24
-
-toolchain go1.24.0
+go 1.24.0
 
 require (
-	github.com/boyyang-love/micro-service-wallpaper-models v1.0.1
-	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250307131538-cb81f9b58e07
-	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250307131538-cb81f9b58e07
+	github.com/boyyang-love/micro-service-wallpaper-models v1.0.2
+	github.com/boyyang-love/micro-service-wallpaper-rpc/email v0.0.0-20250315090002-449c32ddf579
+	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250315090002-449c32ddf579
+	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250315090002-449c32ddf579
 	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/jinzhu/copier v0.4.0
 	github.com/minio/minio-go/v7 v7.0.88

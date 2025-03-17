@@ -392,6 +392,26 @@ type RemoveTagRes struct {
 	Base
 }
 
+type SignInByQqReq struct {
+	Code string `form:"code"`
+}
+
+type SignInByQqRes struct {
+	Base
+	Data SignInByQqResData `json:"data"`
+}
+
+type SignInByQqResData struct {
+	Token    string             `json:"token"`
+	UserInfo SignInByQqUserInfo `json:"user_info"`
+}
+
+type SignInByQqUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+}
+
 type SignInReq struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -420,6 +440,14 @@ type SignInResDataUserInfo struct {
 	Role     string `json:"role"`
 	Avatar   string `json:"avatar"`
 	Cover    string `json:"cover"`
+}
+
+type SignUpCodeReq struct {
+	Account string `json:"account"`
+}
+
+type SignUpCodeRes struct {
+	Base
 }
 
 type SignUpReq struct {

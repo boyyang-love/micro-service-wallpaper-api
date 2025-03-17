@@ -21,10 +21,18 @@ type Auth struct {
 	AccessExpire int64
 }
 
+type QqLoginConf struct {
+	AppId       string
+	AppKey      string
+	RedirectURI string
+}
+
 type Config struct {
 	rest.RestConf
-	Auth      Auth
-	MySQLConf MySQLConf
-	UploadRpc zrpc.RpcClientConf
-	UserRpc   zrpc.RpcClientConf
+	Auth        Auth
+	MySQLConf   MySQLConf
+	QqLoginConf QqLoginConf
+	UploadRpc   zrpc.RpcClientConf
+	UserRpc     zrpc.RpcClientConf
+	EmailRpc    zrpc.RpcClientConf
 }
