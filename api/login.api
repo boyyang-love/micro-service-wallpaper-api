@@ -71,6 +71,17 @@ type (
     }
 )
 
+type (
+    SignInByQqUrlRes {
+        Base
+        Data SignInByQqUrlResData `json:"data"`
+    }
+    SignInByQqUrlResData {
+        Url string `json:"url"`
+        State string `json:"state"`
+    }
+)
+
 @server(
     group: login
     maxBytes: 20971520
@@ -85,6 +96,9 @@ service wallpaper_pc_backend {
 
     @handler SignUpCode
     post /signup/code (SignUpCodeReq) returns (SignUpCodeRes)
+
+    @handler SignInByQqUrl
+    get /signin/qq/url () returns (SignInByQqUrlRes)
 
     @handler SignInByQq
     get /signin/qq (SignInByQqReq) returns (SignInByQqRes)

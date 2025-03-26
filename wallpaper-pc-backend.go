@@ -29,6 +29,9 @@ func main() {
 				"http://localhost:3000",
 				"http://localhost:9527",
 				"https://www.boyyang.cn",
+				"https://boyyang.cn",
+				"http://wallpaperadmin.boyyang.cn",
+				"https://wallpaperadmin.boyyang.cn",
 			}...,
 		),
 	)

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-	"github.com/boyyang-love/micro-service-wallpaper-rpc/email/pb/email"
 	"github.com/zeromicro/go-zero/core/collection"
 	"gorm.io/gorm"
 	"math/rand"
@@ -47,23 +46,21 @@ func (l *SignUpCodeLogic) SignUpCode(req *types.SignUpCodeReq) (resp *types.Sign
 	if res.RowsAffected == 0 {
 		code := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
 
-		emailRpcRes, err := l.svcCtx.EmailService.SendEmailCode(
-			l.ctx,
-			&email.SendEmailCodeReq{
-				Email:   req.Account,
-				Code:    code,
-				Subject: "壁纸收藏家",
-				Title:   "壁纸收藏家账号注册",
-				Time:    5,
-			},
-		)
+		//emailRpcRes, err := l.svcCtx.EmailService.SendEmailCode(
+		//	l.ctx,
+		//	&email.SendEmailCodeReq{
+		//		Email:   req.Account,
+		//		Code:    code,
+		//		Subject: "壁纸收藏家",
+		//		Title:   "壁纸收藏家账号注册",
+		//		Time:    5,
+		//	},
+		//)
 
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
-		}
-
-		fmt.Println(emailRpcRes.Base.Code, emailRpcRes.Base.Msg)
+		//if err != nil {
+		//	fmt.Println(err)
+		//	return nil, err
+		//}
 
 		cache, err := collection.NewCache(time.Minute * 5)
 		if err != nil {

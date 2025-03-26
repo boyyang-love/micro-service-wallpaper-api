@@ -13,7 +13,7 @@ logs
 main
 .bin
 
-etc/blog-backend.yaml
+etc/wallpaper-pc-backend.yaml
 
 default.etcd
 

@@ -1,0 +1,26 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    SitemapReq {
+        BasePage
+        Type string `form:"type"`
+    }
+    SitemapRes {
+        Base
+        Data SitemapResData `json:"data"`
+    }
+    SitemapResData {
+        BaseRecord
+        Records []string `json:"records"`
+    }
+)
+
+@server(
+    group: sitmap
+)
+service wallpaper_pc_backend {
+    @handler SitemapIds
+    get /sitemap/ids (SitemapReq) returns (SitemapRes)
+}

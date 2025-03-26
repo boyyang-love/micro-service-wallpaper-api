@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"time"
 
+	carousel "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/carousel"
 	category "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/category"
 	download "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/download"
 	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
 	recommend "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/recommend"
+	sitmap "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/sitmap"
 	tag "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/tag"
 	upload "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/upload"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
@@ -20,6 +22,37 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/carousel/list",
+				Handler: carousel.CarouselListHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/carousel/create",
+				Handler: carousel.CarouselCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/carousel/remove",
+				Handler: carousel.CarouselRemoveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/carousel/update",
+				Handler: carousel.CarouselUpdateHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{
@@ -70,6 +103,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/download/url",
 				Handler: download.DownloadUrlHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/download/user/list",
+				Handler: download.UserDownloadListHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
@@ -98,6 +136,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/like/list",
 				Handler: like.LikeListHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/like/user/downloadAndLikeSummary",
+				Handler: like.UserDownloadAndLikeSummaryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/like/user/list",
+				Handler: like.UserLikeListHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
@@ -114,6 +162,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/signin/qq",
 				Handler: login.SignInByQqHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/signin/qq/url",
+				Handler: login.SignInByQqUrlHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -177,6 +230,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/sitemap/ids",
+				Handler: sitmap.SitemapIdsHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/tag/info",
 				Handler: tag.InfoTagHandler(serverCtx),
 			},
@@ -222,6 +285,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/image/info/category",
 				Handler: upload.ImageInfoByCategoryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/image/info/hot",
+				Handler: upload.ImageInfoByHotHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,

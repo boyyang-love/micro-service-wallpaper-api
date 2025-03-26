@@ -59,7 +59,11 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 	}
 
 	if req.FileName != "" {
-		DB = DB.Where("file_name LIKE ? ", "%"+req.FileName+"%")
+		uploadIds, err := l.UploadIds(req)
+		if err != nil {
+			return nil, err
+		}
+		DB = DB.Where("file_name LIKE ? OR id in (?)", "%"+req.FileName+"%", uploadIds)
 	}
 
 	if req.Type != "" {
@@ -92,4 +96,31 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 			Records: imageInfo,
 		},
 	}, nil
+}
+
+func (l *ImageInfoLogic) UploadIds(req *types.ImageInfoReq) (ids []string, err error) {
+
+	var tagIds []string
+	if err = l.svcCtx.
+		DB.
+		Model(&models.Tag{}).
+		Select("id").
+		Where("name LIKE ?", "%"+req.FileName+"%").
+		Find(&tagIds).
+		Error; err != nil {
+		return nil, err
+	}
+
+	var uploadIds []string
+	if err = l.svcCtx.
+		DB.
+		Model(&models.UploadTag{}).
+		Select("upload_id").
+		Where("tag_id in (?)", tagIds).
+		Find(&uploadIds).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return uploadIds, nil
 }

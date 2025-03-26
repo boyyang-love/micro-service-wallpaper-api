@@ -34,5 +34,4 @@ type Config struct {
 	QqLoginConf QqLoginConf
 	UploadRpc   zrpc.RpcClientConf
 	UserRpc     zrpc.RpcClientConf
-	EmailRpc    zrpc.RpcClientConf
 }

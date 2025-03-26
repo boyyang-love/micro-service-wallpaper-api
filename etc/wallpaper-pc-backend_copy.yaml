@@ -12,20 +12,20 @@ Log:
 
 # mysql
 MySQLConf:
-  Host: 47.109.86.251
+  Host: xx.xxx.xx.xxx
   Port: 3306
-  Database: wallpaper
-  Username: wallpaper
-  Password: XwW4GSaskAby3zJe
+  Database: name
+  Username: username
+  Password: password
   Charset: utf8mb4
   Collation: utf8mb4_unicode_ci
   Timeout: 10s
 
 # QQ登录
 QqLoginConf:
-  AppId: "102732534"
-  AppKey: 4zgBVcYIo7GE1fAU
-  RedirectURI: https://boyyang.cn/QQLoginBack
+  AppId: QQAppId
+  AppKey: QQAppKey
+  RedirectURI: https://xxx.com/back
 
 UploadRpc:
   Etcd:

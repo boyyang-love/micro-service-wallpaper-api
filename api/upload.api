@@ -104,6 +104,29 @@ type (
 )
 
 type (
+    ImageInfoByHotReq {
+        BasePage
+        Type string `form:"type"`
+    }
+    ImageInfoByHotRes {
+        Base
+        Data ImageInfoByHotResdata `json:"data"`
+    }
+    ImageInfoByHotResdata {
+        BaseRecord
+        Records []ImageInfoHot `json:"records"`
+    }
+    ImageInfoHot {
+        BaseTime
+        Id string `json:"id"`
+        FileName string `json:"file_name"`
+        FilePath string `json:"file_path"`
+        W int `json:"w"`
+        H int `json:"h"`
+    }
+)
+
+type (
     ImageUpdateReq {
         Id string `json:"id"`
         FileName string `json:"file_name"`
@@ -152,6 +175,9 @@ service wallpaper_pc_backend {
 
     @handler ImageInfoByCategory
     get /image/info/category (ImageInfoByCategoryReq) returns (ImageInfoByCategoryRes)
+
+    @handler ImageInfoByHot
+    get /image/info/hot (ImageInfoByHotReq) returns (ImageInfoByHotRes)
 
     @handler ImageSummaryUpdate
     post /image/summary/update (ImageSummaryUpdateReq) returns (ImageSummaryUpdateRes)

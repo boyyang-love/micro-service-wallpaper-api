@@ -65,21 +65,12 @@ func (l *SignInByQqLogic) SignInByQq(req *types.SignInByQqReq) (resp *types.Sign
 		return nil, err
 	}
 
-	info, err := l.CreateOrUpdate(openidInfo.OpenId, userInfo)
+	err = l.CreateOrUpdate(openidInfo.OpenId, userInfo)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := helper.NewToken(
-		&helper.JwtStruct{
-			Id:               info.Id,
-			Username:         info.Username,
-			Role:             info.Role,
-			RegisteredClaims: jwt.RegisteredClaims{},
-		},
-		l.svcCtx.Config.Auth.AccessSecret,
-		l.svcCtx.Config.Auth.AccessExpire,
-	)
+	info, token, err := l.InfoAndToken(openidInfo.OpenId)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +155,7 @@ func (l *SignInByQqLogic) UserInfo(accessToken string, openid string) (userInfo 
 	params := url.Values{}
 	params.Add("access_token", accessToken)
 	params.Add("openid", openid)
-	params.Add("oauth_consumer_key", l.svcCtx.Config.QqLoginConf.AppKey)
+	params.Add("oauth_consumer_key", l.svcCtx.Config.QqLoginConf.AppId)
 
 	uri := fmt.Sprintf("https://graph.qq.com/user/get_user_info?%s", params.Encode())
 	resp, err := http.Get(uri)
@@ -188,41 +179,73 @@ func (l *SignInByQqLogic) UserInfo(accessToken string, openid string) (userInfo 
 	return userInfo, nil
 }
 
-func (l *SignInByQqLogic) CreateOrUpdate(openId string, userInfo *QQUserInfo) (info *models.User, err error) {
-
-	user := models.User{
-		Account:  openId,
-		Avatar:   userInfo.Avatar,
-		Username: userInfo.Nickname,
-		Role:     "user",
-	}
-
+func (l *SignInByQqLogic) CreateOrUpdate(openId string, userInfo *QQUserInfo) (err error) {
+	var user models.User
 	if err = l.svcCtx.
 		DB.
 		Model(&models.User{}).
-		Select("id", "account", "username", "avatar").
-		Where("account = ?", openId).
+		Select("id", "open_id", "username", "avatar").
+		Where("open_id = ?", openId).
 		First(&user).
 		Error; err != nil {
 		if errors.As(err, &gorm.ErrRecordNotFound) {
 			if err := l.svcCtx.
 				DB.
 				Model(&models.User{}).
-				Create(&user).
-				Error; err != nil {
-				return nil, err
+				Create(&models.User{
+					OpenId:   openId,
+					Avatar:   userInfo.Avatar,
+					Username: userInfo.Nickname,
+					Role:     "user",
+				}).Error; err != nil {
+				return err
 			}
+		} else {
+			return err
 		}
 	}
 
 	if err = l.svcCtx.
 		DB.
 		Model(&models.User{}).
+		Where("open_id = ?", openId).
 		Select("username", "avatar").
-		Updates(user).
+		Updates(&models.User{
+			Username: userInfo.Nickname,
+			Avatar:   userInfo.Avatar,
+		}).
 		Error; err != nil {
-		return nil, err
+		return err
 	}
 
-	return info, err
+	return err
+}
+
+func (l *SignInByQqLogic) InfoAndToken(openId string) (info *models.User, token string, err error) {
+	var user models.User
+	if err = l.svcCtx.
+		DB.
+		Model(&models.User{}).
+		Where("open_id = ?", openId).
+		Select("id", "username", "avatar", "role").
+		First(&user).
+		Error; err != nil {
+		return nil, "", err
+	}
+
+	token, err = helper.NewToken(
+		&helper.JwtStruct{
+			Id:               user.Id,
+			Username:         user.Username,
+			Role:             user.Role,
+			RegisteredClaims: jwt.RegisteredClaims{},
+		},
+		l.svcCtx.Config.Auth.AccessSecret,
+		l.svcCtx.Config.Auth.AccessExpire,
+	)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return &user, token, nil
 }

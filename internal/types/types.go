@@ -24,6 +24,57 @@ type BaseTime struct {
 	Updated int64 `json:"updated"`
 }
 
+type CarouselCreateReq struct {
+	Path   string `json:"path"`
+	Sort   int    `json:"sort"`
+	Status int    `json:"status"`
+}
+
+type CarouselCreateRes struct {
+	Base
+}
+
+type CarouselInfo struct {
+	Id     string `json:"id"`
+	Path   string `json:"path"`
+	Sort   int    `json:"sort"`
+	Status int    `json:"status"`
+}
+
+type CarouselListData struct {
+	BaseRecord
+	Records []CarouselInfo `json:"records"`
+}
+
+type CarouselListReq struct {
+	BasePage
+	Status int `form:"status"`
+}
+
+type CarouselListRes struct {
+	Base
+	Data CarouselListData `json:"data"`
+}
+
+type CarouselRemoveReq struct {
+	Id string `json:"id"`
+}
+
+type CarouselRemoveRes struct {
+	Base
+}
+
+type CarouselUpdateReq struct {
+	Id     string `json:"id"`
+	Path   string `json:"path"`
+	Sort   int    `json:"sort"`
+	Status int    `json:"status"`
+}
+
+type CarouselUpdateRes struct {
+	Base
+}
+
 type CategoryCreateReq struct {
 	Name string `json:"name"`
 	Sort int    `json:"sort"`
@@ -122,6 +173,25 @@ type CreateTagRes struct {
 	Base
 }
 
+type DownLoadUserListRecord struct {
+	BaseTime
+	Id       string `json:"id"`
+	FilePath string `json:"file_path"`
+	FileName string `json:"file_name"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+	Type     string `json:"type"`
+}
+
+type DownlaodUserListReq struct {
+	BasePage
+}
+
+type DownlaodUserListRes struct {
+	Base
+	Data DownloadUserListData `json:"data"`
+}
+
 type DownloadUrlData struct {
 	FileName       string `json:"file_name"`
 	OriginType     string `json:"origin_type"`
@@ -135,6 +205,11 @@ type DownloadUrlReq struct {
 type DownloadUrlRes struct {
 	Base
 	Data DownloadUrlData `json:"data"`
+}
+
+type DownloadUserListData struct {
+	BaseRecord
+	Records []DownLoadUserListRecord `json:"records"`
 }
 
 type ImageDeleteReq struct {
@@ -186,6 +261,21 @@ type ImageInfoByCategoryResdata struct {
 	Records []ImageInfoCategory `json:"records"`
 }
 
+type ImageInfoByHotReq struct {
+	BasePage
+	Type string `form:"type"`
+}
+
+type ImageInfoByHotRes struct {
+	Base
+	Data ImageInfoByHotResdata `json:"data"`
+}
+
+type ImageInfoByHotResdata struct {
+	BaseRecord
+	Records []ImageInfoHot `json:"records"`
+}
+
 type ImageInfoByIdReq struct {
 	Id string `form:"id"`
 }
@@ -196,6 +286,15 @@ type ImageInfoByIdRes struct {
 }
 
 type ImageInfoCategory struct {
+	BaseTime
+	Id       string `json:"id"`
+	FileName string `json:"file_name"`
+	FilePath string `json:"file_path"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+}
+
+type ImageInfoHot struct {
 	BaseTime
 	Id       string `json:"id"`
 	FileName string `json:"file_name"`
@@ -406,6 +505,16 @@ type SignInByQqResData struct {
 	UserInfo SignInByQqUserInfo `json:"user_info"`
 }
 
+type SignInByQqUrlRes struct {
+	Base
+	Data SignInByQqUrlResData `json:"data"`
+}
+
+type SignInByQqUrlResData struct {
+	Url   string `json:"url"`
+	State string `json:"state"`
+}
+
 type SignInByQqUserInfo struct {
 	Id       string `json:"id"`
 	Username string `json:"username"`
@@ -461,6 +570,21 @@ type SignUpRes struct {
 	Base
 }
 
+type SitemapReq struct {
+	BasePage
+	Type string `form:"type"`
+}
+
+type SitemapRes struct {
+	Base
+	Data SitemapResData `json:"data"`
+}
+
+type SitemapResData struct {
+	BaseRecord
+	Records []string `json:"records"`
+}
+
 type TagInfo struct {
 	BaseTime
 	Id   string `json:"id"`
@@ -507,4 +631,38 @@ type UpdateTagReq struct {
 
 type UpdateTagRes struct {
 	Base
+}
+
+type UserDownloadAndLikeSummaryData struct {
+	Download int64 `json:"download"`
+	Like     int64 `json:"like"`
+}
+
+type UserDownloadAndLikeSummaryRes struct {
+	Base
+	Data UserDownloadAndLikeSummaryData `json:"data"`
+}
+
+type UserLikeListData struct {
+	BaseRecord
+	Records []UserLikeListRecord `json:"records"`
+}
+
+type UserLikeListRecord struct {
+	BaseTime
+	Id       string `json:"id"`
+	FilePath string `json:"file_path"`
+	FileName string `json:"file_name"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+	Type     string `json:"type"`
+}
+
+type UserLikeListReq struct {
+	BasePage
+}
+
+type UserLikeListRes struct {
+	Base
+	Data UserLikeListData `json:"data"`
 }

@@ -1,0 +1,74 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    CarouselListReq {
+        BasePage
+        Status int `form:"status"`
+    }
+    CarouselListRes {
+        Base
+        Data CarouselListData `json:"data"`
+    }
+    CarouselListData {
+        BaseRecord
+        Records []CarouselInfo `json:"records"`
+    }
+    CarouselInfo {
+        Id string `json:"id"`
+        Path string `json:"path"`
+        Sort int `json:"sort"`
+        Status int `json:"status"`
+    }
+
+    CarouselUpdateReq {
+        Id string `json:"id"`
+        Path string `json:"path"`
+        Sort int `json:"sort"`
+        Status int `json:"status"`
+    }
+
+    CarouselUpdateRes {
+        Base
+    }
+
+    CarouselCreateReq {
+        Path string `json:"path"`
+        Sort int `json:"sort"`
+        Status int `json:"status"`
+    }
+    CarouselCreateRes {
+        Base
+    }
+
+    CarouselRemoveReq {
+        Id string `json:"id"`
+    }
+    CarouselRemoveRes {
+        Base
+    }
+)
+
+@server(
+    group: carousel
+)
+service wallpaper_pc_backend {
+    @handler CarouselList
+    get /carousel/list (CarouselListReq) returns (CarouselListRes)
+}
+
+@server(
+    jwt: Auth
+    group: carousel
+)
+service wallpaper_pc_backend {
+    @handler CarouselCreate
+    post /carousel/create (CarouselCreateReq) returns (CarouselCreateRes)
+
+    @handler CarouselUpdate
+    post /carousel/update (CarouselUpdateReq) returns (CarouselUpdateRes)
+
+    @handler CarouselRemove
+    post /carousel/remove (CarouselRemoveReq) returns (CarouselRemoveRes)
+}

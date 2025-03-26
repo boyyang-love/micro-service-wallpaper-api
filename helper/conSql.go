@@ -39,15 +39,17 @@ func ConMySQL(mySQLConf config.MySQLConf) (db *gorm.DB, err error) {
 func AutoMigrate(db *gorm.DB) (err error) {
 
 	var tables = []interface{}{
-		&models.Upload{},
-		&models.Tag{},
-		&models.UploadTag{},
-		&models.Like{},
-		&models.Category{},
-		&models.Recommend{},
-		&models.UploadCategory{},
-		&models.UploadRecommend{},
-		&models.Download{},
+		//&models.Upload{},
+		//&models.Tag{},
+		//&models.UploadTag{},
+		//&models.Like{},
+		//&models.Category{},
+		//&models.Recommend{},
+		//&models.UploadCategory{},
+		//&models.UploadRecommend{},
+		//&models.Download{},
+		//&models.User{},
+		&models.Carousel{},
 	}
 
 	for _, table := range tables {

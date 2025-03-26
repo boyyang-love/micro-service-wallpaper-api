@@ -17,6 +17,29 @@ type (
     }
 )
 
+type (
+    DownlaodUserListReq {
+        BasePage
+    }
+    DownlaodUserListRes {
+        Base
+        Data DownloadUserListData `json:"data"`
+    }
+    DownloadUserListData {
+        BaseRecord
+        Records []DownLoadUserListRecord `json:"records"`
+    }
+    DownLoadUserListRecord {
+        BaseTime
+        Id string `json:"id"`
+        FilePath string `json:"file_path"`
+        FileName string `json:"file_name"`
+        W int `json:"w"`
+        H int `json:"h"`
+        Type string `json:"type"`
+    }
+)
+
 @server(
     jwt: Auth
     group: download
@@ -25,4 +48,7 @@ type (
 service wallpaper_pc_backend {
     @handler DownloadUrl
     get /download/url (DownloadUrlReq) returns (DownloadUrlRes)
+
+    @handler UserDownloadList
+    get /download/user/list (DownlaodUserListReq) returns (DownlaodUserListRes)
 }
