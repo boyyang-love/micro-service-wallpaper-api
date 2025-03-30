@@ -187,7 +187,7 @@ service wallpaper_pc_backend {
     jwt: Auth
     group: upload
     maxBytes: 52428800
-    timeout:  30s
+    timeout:  50s
 )
 service wallpaper_pc_backend {
     @handler ImageUpload
