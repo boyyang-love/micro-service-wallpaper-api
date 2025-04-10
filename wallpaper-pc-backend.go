@@ -32,6 +32,8 @@ func main() {
 				"https://boyyang.cn",
 				"http://wallpaperadmin.boyyang.cn",
 				"https://wallpaperadmin.boyyang.cn",
+				"wails://wails.localhost:34115",
+				"wails://wails",
 			}...,
 		),
 	)

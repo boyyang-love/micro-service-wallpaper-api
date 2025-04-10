@@ -1,4 +1,4 @@
-package sitmap
+package group
 
 import (
 	"context"
@@ -10,50 +10,54 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SitemapIdsLogic struct {
+type ListGroupLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSitemapIdsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SitemapIdsLogic {
-	return &SitemapIdsLogic{
+func NewListGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListGroupLogic {
+	return &ListGroupLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SitemapIdsLogic) SitemapIds(req *types.SitemapReq) (resp *types.SitemapRes, err error) {
-	var ids []string
+func (l *ListGroupLogic) ListGroup(req *types.GroupListReq) (resp *types.GroupListRes, err error) {
+	var records []types.GroupListInfo
 	var count int64
-	if err = l.svcCtx.
-		DB.
+
+	DB := l.svcCtx.DB
+	if req.Name != "" {
+		DB = DB.Where("name like ?", "%"+req.Name+"%")
+	}
+
+	if err = DB.
 		Order("created desc").
-		Model(&models.Upload{}).
-		Select("id").
-		Where("type = ?", req.Type).
+		Model(&models.Group{}).
+		Select("created", "updated", "id", "name").
 		Offset((req.Page - 1) * req.Limit).
 		Limit(req.Limit).
-		Find(&ids).
+		Find(&records).
 		Offset(-1).
 		Count(&count).
 		Error; err != nil {
 		return nil, err
 	}
 
-	return &types.SitemapRes{
+	return &types.GroupListRes{
 		Base: types.Base{
 			Code: 1,
-			Msg:  "ok",
+			Msg:  "OK",
 		},
-		Data: types.SitemapResData{
+		Data: types.GroupListData{
 			BaseRecord: types.BaseRecord{
-				Page:  req.Page,
-				Limit: req.Limit,
 				Total: count,
+				Limit: req.Limit,
+				Page:  req.Page,
 			},
-			Records: ids,
+			Records: records,
 		},
 	}, nil
 }

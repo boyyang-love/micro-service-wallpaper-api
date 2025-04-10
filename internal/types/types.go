@@ -212,6 +212,52 @@ type DownloadUserListData struct {
 	Records []DownLoadUserListRecord `json:"records"`
 }
 
+type GroupCreateReq struct {
+	Name string `json:"name"`
+}
+
+type GroupCreateRes struct {
+	Base
+}
+
+type GroupListData struct {
+	BaseRecord
+	Records []GroupListInfo `json:"records"`
+}
+
+type GroupListInfo struct {
+	BaseTime
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type GroupListReq struct {
+	BasePage
+	Name string `form:"name,optional"`
+}
+
+type GroupListRes struct {
+	Base
+	Data GroupListData `json:"data"`
+}
+
+type GroupRemoveReq struct {
+	Id string `json:"id"`
+}
+
+type GroupRemoveRes struct {
+	Base
+}
+
+type GroupUpdateReq struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type GroupUpdateRes struct {
+	Base
+}
+
 type ImageDeleteReq struct {
 	BucketName string   `json:"bucket_name"`
 	Id         string   `json:"id"`
@@ -242,7 +288,8 @@ type ImageInfo struct {
 	View           int             `json:"view"`
 	Tags           []TagInfo       `json:"tags"`
 	Category       []CategoryInfo  `json:"category"`
-	Recommend      []RecommendInfo `json:"recommend,optional"`
+	Recommend      []RecommendInfo `json:"recommend"`
+	Group          []GroupListInfo `json:"group"`
 }
 
 type ImageInfoByCategoryReq struct {
@@ -259,6 +306,20 @@ type ImageInfoByCategoryRes struct {
 type ImageInfoByCategoryResdata struct {
 	BaseRecord
 	Records []ImageInfoCategory `json:"records"`
+}
+
+type ImageInfoByGroupReq struct {
+	GroupId string `form:"group_id"`
+	Type    string `form:"type"`
+}
+
+type ImageInfoByGroupRes struct {
+	Base
+	Data ImageInfoByGroupResdata `json:"data"`
+}
+
+type ImageInfoByGroupResdata struct {
+	Records []ImageInfoGroup `json:"records"`
 }
 
 type ImageInfoByHotReq struct {
@@ -294,6 +355,15 @@ type ImageInfoCategory struct {
 	H        int    `json:"h"`
 }
 
+type ImageInfoGroup struct {
+	BaseTime
+	Id       string `json:"id"`
+	FileName string `json:"file_name"`
+	FilePath string `json:"file_path"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+}
+
 type ImageInfoHot struct {
 	BaseTime
 	Id       string `json:"id"`
@@ -320,6 +390,19 @@ type ImageInfoResdata struct {
 	Records []ImageInfo `json:"records"`
 }
 
+type ImageSummaryReq struct {
+}
+
+type ImageSummaryRes struct {
+	Base
+	Data ImageSummaryResdata `json:"data"`
+}
+
+type ImageSummaryResdata struct {
+	Pc  int64 `json:"pc"`
+	Moa int64 `json:"moa"`
+}
+
 type ImageSummaryUpdateReq struct {
 	Id   string `json:"id"`
 	Type string `json:"type,options=download|view"`
@@ -337,6 +420,7 @@ type ImageUpdateReq struct {
 	Tags      []string `json:"tags,optional"`
 	Category  []string `json:"category,optional"`
 	Recommend []string `json:"recommend,optional"`
+	Group     []string `json:"group,optional"`
 }
 
 type ImageUpdateRes struct {
@@ -354,6 +438,7 @@ type ImageUploadReq struct {
 	Tags       string `form:"tags,optional"`
 	Category   string `form:"category,optional"`
 	Recommend  string `form:"recommend,optional"`
+	Group      string `form:"group,optional"`
 }
 
 type ImageUploadRes struct {

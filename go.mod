@@ -3,12 +3,12 @@ module github.com/boyyang-love/micro-service-wallpaper-api
 go 1.24.0
 
 require (
-	github.com/boyyang-love/micro-service-wallpaper-models v1.0.4
-	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250317022858-6833f6c0b6e4
-	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250317022858-6833f6c0b6e4
+	github.com/boyyang-love/micro-service-wallpaper-models v1.0.5
+	github.com/boyyang-love/micro-service-wallpaper-rpc/upload v0.0.0-20250330041128-55f0ca8813be
+	github.com/boyyang-love/micro-service-wallpaper-rpc/user v0.0.0-20250330041128-55f0ca8813be
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/jinzhu/copier v0.4.0
-	github.com/minio/minio-go/v7 v7.0.88
+	github.com/minio/minio-go/v7 v7.0.89
 	github.com/nickalie/go-webpbin v0.0.0-20220110095747-f10016bf2dc1
 	github.com/satori/go.uuid v1.2.0
 	github.com/zeromicro/go-zero v1.8.1
@@ -29,7 +29,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.12.2 // indirect
 	github.com/fatih/color v1.18.0 // indirect
-	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
+	github.com/fxamacker/cbor/v2 v2.8.0 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -78,9 +78,9 @@ require (
 	github.com/ulikunitz/xz v0.5.12 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	go.etcd.io/etcd/api/v3 v3.5.20 // indirect
-	go.etcd.io/etcd/client/pkg/v3 v3.5.20 // indirect
-	go.etcd.io/etcd/client/v3 v3.5.20 // indirect
+	go.etcd.io/etcd/api/v3 v3.5.21 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.5.21 // indirect
+	go.etcd.io/etcd/client/v3 v3.5.21 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.35.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
@@ -97,16 +97,16 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/oauth2 v0.28.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250313205543-e70fdf4c4cb4 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250313205543-e70fdf4c4cb4 // indirect
-	google.golang.org/grpc v1.71.0 // indirect
-	google.golang.org/protobuf v1.36.5 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250324211829-b45e905df463 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
+	google.golang.org/grpc v1.71.1 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

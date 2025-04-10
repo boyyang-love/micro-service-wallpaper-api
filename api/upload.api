@@ -4,6 +4,7 @@ import "base.api"
 import "tag.api"
 import "category.api"
 import "recommend.api"
+import "group.api"
 
 type (
     ImageUploadReq {
@@ -17,6 +18,7 @@ type (
         Tags string `form:"tags,optional"`
         Category string `form:"category,optional"`
         Recommend string `form:"recommend,optional"`
+        Group string `form:"group,optional"`
     }
     ImageUploadRes {
         Base
@@ -64,7 +66,8 @@ type (
         View int `json:"view"`
         Tags []TagInfo `json:"tags"`
         Category []CategoryInfo `json:"category"`
-        Recommend []RecommendInfo `json:"recommend,optional"`
+        Recommend []RecommendInfo `json:"recommend"`
+        Group []GroupListInfo `json:"group"`
     }
 )
 
@@ -135,6 +138,7 @@ type (
         Tags []string `json:"tags,optional"`
         Category []string `json:"category,optional"`
         Recommend []string `json:"recommend,optional"`
+        Group []string `json:"group,optional"`
     }
     ImageUpdateRes {
         Base
@@ -162,11 +166,49 @@ type (
     }
 )
 
+type (
+    ImageInfoByGroupReq {
+        GroupId string `form:"group_id"`
+        Type string `form:"type"`
+    }
+
+    ImageInfoByGroupRes {
+        Base
+        Data ImageInfoByGroupResdata `json:"data"`
+    }
+    ImageInfoByGroupResdata {
+        Records []ImageInfoGroup `json:"records"`
+    }
+    ImageInfoGroup {
+        BaseTime
+        Id string `json:"id"`
+        FileName string `json:"file_name"`
+        FilePath string `json:"file_path"`
+        W int `json:"w"`
+        H int `json:"h"`
+    }
+)
+
+type (
+    ImageSummaryReq{}
+    ImageSummaryRes {
+        Base
+        Data ImageSummaryResdata `json:"data"`
+    }
+    ImageSummaryResdata {
+        Pc int64 `json:"pc"`
+        Moa int64 `json:"moa"`
+    }
+)
+
 @server(
     group: upload
     timeout:  30s
 )
 service wallpaper_pc_backend {
+    @handler ImageSummary
+    get /image/summary (ImageSummaryReq) returns (ImageSummaryRes)
+
     @handler ImageInfo
     get /image/info (ImageInfoReq) returns (ImageInfoRes)
 
@@ -181,6 +223,9 @@ service wallpaper_pc_backend {
 
     @handler ImageSummaryUpdate
     post /image/summary/update (ImageSummaryUpdateReq) returns (ImageSummaryUpdateRes)
+
+    @handler ImageInfoByGroup
+    get /image/info/group (ImageInfoByGroupReq) returns (ImageInfoByGroupRes)
 }
 
 @server(

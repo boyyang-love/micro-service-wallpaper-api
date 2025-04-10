@@ -3,10 +3,9 @@ package like
 import (
 	"context"
 	"fmt"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -44,6 +43,16 @@ func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *type
 		return nil, err
 	}
 
+	var sortedRecords []types.UserLikeListRecord
+
+	for _, uploadId := range uploadIds {
+		for _, record := range records {
+			if uploadId == record.Id {
+				sortedRecords = append(sortedRecords, record)
+			}
+		}
+	}
+
 	return &types.UserLikeListRes{
 		Base: types.Base{
 			Code: 1,
@@ -55,7 +64,7 @@ func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *type
 				Limit: req.Limit,
 				Total: count,
 			},
-			Records: records,
+			Records: sortedRecords,
 		},
 	}, nil
 }

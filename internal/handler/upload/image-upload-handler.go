@@ -183,6 +183,24 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				}
 			}
 
+			if req.Group != "" {
+				var uploadGroup []models.UploadGroup
+				for _, v := range strings.Split(req.Group, ",") {
+					uploadGroup = append(uploadGroup, models.UploadGroup{
+						UploadId: uploadInfo.Id,
+						GroupId:  v,
+					})
+				}
+				
+				if err = svcCtx.DB.
+					Model(&models.UploadGroup{}).
+					Create(&uploadGroup).
+					Error; err != nil {
+					httpx.ErrorCtx(r.Context(), w, err)
+					return
+				}
+			}
+
 			httpx.OkJsonCtx(r.Context(), w, &types.ImageUploadRes{
 				Base: types.Base{
 					Code: 1,

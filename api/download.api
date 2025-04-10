@@ -41,6 +41,15 @@ type (
 )
 
 @server(
+    group: download
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler DownloadUrlNoToken
+    get /download/url/notoken (DownloadUrlReq) returns (DownloadUrlRes)
+}
+
+@server(
     jwt: Auth
     group: download
     timeout:  20s

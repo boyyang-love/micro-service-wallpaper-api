@@ -41,11 +41,7 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 	}
 
 	if len(req.Tags) > 0 {
-		if err := l.svcCtx.DB.
-			Model(&models.UploadTag{}).
-			Where("upload_id = ?", req.Id).
-			Delete(&models.UploadTag{}).
-			Error; err != nil {
+		if err := l.Remove(&models.UploadTag{}, req.Id); err != nil {
 			return nil, err
 		}
 
@@ -70,11 +66,7 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 	}
 
 	if len(req.Category) > 0 {
-		if err := l.svcCtx.DB.
-			Model(&models.UploadCategory{}).
-			Where("upload_id = ?", req.Id).
-			Delete(&models.UploadCategory{}).
-			Error; err != nil {
+		if err := l.Remove(&models.UploadCategory{}, req.Id); err != nil {
 			return nil, err
 		}
 
@@ -99,11 +91,7 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 	}
 
 	if len(req.Recommend) > 0 {
-		if err := l.svcCtx.DB.
-			Model(&models.UploadRecommend{}).
-			Where("upload_id = ?", req.Id).
-			Delete(&models.UploadRecommend{}).
-			Error; err != nil {
+		if err := l.Remove(&models.UploadRecommend{}, req.Id); err != nil {
 			return nil, err
 		}
 
@@ -119,10 +107,40 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 			)
 		}
 
-		if err := l.svcCtx.DB.
+		if err := l.svcCtx.
+			DB.
 			Model(&models.UploadRecommend{}).
 			Create(&uploadRecommend).
 			Error; err != nil {
+			return nil, err
+		}
+	}
+
+	if len(req.Group) > 0 {
+		if err := l.Remove(&models.UploadGroup{}, req.Id); err != nil {
+			return nil, err
+		}
+
+		var uploadGroup []models.UploadGroup
+		for _, v := range req.Group {
+			uploadGroup = append(
+				uploadGroup,
+				models.UploadGroup{
+					UploadId: req.Id,
+					GroupId:  v,
+				},
+			)
+		}
+
+		if err := l.svcCtx.
+			DB.
+			Model(&models.UploadGroup{}).
+			Create(&uploadGroup).
+			Error; err != nil {
+			return nil, err
+		}
+	} else {
+		if err := l.Remove(&models.UploadGroup{}, req.Id); err != nil {
 			return nil, err
 		}
 	}
@@ -133,4 +151,17 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 			Msg:  "更新成功",
 		},
 	}, nil
+}
+
+func (l *ImageUpdateLogic) Remove(model any, id string) (err error) {
+	if err = l.svcCtx.
+		DB.
+		Model(model).
+		Where("upload_id = ?", id).
+		Delete(model).
+		Error; err != nil {
+		return err
+	}
+
+	return nil
 }

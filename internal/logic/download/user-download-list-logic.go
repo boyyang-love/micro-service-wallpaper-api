@@ -46,6 +46,16 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 		return nil, err
 	}
 
+	var sortedRecords []types.DownLoadUserListRecord
+
+	for _, uploadId := range uploadIds {
+		for _, record := range records {
+			if uploadId == record.Id {
+				sortedRecords = append(sortedRecords, record)
+			}
+		}
+	}
+
 	return &types.DownlaodUserListRes{
 		Base: types.Base{
 			Code: 1,
@@ -57,7 +67,7 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 				Limit: req.Limit,
 				Total: count,
 			},
-			Records: records,
+			Records: sortedRecords,
 		},
 	}, nil
 }

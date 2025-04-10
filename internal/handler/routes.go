@@ -10,6 +10,7 @@ import (
 	carousel "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/carousel"
 	category "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/category"
 	download "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/download"
+	group "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/group"
 	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
 	recommend "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/recommend"
@@ -100,6 +101,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/download/url/notoken",
+				Handler: download.DownloadUrlNoTokenHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/download/url",
 				Handler: download.DownloadUrlHandler(serverCtx),
 			},
@@ -107,6 +119,33 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/download/user/list",
 				Handler: download.UserDownloadListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/group/create",
+				Handler: group.CreateGroupHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/group/list",
+				Handler: group.ListGroupHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/group/remove",
+				Handler: group.RemoveGroupHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/group/update",
+				Handler: group.UpdateGroupHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
@@ -288,6 +327,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/image/info/group",
+				Handler: upload.ImageInfoByGroupHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/image/info/hot",
 				Handler: upload.ImageInfoByHotHandler(serverCtx),
 			},
@@ -295,6 +339,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/image/info/id",
 				Handler: upload.ImageInfoByIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/image/summary",
+				Handler: upload.ImageSummaryHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,

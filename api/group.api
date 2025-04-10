@@ -1,0 +1,65 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    GroupCreateReq {
+        Name string `json:"name"`
+    }
+    GroupCreateRes {
+        Base
+    }
+
+    GroupUpdateReq {
+        Id string `json:"id"`
+        Name string `json:"name"`
+    }
+    GroupUpdateRes {
+        Base
+    }
+
+    GroupRemoveReq {
+        Id string `json:"id"`
+    }
+    GroupRemoveRes {
+        Base
+    }
+
+    GroupListReq {
+        BasePage
+        Name string `form:"name,optional"`
+    }
+    GroupListRes {
+        Base
+        Data GroupListData `json:"data"`
+    }
+    GroupListData {
+        BaseRecord
+        Records []GroupListInfo `json:"records"`
+    }
+    GroupListInfo {
+        BaseTime
+        Id string `json:"id"`
+        Name string `json:"name"`
+    }
+)
+
+
+@server(
+    jwt: Auth
+    group: group
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler CreateGroup
+    post /group/create (GroupCreateReq) returns (GroupCreateRes)
+
+    @handler UpdateGroup
+    post /group/update (GroupUpdateReq) returns (GroupUpdateRes)
+
+    @handler RemoveGroup
+    post /group/remove (GroupRemoveReq) returns (GroupRemoveRes)
+
+    @handler ListGroup
+    get /group/list (GroupListReq) returns (GroupListRes)
+}

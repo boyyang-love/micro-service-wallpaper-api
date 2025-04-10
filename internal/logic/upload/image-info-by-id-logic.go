@@ -32,6 +32,7 @@ func (l *ImageInfoByIdLogic) ImageInfoById(req *types.ImageInfoByIdReq) (resp *t
 		Preload("Tags").
 		Preload("Category").
 		Preload("Recommend").
+		Preload("Group").
 		Model(&Upload{}).
 		Where("id", req.Id).
 		First(&uploadInfo).
