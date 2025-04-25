@@ -30,7 +30,7 @@ func (l *ImageInfoByCategoryLogic) ImageInfoByCategory(req *types.ImageInfoByCat
 		DB.
 		Order("created desc").
 		Model(&models.Upload{}).
-		Select("id", "file_name", "file_path", "w", "h", "created", "updated")
+		Select("id", "file_name", "file_path", "w", "h", "created", "updated", "download", "view")
 
 	if req.CategoryId != "" {
 		ids, err := l.UploadIds(req)

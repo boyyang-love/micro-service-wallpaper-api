@@ -17,6 +17,7 @@ type ImageInfoLogic struct {
 
 type Upload struct {
 	models.Upload
+	Like      int         `json:"like"`
 	Tags      []Tag       `json:"tags" gorm:"many2many:upload_tag;"`
 	Category  []Category  `json:"category" gorm:"many2many:upload_category;"`
 	Recommend []Recommend `json:"recommend" gorm:"many2many:upload_recommend;"`
@@ -85,7 +86,6 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 		Error; err != nil {
 		return nil, err
 	}
-
 	_ = copier.Copy(&imageInfo, &uploadInfo)
 
 	return &types.ImageInfoRes{

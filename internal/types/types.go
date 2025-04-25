@@ -286,6 +286,7 @@ type ImageInfo struct {
 	UserId         string          `json:"user_id"`
 	Download       int             `json:"download"`
 	View           int             `json:"view"`
+	Like           int             `json:"like"`
 	Tags           []TagInfo       `json:"tags"`
 	Category       []CategoryInfo  `json:"category"`
 	Recommend      []RecommendInfo `json:"recommend"`
@@ -353,6 +354,8 @@ type ImageInfoCategory struct {
 	FilePath string `json:"file_path"`
 	W        int    `json:"w"`
 	H        int    `json:"h"`
+	Download int    `json:"download"`
+	View     int    `json:"view"`
 }
 
 type ImageInfoGroup struct {
