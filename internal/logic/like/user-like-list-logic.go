@@ -27,18 +27,29 @@ func NewUserLikeListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *types.UserLikeListRes, err error) {
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
 	var records []types.UserLikeListRecord
+	var count int64
 
-	uploadIds, count, err := l.UploadIds(req, userId)
+	uploadIds, err := l.UploadIds(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = l.svcCtx.
+	DB := l.svcCtx.
 		DB.
-		Model(&models.Upload{}).
+		Model(&models.Upload{})
+
+	if req.Type != "" {
+		DB = DB.Where("type = ?", req.Type)
+	}
+
+	if err = DB.
 		Where("id in (?)", uploadIds).
 		Select("created", "updated", "id", "file_path", "file_name", "w", "h", "type").
+		Offset((req.Page - 1) * req.Limit).
+		Limit(req.Limit).
 		Find(&records).
+		Offset(-1).
+		Count(&count).
 		Error; err != nil {
 		return nil, err
 	}
@@ -69,21 +80,18 @@ func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *type
 	}, nil
 }
 
-func (l *UserLikeListLogic) UploadIds(req *types.UserLikeListReq, userId string) (ids []string, count int64, err error) {
+func (l *UserLikeListLogic) UploadIds(userId string) (ids []string, err error) {
+
 	if err = l.svcCtx.
 		DB.
 		Order("created desc").
 		Model(&models.Like{}).
 		Select("upload_id").
 		Where("user_id = ? and status = ?", userId, true).
-		Offset((req.Page - 1) * req.Limit).
-		Limit(req.Limit).
 		Find(&ids).
-		Offset(-1).
-		Count(&count).
 		Error; err != nil {
-		return ids, count, err
+		return ids, err
 	}
 
-	return ids, count, nil
+	return ids, nil
 }

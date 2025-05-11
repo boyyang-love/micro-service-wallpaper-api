@@ -30,9 +30,12 @@ func (l *CategoryUpdateLogic) CategoryUpdate(req *types.CategoryUpdateReq) (resp
 		DB.
 		Model(&models.Category{}).
 		Where("id = ?", req.Id).
+		Select("name", "sort", "web", "moa").
 		Updates(&models.Category{
 			Name: req.Name,
 			Sort: req.Sort,
+			Web:  req.Web,
+			Moa:  req.Moa,
 		}).Error; err != nil {
 		return nil, err
 	}

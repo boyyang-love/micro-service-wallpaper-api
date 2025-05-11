@@ -59,7 +59,7 @@ func (l *ImageInfoByIdLogic) LikeNum(id string) int64 {
 	if err := l.svcCtx.
 		DB.
 		Model(&models.Like{}).
-		Where("upload_id = ?", id).
+		Where("upload_id = ? and status = ?", id, 1).
 		Count(&count).Error; err != nil {
 		return 0
 	}

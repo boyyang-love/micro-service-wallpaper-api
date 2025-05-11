@@ -39,11 +39,22 @@ func (l *CategorySummaryListLogic) CategorySummaryList(req *types.CategorySummar
 	var categories []Category
 	var categorySummary []types.CategorySummary
 	var count int64
-	if err := l.svcCtx.
+
+	DB := l.svcCtx.
 		DB.
 		Order("sort").
-		Model(Category{}).
-		Select("id", "name", "sort").
+		Model(Category{})
+
+	if req.Web {
+		DB = DB.Where("web = ?", req.Web)
+	}
+
+	if req.Moa {
+		DB = DB.Where("moa = ?", req.Moa)
+	}
+
+	if err := DB.
+		Select("id", "name", "sort", "web", "moa").
 		Preload("Upload", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id").Where("type = ? and status = 1", req.Type)
 		}).

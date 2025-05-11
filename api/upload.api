@@ -25,6 +25,7 @@ type (
         Data ImageUploadResdata `json:"data"`
     }
     ImageUploadResdata {
+        Id string `json:"id"`
         FileName string `json:"file_name"`
         Path string `json:"path"`
         OriginPath string `json:"origin_path"`
@@ -86,6 +87,7 @@ type (
     ImageInfoByCategoryReq {
         BasePage
         Type string `form:"type"`
+        SortType string `form:"sort_type,optional"`
         CategoryId string `form:"category_id,optional"`
     }
 
@@ -240,6 +242,9 @@ service wallpaper_pc_backend {
 service wallpaper_pc_backend {
     @handler ImageUpload
     post /image/upload (ImageUploadReq) returns (ImageUploadRes)
+
+    @handler ImageUploadByBytes
+    post /image/upload/bytes (ImageUploadReq) returns (ImageUploadRes)
 
     @handler ImageUpdate
     post /image/update (ImageUpdateReq) returns (ImageUpdateRes)

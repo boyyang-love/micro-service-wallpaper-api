@@ -26,9 +26,13 @@ func NewImageInfoByCategoryLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 func (l *ImageInfoByCategoryLogic) ImageInfoByCategory(req *types.ImageInfoByCategoryReq) (resp *types.ImageInfoByCategoryRes, err error) {
 
-	DB := l.svcCtx.
-		DB.
-		Order("created desc").
+	DB := l.svcCtx.DB
+
+	if req.SortType != "" {
+		DB = DB.Order(req.SortType)
+	}
+
+	DB = DB.Order("created desc").
 		Model(&models.Upload{}).
 		Select("id", "file_name", "file_path", "w", "h", "created", "updated", "download", "view")
 

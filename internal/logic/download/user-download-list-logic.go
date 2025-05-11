@@ -29,19 +29,30 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
 	var records []types.DownLoadUserListRecord
+	var count int64
 
-	uploadIds, count, err := l.DownloadIds(req, userId)
+	uploadIds, err := l.DownloadIds(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = l.svcCtx.
+	DB := l.svcCtx.
 		DB.
 		Order("created desc").
-		Model(&models.Upload{}).
+		Model(&models.Upload{})
+
+	if req.Type != "" {
+		DB = DB.Where("type = ?", req.Type)
+	}
+
+	if err = DB.
 		Where("id in (?)", uploadIds).
 		Select("created", "updated", "id", "file_path", "file_name", "w", "h", "type").
+		Offset((req.Page - 1) * req.Limit).
+		Limit(req.Limit).
 		Find(&records).
+		Offset(-1).
+		Count(&count).
 		Error; err != nil {
 		return nil, err
 	}
@@ -72,7 +83,7 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 	}, nil
 }
 
-func (l *UserDownloadListLogic) DownloadIds(req *types.DownlaodUserListReq, userId string) (ids []string, count int64, err error) {
+func (l *UserDownloadListLogic) DownloadIds(userId string) (ids []string, err error) {
 	if err = l.svcCtx.
 		DB.
 		Order("created desc").
@@ -80,14 +91,10 @@ func (l *UserDownloadListLogic) DownloadIds(req *types.DownlaodUserListReq, user
 		Distinct("download_id").
 		Select("download_id").
 		Where("user_id = ?", userId).
-		Offset((req.Page - 1) * req.Limit).
-		Limit(req.Limit).
 		Find(&ids).
-		Offset(-1).
-		Count(&count).
 		Error; err != nil {
-		return ids, count, err
+		return ids, err
 	}
 
-	return ids, count, nil
+	return ids, nil
 }

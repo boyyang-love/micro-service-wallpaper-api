@@ -29,12 +29,16 @@ func (l *UserDownloadAndLikeSummaryLogic) UserDownloadAndLikeSummary() (resp *ty
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
 
 	downloadCount, err := l.DownloadSummary(userId)
-
 	if err != nil {
 		return nil, err
 	}
 
 	likeCount, err := l.LikeSummary(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	discoverCount, err := l.DiscoverSummary(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -47,31 +51,67 @@ func (l *UserDownloadAndLikeSummaryLogic) UserDownloadAndLikeSummary() (resp *ty
 		Data: types.UserDownloadAndLikeSummaryData{
 			Download: downloadCount,
 			Like:     likeCount,
+			Discover: discoverCount,
 		},
 	}, nil
 }
 
 func (l *UserDownloadAndLikeSummaryLogic) DownloadSummary(userId string) (count int64, err error) {
+	var ids []string
 	if err = l.svcCtx.
 		DB.
 		Model(&models.Download{}).
 		Where("user_id = ?", userId).
+		Select("download_id").
+		Find(&ids).
+		Error; err != nil {
+		return 0, err
+	}
+
+	if err = l.svcCtx.
+		DB.
+		Model(&models.Upload{}).
+		Where("id in (?)", ids).
 		Count(&count).
 		Error; err != nil {
-		return count, err
+		return 0, err
 	}
 
 	return count, nil
 }
 
 func (l *UserDownloadAndLikeSummaryLogic) LikeSummary(userId string) (count int64, err error) {
+	var ids []string
 	if err = l.svcCtx.
 		DB.
 		Model(&models.Like{}).
 		Where("user_id = ? and status = ?", userId, true).
+		Select("upload_id").
+		Find(&ids).
+		Error; err != nil {
+		return 0, err
+	}
+
+	if err = l.svcCtx.
+		DB.
+		Model(&models.Upload{}).
+		Where("id in (?)", ids).
 		Count(&count).
 		Error; err != nil {
-		return count, err
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (l *UserDownloadAndLikeSummaryLogic) DiscoverSummary(userId string) (count int64, err error) {
+	if err = l.svcCtx.
+		DB.
+		Model(&models.Discover{}).
+		Where("user_id = ?", userId).
+		Count(&count).
+		Error; err != nil {
+		return 0, err
 	}
 
 	return count, nil

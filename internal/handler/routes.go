@@ -9,6 +9,7 @@ import (
 
 	carousel "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/carousel"
 	category "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/category"
+	discover "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/discover"
 	download "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/download"
 	group "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/group"
 	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
@@ -17,6 +18,7 @@ import (
 	sitmap "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/sitmap"
 	tag "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/tag"
 	upload "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/upload"
+	user "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/user"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -101,6 +103,46 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/discover/list",
+				Handler: discover.DiscoverListHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+		rest.WithMaxBytes(20971520),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/discover/Update",
+				Handler: discover.DiscoverUpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/discover/create",
+				Handler: discover.DiscoverCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/discover/remove",
+				Handler: discover.DiscoverRemoveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/user/discover/list",
+				Handler: discover.UserDiscoverListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+		rest.WithMaxBytes(20971520),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/download/url/notoken",
 				Handler: download.DownloadUrlNoTokenHandler(serverCtx),
 			},
@@ -110,6 +152,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/download/record/add",
+				Handler: download.AddDownloadRecordHandler(serverCtx),
+			},
 			{
 				Method:  http.MethodGet,
 				Path:    "/download/url",
@@ -196,6 +243,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/signin",
 				Handler: login.SignInHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/signin/apple",
+				Handler: login.SignInByAppleHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
@@ -371,9 +423,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/image/upload",
 				Handler: upload.ImageUploadHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/image/upload/bytes",
+				Handler: upload.ImageUploadByBytesHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(50000*time.Millisecond),
 		rest.WithMaxBytes(52428800),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/info/update",
+				Handler: user.UpdateUserInfoHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(50000*time.Millisecond),
 	)
 }

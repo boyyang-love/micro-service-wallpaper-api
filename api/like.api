@@ -38,6 +38,7 @@ type (
 type (
     UserLikeListReq {
         BasePage
+        Type string `form:"type,optional"`
     }
     UserLikeListRes {
         Base
@@ -64,6 +65,7 @@ type (
     UserDownloadAndLikeSummaryData {
         Download int64 `json:"download"`
         Like int64 `json:"like"`
+        Discover int64 `json:"discover"`
     }
 )
 

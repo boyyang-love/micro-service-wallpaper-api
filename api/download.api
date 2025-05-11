@@ -18,8 +18,19 @@ type (
 )
 
 type (
+    AddDownloadRecordReq {
+        DownloadId string `form:"download_id"`
+    }
+
+    AddDownloadRecordRes {
+        Base
+    }
+)
+
+type (
     DownlaodUserListReq {
         BasePage
+        Type string `form:"type,optional"`
     }
     DownlaodUserListRes {
         Base
@@ -60,4 +71,7 @@ service wallpaper_pc_backend {
 
     @handler UserDownloadList
     get /download/user/list (DownlaodUserListReq) returns (DownlaodUserListRes)
+
+    @handler AddDownloadRecord
+    get /download/record/add (AddDownloadRecordReq) returns (AddDownloadRecordRes)
 }

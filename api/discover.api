@@ -1,0 +1,138 @@
+syntax = "v1"
+
+import "base.api"
+
+type(
+    DiscoverCreateReq {
+        Title string `json:"title"`
+        Subtitle string `json:"subtitle"`
+        ImageIds string `json:"image_ids"`
+    }
+    DiscoverCreateRes {
+        Base
+    }
+)
+
+type(
+    DiscoverRemoveReq {
+        Id string `form:"id"`
+    }
+    DiscoverRemoveRes {
+        Base
+    }
+)
+
+type(
+    DiscoverUpdateStatusReq {
+        Id string `json:"id"`
+        Status int `json:"status"`
+    }
+    DiscoverUpdateStatusRes {
+        Base
+    }
+)
+
+type(
+    DiscoverListReq{
+        BasePage
+        UserId string `form:"user_id,optional"`
+        Status int `form:"status,optional"`
+    }
+    DiscoverListRes{
+        Base
+        Data DiscoverListData `json:"data"`
+    }
+    DiscoverListData {
+        BaseRecord
+        Records []DiscoverListInfo `json:"records"`
+    }
+    DiscoverListInfo {
+        BaseTime
+        Id string `json:"id"`
+        Title string `json:"title"`
+        Subtitle string `json:"subtitle"`
+        status int `json:"status"`
+        Images  []DiscoverListImages `json:"images"`
+        UserInfo DiscoverUserInfo `json:"user_info"`
+    }
+    DiscoverListImages {
+        Id string `json:"id"`
+        FilePath string `json:"file_path"`
+        FileName string `json:"file_name"`
+        W int `json:"w"`
+        H int `json:"h"`
+        Type string `json:"type"`
+    }
+    DiscoverUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+    }
+)
+
+type (
+    UserDiscoverListReq{
+        BasePage
+        Status int `json:"status,optional"`
+    }
+    UserDiscoverListRes{
+        Base
+        Data UserDiscoverListData `json:"data"`
+    }
+    UserDiscoverListData {
+        BaseRecord
+        Records []UserDiscoverListInfo `json:"records"`
+    }
+    UserDiscoverListInfo {
+        BaseTime
+        Id string `json:"id"`
+        Title string `json:"title"`
+        Subtitle string `json:"subtitle"`
+        Status int `json:"status"`
+        Images  []UserDiscoverListImages `json:"images"`
+        UserInfo UserDiscoverUserInfo `json:"user_info"`
+    }
+    UserDiscoverListImages {
+        Id string `json:"id"`
+        FilePath string `json:"file_path"`
+        FileName string `json:"file_name"`
+        W int `json:"w"`
+        H int `json:"h"`
+        Type string `json:"type"`
+    }
+    UserDiscoverUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+    }
+)
+
+@server(
+    group: discover
+    maxBytes: 20971520
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler DiscoverList
+    get /discover/list (DiscoverListReq) returns (DiscoverListRes)
+}
+
+@server(
+    jwt: Auth
+    group: discover
+    maxBytes: 20971520
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler DiscoverCreate
+    post /discover/create (DiscoverCreateReq) returns (DiscoverCreateRes)
+
+    @handler DiscoverRemove
+    get /discover/remove (DiscoverRemoveReq) returns (DiscoverRemoveRes)
+
+    @handler DiscoverUpdate
+    get /discover/Update (DiscoverUpdateStatusReq) returns (DiscoverUpdateStatusRes)
+
+    @handler UserDiscoverList
+    get /user/discover/list (UserDiscoverListReq) returns (UserDiscoverListRes)
+}

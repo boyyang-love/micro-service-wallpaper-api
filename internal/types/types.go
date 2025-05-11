@@ -3,6 +3,14 @@
 
 package types
 
+type AddDownloadRecordReq struct {
+	DownloadId string `form:"download_id"`
+}
+
+type AddDownloadRecordRes struct {
+	Base
+}
+
 type Base struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
@@ -78,6 +86,8 @@ type CarouselUpdateRes struct {
 type CategoryCreateReq struct {
 	Name string `json:"name"`
 	Sort int    `json:"sort"`
+	Web  bool   `json:"web"`
+	Moa  bool   `json:"moa"`
 }
 
 type CategoryCreateRes struct {
@@ -89,6 +99,8 @@ type CategoryInfo struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Sort int    `json:"sort"`
+	Web  bool   `json:"web"`
+	Moa  bool   `json:"moa"`
 }
 
 type CategoryInfoData struct {
@@ -142,6 +154,8 @@ type CategorySummaryListData struct {
 type CategorySummaryListReq struct {
 	BasePage
 	Type string `form:"type"`
+	Web  bool   `form:"web,optional"`
+	Moa  bool   `form:"moa,optional"`
 }
 
 type CategorySummaryListRes struct {
@@ -157,6 +171,8 @@ type CategoryUpdateReq struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Sort int    `json:"sort"`
+	Web  bool   `json:"web"`
+	Moa  bool   `json:"moa"`
 }
 
 type CategoryUpdateRes struct {
@@ -173,6 +189,74 @@ type CreateTagRes struct {
 	Base
 }
 
+type DiscoverCreateReq struct {
+	Title    string `json:"title"`
+	Subtitle string `json:"subtitle"`
+	ImageIds string `json:"image_ids"`
+}
+
+type DiscoverCreateRes struct {
+	Base
+}
+
+type DiscoverListData struct {
+	BaseRecord
+	Records []DiscoverListInfo `json:"records"`
+}
+
+type DiscoverListImages struct {
+	Id       string `json:"id"`
+	FilePath string `json:"file_path"`
+	FileName string `json:"file_name"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+	Type     string `json:"type"`
+}
+
+type DiscoverListInfo struct {
+	BaseTime
+	Id       string               `json:"id"`
+	Title    string               `json:"title"`
+	Subtitle string               `json:"subtitle"`
+	Status   int                  `json:"status"`
+	Images   []DiscoverListImages `json:"images"`
+	UserInfo DiscoverUserInfo     `json:"user_info"`
+}
+
+type DiscoverListReq struct {
+	BasePage
+	UserId string `form:"user_id,optional"`
+	Status int    `form:"status,optional"`
+}
+
+type DiscoverListRes struct {
+	Base
+	Data DiscoverListData `json:"data"`
+}
+
+type DiscoverRemoveReq struct {
+	Id string `form:"id"`
+}
+
+type DiscoverRemoveRes struct {
+	Base
+}
+
+type DiscoverUpdateStatusReq struct {
+	Id     string `json:"id"`
+	Status int    `json:"status"`
+}
+
+type DiscoverUpdateStatusRes struct {
+	Base
+}
+
+type DiscoverUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+}
+
 type DownLoadUserListRecord struct {
 	BaseTime
 	Id       string `json:"id"`
@@ -185,6 +269,7 @@ type DownLoadUserListRecord struct {
 
 type DownlaodUserListReq struct {
 	BasePage
+	Type string `form:"type,optional"`
 }
 
 type DownlaodUserListRes struct {
@@ -296,6 +381,7 @@ type ImageInfo struct {
 type ImageInfoByCategoryReq struct {
 	BasePage
 	Type       string `form:"type"`
+	SortType   string `form:"sort_type,optional"`
 	CategoryId string `form:"category_id,optional"`
 }
 
@@ -450,6 +536,7 @@ type ImageUploadRes struct {
 }
 
 type ImageUploadResdata struct {
+	Id         string `json:"id"`
 	FileName   string `json:"file_name"`
 	Path       string `json:"path"`
 	OriginPath string `json:"origin_path"`
@@ -577,6 +664,28 @@ type RemoveTagReq struct {
 
 type RemoveTagRes struct {
 	Base
+}
+
+type SignInByAppleReq struct {
+	AppleId string `json:"apple_id"`
+	Email   string `json:"email,optional"`
+	Name    string `json:"name,optional"`
+}
+
+type SignInByAppleRes struct {
+	Base
+	Data SignInByAppleResData `json:"data"`
+}
+
+type SignInByAppleResData struct {
+	Token    string                `json:"token"`
+	UserInfo SignInByAppleUserInfo `json:"user_info"`
+}
+
+type SignInByAppleUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
 }
 
 type SignInByQqReq struct {
@@ -721,9 +830,59 @@ type UpdateTagRes struct {
 	Base
 }
 
+type UpdateUserInfoReq struct {
+	Avatar string `json:"avatar"`
+	Cover  string `json:"cover,optional"`
+}
+
+type UpdateUserInfoRes struct {
+	Base
+}
+
+type UserDiscoverListData struct {
+	BaseRecord
+	Records []UserDiscoverListInfo `json:"records"`
+}
+
+type UserDiscoverListImages struct {
+	Id       string `json:"id"`
+	FilePath string `json:"file_path"`
+	FileName string `json:"file_name"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+	Type     string `json:"type"`
+}
+
+type UserDiscoverListInfo struct {
+	BaseTime
+	Id       string                   `json:"id"`
+	Title    string                   `json:"title"`
+	Subtitle string                   `json:"subtitle"`
+	Status   int                      `json:"status"`
+	Images   []UserDiscoverListImages `json:"images"`
+	UserInfo UserDiscoverUserInfo     `json:"user_info"`
+}
+
+type UserDiscoverListReq struct {
+	BasePage
+	Status int `json:"status,optional"`
+}
+
+type UserDiscoverListRes struct {
+	Base
+	Data UserDiscoverListData `json:"data"`
+}
+
+type UserDiscoverUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+}
+
 type UserDownloadAndLikeSummaryData struct {
 	Download int64 `json:"download"`
 	Like     int64 `json:"like"`
+	Discover int64 `json:"discover"`
 }
 
 type UserDownloadAndLikeSummaryRes struct {
@@ -748,6 +907,7 @@ type UserLikeListRecord struct {
 
 type UserLikeListReq struct {
 	BasePage
+	Type string `form:"type,optional"`
 }
 
 type UserLikeListRes struct {

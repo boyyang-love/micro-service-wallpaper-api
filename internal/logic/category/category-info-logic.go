@@ -35,8 +35,9 @@ func (l *CategoryInfoLogic) CategoryInfo(req *types.CategoryInfoReq) (resp *type
 	var categoryInfo []types.CategoryInfo
 	var count int64
 	if err = DB.
-		Select("id", "name", "created", "updated", "sort").
+		Select("id", "name", "created", "updated", "sort", "web", "moa").
 		Offset((req.Page - 1) * req.Limit).
+		Limit(req.Limit).
 		Find(&categoryInfo).
 		Offset(-1).
 		Count(&count).

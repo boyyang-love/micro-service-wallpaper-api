@@ -82,6 +82,28 @@ type (
     }
 )
 
+type (
+    SignInByAppleReq {
+        AppleId string `json:"apple_id"`
+        Email string `json:"email,optional"`
+        Name string `json:"name,optional"`
+    }
+    SignInByAppleRes {
+        Base
+        Data SignInByAppleResData `json:"data"`
+    }
+
+    SignInByAppleResData {
+        Token string `json:"token"`
+        UserInfo SignInByAppleUserInfo `json:"user_info"`
+    }
+    SignInByAppleUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+    }
+)
+
 @server(
     group: login
     maxBytes: 20971520
@@ -102,5 +124,8 @@ service wallpaper_pc_backend {
 
     @handler SignInByQq
     get /signin/qq (SignInByQqReq) returns (SignInByQqRes)
+
+    @handler SignInByApple
+    post /signin/apple (SignInByAppleReq) returns (SignInByAppleRes)
 }
 
