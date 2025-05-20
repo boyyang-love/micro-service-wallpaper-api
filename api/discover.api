@@ -4,8 +4,8 @@ import "base.api"
 
 type(
     DiscoverCreateReq {
-        Title string `json:"title"`
-        Subtitle string `json:"subtitle"`
+        Title string `json:"title,optional"`
+        Subtitle string `json:"subtitle,optional"`
         ImageIds string `json:"image_ids"`
     }
     DiscoverCreateRes {
@@ -109,7 +109,6 @@ type (
 
 @server(
     group: discover
-    maxBytes: 20971520
     timeout:  20s
 )
 service wallpaper_pc_backend {
@@ -120,7 +119,6 @@ service wallpaper_pc_backend {
 @server(
     jwt: Auth
     group: discover
-    maxBytes: 20971520
     timeout:  20s
 )
 service wallpaper_pc_backend {
@@ -131,7 +129,7 @@ service wallpaper_pc_backend {
     get /discover/remove (DiscoverRemoveReq) returns (DiscoverRemoveRes)
 
     @handler DiscoverUpdate
-    get /discover/Update (DiscoverUpdateStatusReq) returns (DiscoverUpdateStatusRes)
+    post /discover/Update (DiscoverUpdateStatusReq) returns (DiscoverUpdateStatusRes)
 
     @handler UserDiscoverList
     get /user/discover/list (UserDiscoverListReq) returns (UserDiscoverListRes)

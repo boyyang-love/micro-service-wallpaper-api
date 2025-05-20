@@ -15,6 +15,7 @@ import (
 	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
 	recommend "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/recommend"
+	search "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/search"
 	sitmap "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/sitmap"
 	tag "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/tag"
 	upload "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/upload"
@@ -108,13 +109,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithTimeout(20000*time.Millisecond),
-		rest.WithMaxBytes(20971520),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodGet,
+				Method:  http.MethodPost,
 				Path:    "/discover/Update",
 				Handler: discover.DiscoverUpdateHandler(serverCtx),
 			},
@@ -136,7 +136,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
-		rest.WithMaxBytes(20971520),
 	)
 
 	server.AddRoutes(
@@ -314,6 +313,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/search/keywords",
+				Handler: search.SearchHotKeywordsHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/search/list",
+				Handler: search.SearchListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/search/records",
+				Handler: search.AddSearchRecordsHandler(serverCtx),
+			},
+		},
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 

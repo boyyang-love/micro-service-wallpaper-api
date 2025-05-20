@@ -1,0 +1,74 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    SearchListReq {
+        BasePage
+        Keywords string `form:"keywords"`
+        Type string `form:"type"`
+    }
+
+    SearchListRes {
+        Base
+        Data SearchListData `json:"data"`
+    }
+    SearchListData {
+        BaseRecord
+        Records []SearchListInfo `json:"records"`
+    }
+    SearchListInfo {
+        BaseTime
+        Id string `json:"id"`
+        FileName string `json:"file_name" form:"file_name"`
+        FilePath string `json:"file_path" form:"file_path"`
+        W int `json:"w" form:"w"`
+        H int `json:"h" form:"h"`
+        Download int `json:"download" form:"download"`
+        View int `json:"view" form:"view"`
+    }
+)
+
+type (
+    SearchHotKeywordsReq {
+        BasePage
+    }
+    SearchHotKeywordsRes {
+        Base
+        Data SearchHotKeywordsData `json:"data"`
+    }
+    SearchHotKeywordsData {
+        BaseRecord
+        Records []SearchHotKeywordsInfo `json:"records"`
+    }
+    SearchHotKeywordsInfo {
+        BaseTime
+        Id string `json:"id"`
+        Keywords string `json:"keywords" form:"keywords"`
+        SearchCount int64 `json:"search_count" form:"search_count"`
+    }
+)
+
+type (
+    AddSearchRecordsReq {
+        Keywords string `form:"keywords"`
+    }
+    AddSearchRecordsRes {
+        Base
+    }
+)
+
+@server(
+    group: search
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler SearchList
+    get /search/list (SearchListReq) returns (SearchListRes)
+
+    @handler SearchHotKeywords
+    get /search/keywords (SearchHotKeywordsReq) returns (SearchHotKeywordsRes)
+
+    @handler AddSearchRecords
+    get /search/records (AddSearchRecordsReq) returns (AddSearchRecordsRes)
+}

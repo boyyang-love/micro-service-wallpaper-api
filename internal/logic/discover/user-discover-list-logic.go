@@ -30,7 +30,7 @@ func NewUserDiscoverListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *UserDiscoverListLogic) UserDiscoverList(req *types.UserDiscoverListReq) (resp *types.UserDiscoverListRes, err error) {
 	userid := fmt.Sprintf("%s", l.ctx.Value("Id"))
 	var discover []models.Discover
-	var records []types.UserDiscoverListInfo
+	var records = make([]types.UserDiscoverListInfo, 0)
 	var count int64
 	DB := l.svcCtx.
 		DB.

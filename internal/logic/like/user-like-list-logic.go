@@ -6,8 +6,8 @@ import (
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	"strings"
 )
 
 type UserLikeListLogic struct {
@@ -26,7 +26,7 @@ func NewUserLikeListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *types.UserLikeListRes, err error) {
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
-	var records []types.UserLikeListRecord
+	var records = make([]types.UserLikeListRecord, 0)
 	var count int64
 
 	uploadIds, err := l.UploadIds(userId)
@@ -36,6 +36,7 @@ func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *type
 
 	DB := l.svcCtx.
 		DB.
+		Order(fmt.Sprintf("'%s'", strings.Join(uploadIds, "','"))).
 		Model(&models.Upload{})
 
 	if req.Type != "" {
@@ -60,6 +61,7 @@ func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *type
 		for _, record := range records {
 			if uploadId == record.Id {
 				sortedRecords = append(sortedRecords, record)
+				break
 			}
 		}
 	}
@@ -84,7 +86,7 @@ func (l *UserLikeListLogic) UploadIds(userId string) (ids []string, err error) {
 
 	if err = l.svcCtx.
 		DB.
-		Order("created desc").
+		Order("updated desc").
 		Model(&models.Like{}).
 		Select("upload_id").
 		Where("user_id = ? and status = ?", userId, true).

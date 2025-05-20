@@ -11,6 +11,14 @@ type AddDownloadRecordRes struct {
 	Base
 }
 
+type AddSearchRecordsReq struct {
+	Keywords string `form:"keywords"`
+}
+
+type AddSearchRecordsRes struct {
+	Base
+}
+
 type Base struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
@@ -25,6 +33,9 @@ type BaseRecord struct {
 	Page  int   `json:"page"`
 	Limit int   `json:"limit"`
 	Total int64 `json:"total"`
+}
+
+type BaseResp struct {
 }
 
 type BaseTime struct {
@@ -190,8 +201,8 @@ type CreateTagRes struct {
 }
 
 type DiscoverCreateReq struct {
-	Title    string `json:"title"`
-	Subtitle string `json:"subtitle"`
+	Title    string `json:"title,optional"`
+	Subtitle string `json:"subtitle,optional"`
 	ImageIds string `json:"image_ids"`
 }
 
@@ -664,6 +675,54 @@ type RemoveTagReq struct {
 
 type RemoveTagRes struct {
 	Base
+}
+
+type SearchHotKeywordsData struct {
+	BaseRecord
+	Records []SearchHotKeywordsInfo `json:"records"`
+}
+
+type SearchHotKeywordsInfo struct {
+	BaseTime
+	Id          string `json:"id"`
+	Keywords    string `json:"keywords" form:"keywords"`
+	SearchCount int64  `json:"search_count" form:"search_count"`
+}
+
+type SearchHotKeywordsReq struct {
+	BasePage
+}
+
+type SearchHotKeywordsRes struct {
+	Base
+	Data SearchHotKeywordsData `json:"data"`
+}
+
+type SearchListData struct {
+	BaseRecord
+	Records []SearchListInfo `json:"records"`
+}
+
+type SearchListInfo struct {
+	BaseTime
+	Id       string `json:"id"`
+	FileName string `json:"file_name" form:"file_name"`
+	FilePath string `json:"file_path" form:"file_path"`
+	W        int    `json:"w" form:"w"`
+	H        int    `json:"h" form:"h"`
+	Download int    `json:"download" form:"download"`
+	View     int    `json:"view" form:"view"`
+}
+
+type SearchListReq struct {
+	BasePage
+	Keywords string `form:"keywords"`
+	Type     string `form:"type"`
+}
+
+type SearchListRes struct {
+	Base
+	Data SearchListData `json:"data"`
 }
 
 type SignInByAppleReq struct {

@@ -29,7 +29,7 @@ func NewDiscoverListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Disc
 func (l *DiscoverListLogic) DiscoverList(req *types.DiscoverListReq) (resp *types.DiscoverListRes, err error) {
 
 	var discover []models.Discover
-	var records []types.DiscoverListInfo
+	var records = make([]types.DiscoverListInfo, 0)
 	var count int64
 
 	DB := l.svcCtx.
@@ -39,12 +39,9 @@ func (l *DiscoverListLogic) DiscoverList(req *types.DiscoverListReq) (resp *type
 
 	if req.Status != 0 {
 		DB = DB.Where("status = ?", req.Status)
-	} else {
-		DB = DB.Where("status = ?", 2)
 	}
 
 	if req.UserId != "" {
-		print(req.UserId)
 		DB = DB.Or("user_id = ?", req.UserId)
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
+	"strings"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -38,7 +39,7 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 
 	DB := l.svcCtx.
 		DB.
-		Order("created desc").
+		Order(fmt.Sprintf("'%s'", strings.Join(uploadIds, "','"))).
 		Model(&models.Upload{})
 
 	if req.Type != "" {

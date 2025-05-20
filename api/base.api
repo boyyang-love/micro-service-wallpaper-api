@@ -20,3 +20,7 @@ type BaseTime {
     Created int64 `json:"created"`
     Updated int64 `json:"updated"`
 }
+
+type BaseResp {
+
+}

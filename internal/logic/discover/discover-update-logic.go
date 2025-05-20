@@ -29,6 +29,7 @@ func (l *DiscoverUpdateLogic) DiscoverUpdate(req *types.DiscoverUpdateStatusReq)
 	if err := l.svcCtx.
 		DB.
 		Model(&models.Discover{}).
+		Where("id = ?", req.Id).
 		Update("status", req.Status).
 		Error; err != nil {
 		return nil, err
