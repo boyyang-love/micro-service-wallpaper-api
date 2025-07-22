@@ -7,8 +7,25 @@ import (
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
+	"gorm.io/gorm"
 )
+
+type Like struct {
+	models.Like
+	Upload Upload `gorm:"foreignkey:upload_id;references:id"`
+}
+
+type Upload struct {
+	models.Upload
+}
+
+func (l *Like) TableName() string {
+	return "like"
+}
+
+func (l *Upload) TableName() string {
+	return "upload"
+}
 
 type UserLikeListLogic struct {
 	logx.Logger
@@ -26,44 +43,51 @@ func NewUserLikeListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *types.UserLikeListRes, err error) {
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
+	var like []Like
 	var records = make([]types.UserLikeListRecord, 0)
 	var count int64
 
-	uploadIds, err := l.UploadIds(userId)
-	if err != nil {
-		return nil, err
-	}
-
 	DB := l.svcCtx.
 		DB.
-		Order(fmt.Sprintf("'%s'", strings.Join(uploadIds, "','"))).
-		Model(&models.Upload{})
+		Order("updated desc").
+		Preload("Upload", func(db *gorm.DB) *gorm.DB {
+			db = db.Select("id", "file_path", "file_name", "w", "h", "type")
+			//if req.Type != "" {
+			//	db = db.Where("type = ?", req.Type)
+			//}
+			return db
+		}).
+		Model(&Like{})
 
 	if req.Type != "" {
 		DB = DB.Where("type = ?", req.Type)
 	}
 
 	if err = DB.
-		Where("id in (?)", uploadIds).
-		Select("created", "updated", "id", "file_path", "file_name", "w", "h", "type").
+		Where("user_id = ? and status = ?", userId, true).
 		Offset((req.Page - 1) * req.Limit).
 		Limit(req.Limit).
-		Find(&records).
+		Find(&like).
 		Offset(-1).
 		Count(&count).
 		Error; err != nil {
 		return nil, err
 	}
 
-	var sortedRecords []types.UserLikeListRecord
-
-	for _, uploadId := range uploadIds {
-		for _, record := range records {
-			if uploadId == record.Id {
-				sortedRecords = append(sortedRecords, record)
-				break
-			}
-		}
+	for _, v := range like {
+		records = append(records, types.UserLikeListRecord{
+			BaseTime: types.BaseTime{
+				Created: v.Created,
+				Updated: v.Updated,
+			},
+			Id:       v.Id,
+			FileId:   v.Upload.Id,
+			FilePath: v.Upload.FilePath,
+			FileName: v.Upload.FileName,
+			W:        v.Upload.W,
+			H:        v.Upload.H,
+			Type:     v.Upload.Type,
+		})
 	}
 
 	return &types.UserLikeListRes{
@@ -77,23 +101,7 @@ func (l *UserLikeListLogic) UserLikeList(req *types.UserLikeListReq) (resp *type
 				Limit: req.Limit,
 				Total: count,
 			},
-			Records: sortedRecords,
+			Records: records,
 		},
 	}, nil
-}
-
-func (l *UserLikeListLogic) UploadIds(userId string) (ids []string, err error) {
-
-	if err = l.svcCtx.
-		DB.
-		Order("updated desc").
-		Model(&models.Like{}).
-		Select("upload_id").
-		Where("user_id = ? and status = ?", userId, true).
-		Find(&ids).
-		Error; err != nil {
-		return ids, err
-	}
-
-	return ids, nil
 }

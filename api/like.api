@@ -5,9 +5,19 @@ import "base.api"
 type (
     LikeCreateOrUpdateReq {
         UploadId string `json:"upload_id"`
+        Type string `json:"type"`
         Status bool `json:"status"`
     }
     LikeCreateOrUpdateRes {
+        Base
+    }
+)
+
+type (
+    LikeRemoveReq {
+        Id string `json:"id"`
+    }
+    LikeRemoveRes {
         Base
     }
 )
@@ -51,6 +61,7 @@ type (
     UserLikeListRecord {
         BaseTime
         Id string `json:"id"`
+        FileId string `json:"file_id"`
         FilePath string `json:"file_path"`
         FileName string `json:"file_name"`
         W int `json:"w"`
@@ -66,6 +77,13 @@ type (
         Download int64 `json:"download"`
         Like int64 `json:"like"`
         Discover int64 `json:"discover"`
+        Block int64 `json:"block"`
+    }
+)
+
+type(
+    RemoveAllLikeRecordRes{
+        Base
     }
 )
 
@@ -87,6 +105,9 @@ service wallpaper_pc_backend {
     @handler LikeCreate
     post /like/create (LikeCreateOrUpdateReq) returns (LikeCreateOrUpdateRes)
 
+    @handler LikeRemove
+    post /like/remove (LikeRemoveReq) returns (LikeRemoveRes)
+
     @handler LikeList
     get /like/list (LikeListReq) returns (LikeListRes)
 
@@ -95,4 +116,7 @@ service wallpaper_pc_backend {
 
     @handler UserDownloadAndLikeSummary
     get /like/user/downloadAndLikeSummary () returns (UserDownloadAndLikeSummaryRes)
+
+    @handler RemoveAllLikeRecord
+    get /like/record/remove/all returns (RemoveAllLikeRecordRes)
 }

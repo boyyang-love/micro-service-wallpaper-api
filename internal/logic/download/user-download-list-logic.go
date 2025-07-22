@@ -3,14 +3,30 @@ package download
 import (
 	"context"
 	"fmt"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-	"strings"
-
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
+	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
+
+type Download struct {
+	models.Download
+	Upload Upload `gorm:"foreignkey:download_id;references:id"`
+}
+
+type Upload struct {
+	models.Upload
+}
+
+func (d *Download) TableName() string {
+	return "download"
+}
+
+func (l *Upload) TableName() string {
+	return "upload"
+}
 
 type UserDownloadListLogic struct {
 	logx.Logger
@@ -29,43 +45,49 @@ func NewUserDownloadListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq) (resp *types.DownlaodUserListRes, err error) {
 
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
-	var records []types.DownLoadUserListRecord
 	var count int64
-
-	uploadIds, err := l.DownloadIds(userId)
-	if err != nil {
-		return nil, err
-	}
+	var download []Download
+	records := make([]types.DownLoadUserListRecord, 0)
 
 	DB := l.svcCtx.
 		DB.
-		Order(fmt.Sprintf("'%s'", strings.Join(uploadIds, "','"))).
-		Model(&models.Upload{})
+		Order("updated desc").
+		Preload("Upload", func(db *gorm.DB) *gorm.DB {
+			db = db.Select("id", "file_path", "file_name", "w", "h", "type")
+			return db
+		}).
+		Model(&Download{})
 
 	if req.Type != "" {
 		DB = DB.Where("type = ?", req.Type)
 	}
 
-	if err = DB.
-		Where("id in (?)", uploadIds).
-		Select("created", "updated", "id", "file_path", "file_name", "w", "h", "type").
-		Offset((req.Page - 1) * req.Limit).
-		Limit(req.Limit).
-		Find(&records).
-		Offset(-1).
-		Count(&count).
-		Error; err != nil {
+	if err =
+		DB.
+			Where("user_id = ?", userId).
+			Offset((req.Page - 1) * req.Limit).
+			Limit(req.Limit).
+			Find(&download).
+			Offset(-1).
+			Count(&count).
+			Error; err != nil {
 		return nil, err
 	}
 
-	var sortedRecords []types.DownLoadUserListRecord
-
-	for _, uploadId := range uploadIds {
-		for _, record := range records {
-			if uploadId == record.Id {
-				sortedRecords = append(sortedRecords, record)
-			}
-		}
+	for _, v := range download {
+		records = append(records, types.DownLoadUserListRecord{
+			BaseTime: types.BaseTime{
+				Created: v.Created,
+				Updated: v.Updated,
+			},
+			Id:       v.Id,
+			FileId:   v.Upload.Id,
+			FilePath: v.Upload.FilePath,
+			FileName: v.Upload.FileName,
+			W:        v.Upload.W,
+			H:        v.Upload.H,
+			Type:     v.Upload.Type,
+		})
 	}
 
 	return &types.DownlaodUserListRes{
@@ -79,23 +101,7 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 				Limit: req.Limit,
 				Total: count,
 			},
-			Records: sortedRecords,
+			Records: records,
 		},
 	}, nil
-}
-
-func (l *UserDownloadListLogic) DownloadIds(userId string) (ids []string, err error) {
-	if err = l.svcCtx.
-		DB.
-		Order("created desc").
-		Model(&models.Download{}).
-		Distinct("download_id").
-		Select("download_id").
-		Where("user_id = ?", userId).
-		Find(&ids).
-		Error; err != nil {
-		return ids, err
-	}
-
-	return ids, nil
 }

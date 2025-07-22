@@ -80,7 +80,7 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		} else {
 			imageUpload, err := svcCtx.
 				UploadService.
-				ImageUpload(
+				CosUpload(
 					r.Context(),
 					&upload2.ImageUploadReq{
 						File:       originBuffer.Bytes(),
@@ -88,11 +88,14 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 						OriPath:    oriPath,
 						Quality:    req.Quality,
 						BucketName: req.BucketName,
-					})
+					},
+				)
 			if err != nil {
 				httpx.ErrorCtx(r.Context(), w, err)
 				return
 			}
+
+			fmt.Println("xxxyyyyzzzjjjj")
 
 			uploadInfo := models.Upload{
 				Hash:           imageUpload.Data.OriETag,

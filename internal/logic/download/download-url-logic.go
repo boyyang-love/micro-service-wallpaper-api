@@ -30,14 +30,14 @@ func (l *DownloadUrlLogic) DownloadUrl(req *types.DownloadUrlReq) (resp *types.D
 	if err := l.svcCtx.
 		DB.
 		Model(&models.Upload{}).
-		Select("origin_file_path", "file_name", "origin_type").
+		Select("id", "origin_file_path", "file_name", "origin_type", "type").
 		Where("id = ?", req.Id).
 		First(&data).
 		Error; err != nil {
 		return nil, err
 	}
 
-	if err = l.AddDownloadRecord(req); err != nil {
+	if err = l.AddDownloadRecord(req, data.Type); err != nil {
 		return nil, err
 	}
 
@@ -50,7 +50,7 @@ func (l *DownloadUrlLogic) DownloadUrl(req *types.DownloadUrlReq) (resp *types.D
 	}, nil
 }
 
-func (l *DownloadUrlLogic) AddDownloadRecord(req *types.DownloadUrlReq) error {
+func (l *DownloadUrlLogic) AddDownloadRecord(req *types.DownloadUrlReq, downloadType string) error {
 	userid := fmt.Sprintf("%s", l.ctx.Value("Id"))
 
 	if err := l.svcCtx.
@@ -59,6 +59,7 @@ func (l *DownloadUrlLogic) AddDownloadRecord(req *types.DownloadUrlReq) error {
 		Create(&models.Download{
 			DownloadId: req.Id,
 			UserId:     userid,
+			Type:       downloadType,
 		}).Error; err != nil {
 		return err
 	}

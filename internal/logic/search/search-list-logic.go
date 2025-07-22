@@ -34,6 +34,7 @@ func (l *SearchListLogic) SearchList(req *types.SearchListReq) (resp *types.Sear
 
 	if err = l.svcCtx.
 		DB.
+		Order("created desc").
 		Model(&models.Upload{}).
 		Select("id", "created", "updated", "file_name", "file_path", "w", "h", "download", "view").
 		Where("file_name LIKE ? and type = ?", "%"+req.Keywords+"%", req.Type).

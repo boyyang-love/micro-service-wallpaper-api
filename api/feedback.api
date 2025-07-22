@@ -1,0 +1,63 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    FeedbackCreateReq {
+        FeedbackId string `json:"feedback_id"`
+        Content string `json:"content"`
+        Type string `json:"type"`
+    }
+    FeedbackCreateRes {
+        Base
+    }
+)
+
+type (
+    FeedbackListReq {
+        BasePage
+        Status string `form:"status,optional"`
+    }
+    FeedbackListRes {
+        Base
+        Data FeedbackListData `json:"data"`
+    }
+    FeedbackListData {
+        BaseRecord
+        Records []FeedbackInfo `json:"records"`
+    }
+    FeedbackInfo {
+        BaseTime
+        Id string `json:"id"`
+        FeedbackId string `json:"feedback_id"`
+        Content string `json:"content"`
+        Type string `json:"type"`
+        Status string `json:"status"`
+        UserId string `json:"user_id"`
+    }
+)
+
+type (
+    FeedbackUpdateReq {
+        Id string `json:"id"`
+        Status string `json:"status"`
+    }
+    FeedbackUpdateRes {
+        Base
+    }
+)
+
+@server(
+    jwt: Auth
+    group: feedback
+)
+service wallpaper_pc_backend {
+    @handler CreateFeedback
+    post /feedback/create (FeedbackCreateReq) returns (FeedbackCreateRes)
+
+    @handler ListFeedback
+    get /feedback/list (FeedbackListReq) returns (FeedbackListRes)
+
+    @handler UpdateFeedback
+    post /feedback/update (FeedbackUpdateReq) returns (FeedbackUpdateRes)
+}

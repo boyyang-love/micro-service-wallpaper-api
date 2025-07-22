@@ -37,6 +37,7 @@ type(
         BasePage
         UserId string `form:"user_id,optional"`
         Status int `form:"status,optional"`
+        Sort  string `form:"sort,optional"`
     }
     DiscoverListRes{
         Base
@@ -73,7 +74,7 @@ type(
 type (
     UserDiscoverListReq{
         BasePage
-        Status int `json:"status,optional"`
+        Status int `form:"status,optional"`
     }
     UserDiscoverListRes{
         Base

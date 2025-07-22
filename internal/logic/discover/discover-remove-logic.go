@@ -2,7 +2,6 @@ package discover
 
 import (
 	"context"
-	"fmt"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/boyyang-love/micro-service-wallpaper-rpc/upload/uploadclient"
 	"strings"
@@ -95,8 +94,8 @@ func (l *DiscoverRemoveLogic) DelUploadAndImages(ids []string) error {
 		Error; err != nil {
 		return err
 	}
-	fmt.Println(imagesPath, ids)
-	if _, err := l.svcCtx.UploadService.ImageDelete(l.ctx, &uploadclient.ImageDeleteReq{
+
+	if _, err := l.svcCtx.UploadService.CosDelete(l.ctx, &uploadclient.ImageDeleteReq{
 		BucketName: "wallpaper",
 		Paths:      imagesPath,
 	}); err != nil {

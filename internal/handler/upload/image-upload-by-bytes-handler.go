@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-	upload2 "github.com/boyyang-love/micro-service-wallpaper-rpc/upload/pb/upload"
-	"image"
-	"image/jpeg"
-	"image/png"
-	"net/http"
-	"strings"
-
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
+	upload2 "github.com/boyyang-love/micro-service-wallpaper-rpc/upload/pb/upload"
 	"github.com/zeromicro/go-zero/rest/httpx"
+	"image"
+	"image/jpeg"
+	_ "image/jpeg"
+	"image/png"
+	_ "image/png"
+	"net/http"
+	"strings"
 )
 
 func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -47,9 +48,6 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				httpx.ErrorCtx(r.Context(), w, err)
 				return
 			}
-		case "webp":
-			originBuffer.WriteString(file)
-			return
 		}
 
 		hash := helper.MakeImageFileHashByBytes(originBuffer.Bytes())

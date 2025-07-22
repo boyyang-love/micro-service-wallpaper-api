@@ -1,0 +1,74 @@
+syntax = "v1"
+
+import "base.api"
+
+type(
+    BlockCreateReq {
+        TargetId string `json:"target_id"`
+        Type     string `json:"type"`
+    }
+    BlockCreateRes {
+        Base
+    }
+)
+
+type(
+    BlockRemoveReq {
+        Id string `form:"id"`
+    }
+    BlockRemoveRes {
+        Base
+    }
+)
+
+type(
+    BlockListReq {
+        BasePage
+        Type string `form:"type"`
+    }
+    BlockListRes {
+        Base
+        Data BlockListData `json:"data"`
+    }
+    BlockListData {
+        BaseRecord
+        Records []BlockListInfo `json:"records"`
+    }
+    BlockListInfo {
+        BaseTime
+        Id string `json:"id"`
+        BlockUserInfo BlockUserInfo `json:"block_user_info"`
+        BlockDataInfo BlockDataInfo `json:"block_data_info"`
+    }
+    BlockUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        UserAvatar string `json:"user_avatar"`
+    }
+    BlockDataInfo {
+        Id string `json:"id"`
+        TargetId string `json:"target_id"`
+        Title string `json:"title"`
+        Type string `json:"type"`
+        OriginFilePath string `json:"origin_file_path"`
+        FilePath string `json:"file_path"`
+        W int `json:"w"`
+        H int `json:"h"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: block
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler CreateBlock
+    post /block/create (BlockCreateReq) returns (BlockCreateRes)
+
+    @handler RemoveBlock
+    get /block/remove (BlockRemoveReq) returns (BlockRemoveRes)
+
+    @handler ListBlock
+    get /block/list (BlockListReq) returns (BlockListRes)
+}

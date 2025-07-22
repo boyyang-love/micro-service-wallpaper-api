@@ -34,7 +34,7 @@ func (l *DiscoverListLogic) DiscoverList(req *types.DiscoverListReq) (resp *type
 
 	DB := l.svcCtx.
 		DB.
-		Order("created desc").
+		Debug().
 		Model(&models.Discover{})
 
 	if req.Status != 0 {
@@ -42,7 +42,23 @@ func (l *DiscoverListLogic) DiscoverList(req *types.DiscoverListReq) (resp *type
 	}
 
 	if req.UserId != "" {
-		DB = DB.Or("user_id = ?", req.UserId)
+		//DB = DB.Or("user_id = ?", req.UserId)
+
+		userIds, discoverIds, err := l.GetBlockInfo(req.UserId)
+		if err != nil {
+			return nil, err
+		}
+		if len(discoverIds) > 0 {
+			DB = DB.Where("id not in (?)", discoverIds)
+		}
+
+		if len(userIds) > 0 {
+			DB = DB.Where("user_id not in (?)", userIds)
+		}
+	}
+
+	if req.Sort != "" {
+		DB = DB.Order(req.Sort)
 	}
 
 	if err := DB.
@@ -127,4 +143,31 @@ func (l *DiscoverListLogic) GetUserInfo(userId string) (userInfo *types.Discover
 	}
 
 	return userInfo, nil
+}
+
+func (l *DiscoverListLogic) GetBlockInfo(userId string) (userIds []string, discoverIds []string, err error) {
+	var block []models.Block
+	if err = l.svcCtx.
+		DB.
+		Model(&models.Block{}).
+		Select("type", "target_id", "user_id").
+		Where("user_id = ?", userId).
+		Find(&block).
+		Error; err != nil {
+		return nil, nil, err
+	}
+
+	for _, b := range block {
+		if b.Type == "user" {
+			userIds = append(userIds, b.TargetId)
+		}
+
+		if b.Type == "discover" {
+			discoverIds = append(discoverIds, b.TargetId)
+		}
+	}
+
+	print(userIds, discoverIds, err)
+
+	return userIds, discoverIds, nil
 }

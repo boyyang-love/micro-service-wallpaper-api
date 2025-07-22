@@ -36,6 +36,7 @@ func (l *LikeCreateLogic) LikeCreate(req *types.LikeCreateOrUpdateReq) (resp *ty
 		RowsAffected == 0 {
 		if err := l.svcCtx.DB.Create(&models.Like{
 			UploadId: req.UploadId,
+			Type:     req.Type,
 			UserId:   userid,
 			Status:   req.Status,
 		}).Error; err != nil {

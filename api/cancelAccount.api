@@ -1,0 +1,21 @@
+syntax = "v1"
+
+import "base.api"
+
+type(
+    CancelAccountReq {}
+    CancelAccountRes {
+        Base
+    }
+)
+
+
+@server(
+    jwt: Auth
+    group: account
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler CancelAccount
+    post /account/cancel (CancelAccountReq) returns (CancelAccountRes)
+}

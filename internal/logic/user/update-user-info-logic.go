@@ -2,9 +2,11 @@ package user
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/boyyang-love/micro-service-wallpaper-rpc/upload/uploadclient"
+	"gorm.io/gorm"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -34,15 +36,18 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(req *types.UpdateUserInfoReq) (resp
 		Model(&models.User{}).
 		Where("id = ?", userId).
 		Updates(&models.User{
-			Avatar: req.Avatar,
-			Cover:  req.Cover,
+			Avatar:   req.Avatar,
+			Cover:    req.Cover,
+			Username: req.Username,
 		}).
 		Error; err != nil {
 		return nil, err
 	}
 
-	if err = l.RemoveUserAvatar(req.Avatar, userId); err != nil {
-		return nil, err
+	if req.Avatar != "" {
+		if err = l.RemoveUserAvatar(req.Avatar, userId); err != nil {
+			return nil, err
+		}
 	}
 
 	return &types.UpdateUserInfoRes{
@@ -58,10 +63,17 @@ func (l *UpdateUserInfoLogic) RemoveUserAvatar(path string, userId string) error
 	if err := l.svcCtx.
 		DB.
 		Model(&models.Upload{}).
-		Where("user_id = ? and type = ? and  file_path != ?", userId, "USERAVATAR", path).
+		Where("user_id = ? and type = ? and file_path != ?", userId, "USERAVATAR", path).
 		Find(&upload).
 		Error; err != nil {
+		if errors.As(err, &gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
+	}
+
+	if len(upload) == 0 {
+		return nil
 	}
 
 	var willRemovePath []string
@@ -70,8 +82,6 @@ func (l *UpdateUserInfoLogic) RemoveUserAvatar(path string, userId string) error
 		willRemovePath = append(willRemovePath, u.FilePath, u.OriginFilePath)
 		ids = append(ids, u.Id)
 	}
-
-	fmt.Println(ids, willRemovePath)
 
 	if err := l.svcCtx.
 		DB.

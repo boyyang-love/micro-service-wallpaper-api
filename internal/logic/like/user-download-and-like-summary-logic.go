@@ -43,6 +43,11 @@ func (l *UserDownloadAndLikeSummaryLogic) UserDownloadAndLikeSummary() (resp *ty
 		return nil, err
 	}
 
+	blockCount, err := l.BlockSummary(userId)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.UserDownloadAndLikeSummaryRes{
 		Base: types.Base{
 			Code: 1,
@@ -52,6 +57,7 @@ func (l *UserDownloadAndLikeSummaryLogic) UserDownloadAndLikeSummary() (resp *ty
 			Download: downloadCount,
 			Like:     likeCount,
 			Discover: discoverCount,
+			Block:    blockCount,
 		},
 	}, nil
 }
@@ -61,7 +67,7 @@ func (l *UserDownloadAndLikeSummaryLogic) DownloadSummary(userId string) (count 
 	if err = l.svcCtx.
 		DB.
 		Model(&models.Download{}).
-		Where("user_id = ?", userId).
+		Where("user_id = ? and type != ?", userId, "AVATAR").
 		Select("download_id").
 		Find(&ids).
 		Error; err != nil {
@@ -85,7 +91,7 @@ func (l *UserDownloadAndLikeSummaryLogic) LikeSummary(userId string) (count int6
 	if err = l.svcCtx.
 		DB.
 		Model(&models.Like{}).
-		Where("user_id = ? and status = ?", userId, true).
+		Where("user_id = ? and status = ? and type != ?", userId, true, "AVATAR").
 		Select("upload_id").
 		Find(&ids).
 		Error; err != nil {
@@ -111,6 +117,18 @@ func (l *UserDownloadAndLikeSummaryLogic) DiscoverSummary(userId string) (count 
 		Where("user_id = ?", userId).
 		Count(&count).
 		Error; err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (l *UserDownloadAndLikeSummaryLogic) BlockSummary(userId string) (count int64, err error) {
+	if err = l.svcCtx.
+		DB.
+		Model(&models.Block{}).
+		Where("user_id = ?", userId).
+		Count(&count).Error; err != nil {
 		return 0, err
 	}
 

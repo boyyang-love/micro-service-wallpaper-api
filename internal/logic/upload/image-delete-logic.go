@@ -40,7 +40,7 @@ func (l *ImageDeleteLogic) ImageDelete(req *types.ImageDeleteReq) (resp *types.I
 		return nil, err
 	}
 
-	_, err = l.svcCtx.UploadService.ImageDelete(l.ctx, &uploadclient.ImageDeleteReq{
+	_, err = l.svcCtx.UploadService.CosDelete(l.ctx, &uploadclient.ImageDeleteReq{
 		BucketName: req.BucketName,
 		Paths:      req.Paths,
 	})

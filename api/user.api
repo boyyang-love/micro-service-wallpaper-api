@@ -5,8 +5,9 @@ import "base.api"
 
 type (
     UpdateUserInfoReq {
-        Avatar string `json:"avatar"`
+        Avatar string `json:"avatar,optional"`
         Cover string `json:"cover,optional"`
+        Username string `json:"username,optional"`
     }
     UpdateUserInfoRes {
         Base
