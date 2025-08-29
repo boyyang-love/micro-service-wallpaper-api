@@ -74,7 +74,7 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		} else {
 			imageUpload, err := svcCtx.
 				UploadService.
-				ImageUpload(
+				CosUpload(
 					r.Context(),
 					&upload2.ImageUploadReq{
 						File:       originBuffer.Bytes(),

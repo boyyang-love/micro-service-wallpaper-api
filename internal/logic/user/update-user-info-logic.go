@@ -91,7 +91,7 @@ func (l *UpdateUserInfoLogic) RemoveUserAvatar(path string, userId string) error
 		return err
 	}
 
-	_, err := l.svcCtx.UploadService.ImageDelete(l.ctx, &uploadclient.ImageDeleteReq{
+	_, err := l.svcCtx.UploadService.CosDelete(l.ctx, &uploadclient.ImageDeleteReq{
 		BucketName: "wallpaper",
 		Paths:      willRemovePath,
 	})

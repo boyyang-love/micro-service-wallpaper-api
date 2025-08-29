@@ -41,7 +41,7 @@ func (l *RecommendListLogic) RecommendList(req *types.RecommendListReq) (resp *t
 
 	if err := l.svcCtx.
 		DB.
-		Order("RAND()").
+		Order("updated desc").
 		Model(&models.Upload{}).
 		Select("created", "updated", "id", "file_path", "file_name").
 		Where("id IN (?) and type = ? and status = ?", uploadIds, req.Type, 1).
