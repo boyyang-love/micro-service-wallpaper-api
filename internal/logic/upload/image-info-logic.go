@@ -2,6 +2,7 @@ package upload
 
 import (
 	"context"
+
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
@@ -22,6 +23,7 @@ type Upload struct {
 	Category  []Category  `json:"category" gorm:"many2many:upload_category;"`
 	Recommend []Recommend `json:"recommend" gorm:"many2many:upload_recommend;"`
 	Group     []Group     `json:"group" gorm:"many2many:upload_group;"`
+	Album     []Album     `json:"album" gorm:"many2many:upload_album;"`
 }
 
 type Tag struct {
@@ -38,6 +40,10 @@ type Recommend struct {
 
 type Group struct {
 	models.Group
+}
+
+type Album struct {
+	models.Album
 }
 
 func NewImageInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ImageInfoLogic {
@@ -58,6 +64,7 @@ func (l *ImageInfoLogic) ImageInfo(req *types.ImageInfoReq) (resp *types.ImageIn
 		Preload("Category").
 		Preload("Recommend").
 		Preload("Group").
+		Preload("Album").
 		Model(&Upload{}).
 		Order("created  desc")
 

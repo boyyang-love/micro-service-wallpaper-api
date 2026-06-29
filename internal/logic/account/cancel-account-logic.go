@@ -3,9 +3,10 @@ package account
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/boyyang-love/micro-service-wallpaper-rpc/upload/uploadclient"
-	"strings"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"

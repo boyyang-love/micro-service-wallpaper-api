@@ -5,6 +5,7 @@ import "tag.api"
 import "category.api"
 import "recommend.api"
 import "group.api"
+import "album.api"
 
 type (
     ImageUploadReq {
@@ -19,6 +20,7 @@ type (
         Category string `form:"category,optional"`
         Recommend string `form:"recommend,optional"`
         Group string `form:"group,optional"`
+        Album string `form:"album,optional"`
     }
     ImageUploadRes {
         Base
@@ -70,6 +72,7 @@ type (
         Category []CategoryInfo `json:"category"`
         Recommend []RecommendInfo `json:"recommend"`
         Group []GroupListInfo `json:"group"`
+        Album []Album `json:"album"`
     }
 )
 
@@ -144,6 +147,7 @@ type (
         Category []string `json:"category,optional"`
         Recommend []string `json:"recommend,optional"`
         Group []string `json:"group,optional"`
+        Album []string  `json:"album,optional"`
     }
     ImageUpdateRes {
         Base

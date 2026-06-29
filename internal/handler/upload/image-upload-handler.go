@@ -4,15 +4,16 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-	upload2 "github.com/boyyang-love/micro-service-wallpaper-rpc/upload/pb/upload"
-	"gorm.io/gorm"
 	"image"
 	"image/jpeg"
 	"image/png"
 	"net/http"
 	"strings"
+
+	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
+	upload2 "github.com/boyyang-love/micro-service-wallpaper-rpc/upload/pb/upload"
+	"gorm.io/gorm"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -198,6 +199,24 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				if err = svcCtx.DB.
 					Model(&models.UploadGroup{}).
 					Create(&uploadGroup).
+					Error; err != nil {
+					httpx.ErrorCtx(r.Context(), w, err)
+					return
+				}
+			}
+
+			if req.Album != "" {
+				var uploadAlbum []models.UploadAlbum
+				for _, v := range strings.Split(req.Album, ",") {
+					uploadAlbum = append(uploadAlbum, models.UploadAlbum{
+						UploadId: uploadInfo.Id,
+						AlbumId:  v,
+					})
+				}
+
+				if err = svcCtx.DB.
+					Model(&models.UploadAlbum{}).
+					Create(&uploadAlbum).
 					Error; err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
 					return

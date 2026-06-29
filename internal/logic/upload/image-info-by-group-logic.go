@@ -2,6 +2,7 @@ package upload
 
 import (
 	"context"
+
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
@@ -34,7 +35,7 @@ func (l *ImageInfoByGroupLogic) ImageInfoByGroup(req *types.ImageInfoByGroupReq)
 		DB.
 		Model(&models.Upload{}).
 		Select("created", "updated", "id", "file_name", "file_path", "w", "h").
-		Where("id in (?) and type = ?", ids, req.Type).
+		Where("id in (?) and type = ? and status = ?", ids, req.Type, 1).
 		Find(&records).
 		Error; err != nil {
 		return nil, err

@@ -2,9 +2,10 @@ package discover
 
 import (
 	"context"
+	"strings"
+
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/jinzhu/copier"
-	"strings"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -34,7 +35,6 @@ func (l *DiscoverListLogic) DiscoverList(req *types.DiscoverListReq) (resp *type
 
 	DB := l.svcCtx.
 		DB.
-		Debug().
 		Model(&models.Discover{})
 
 	if req.Status != 0 {
@@ -166,8 +166,6 @@ func (l *DiscoverListLogic) GetBlockInfo(userId string) (userIds []string, disco
 			discoverIds = append(discoverIds, b.TargetId)
 		}
 	}
-
-	print(userIds, discoverIds, err)
 
 	return userIds, discoverIds, nil
 }

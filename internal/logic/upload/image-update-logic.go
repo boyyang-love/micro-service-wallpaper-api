@@ -2,6 +2,7 @@ package upload
 
 import (
 	"context"
+
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
@@ -141,6 +142,35 @@ func (l *ImageUpdateLogic) ImageUpdate(req *types.ImageUpdateReq) (resp *types.I
 		}
 	} else {
 		if err := l.Remove(&models.UploadGroup{}, req.Id); err != nil {
+			return nil, err
+		}
+	}
+
+	if len(req.Album) > 0 {
+		if err := l.Remove(&models.UploadAlbum{}, req.Id); err != nil {
+			return nil, err
+		}
+
+		var uploadAlbum []models.UploadAlbum
+		for _, v := range req.Album {
+			uploadAlbum = append(
+				uploadAlbum,
+				models.UploadAlbum{
+					UploadId: req.Id,
+					AlbumId:  v,
+				},
+			)
+		}
+
+		if err := l.svcCtx.
+			DB.
+			Model(&models.UploadAlbum{}).
+			Create(&uploadAlbum).
+			Error; err != nil {
+			return nil, err
+		}
+	} else {
+		if err := l.Remove(&models.UploadAlbum{}, req.Id); err != nil {
 			return nil, err
 		}
 	}

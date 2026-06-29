@@ -2,7 +2,9 @@ package helper
 
 import (
 	"fmt"
+
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/config"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -55,6 +57,8 @@ func AutoMigrate(db *gorm.DB) (err error) {
 		//&models.Search{},
 		//&models.Feedback{},
 		//&models.Block{},
+		//&models.Album{},
+		&models.UploadAlbum{},
 	}
 
 	for _, table := range tables {

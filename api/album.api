@@ -1,0 +1,104 @@
+syntax = "v1"
+
+import "base.api"
+
+type(
+    AlbumCreateReq {
+        Name string `json:"name"`
+        Desc string `json:"desc"`
+        Cover string `json:"cover"`
+        Status bool `json:"status"`
+    }
+    AlbumCreateRes {
+        Base
+    }
+
+    AlbumUpdateReq {
+        Id string `json:"id"`
+        Name string `json:"name"`
+        Desc string `json:"desc"`
+        Cover string `json:"cover"`
+        Status bool `json:"status"`
+    }
+    AlbumUpdateRes {
+        Base
+    }
+
+    AlbumRemoveReq {
+        Id int64 `json:"id"`
+    }
+    AlbumRemoveRes {
+        Base
+    }
+
+    AlbumListReq {
+        BasePage
+    }
+    AlbumListRes {
+        Base
+        Data AlbumListData `json:"data"`
+        
+    }
+    AlbumListData {
+        BaseRecord
+        Records []Album `json:"records"`
+    }
+    Album {
+        Id string `json:"id"`
+        Name string `json:"name"`
+        Desc string `json:"desc"`
+        Cover string `json:"cover"`
+        CoverPath string `json:"cover_path"`
+        Status bool `json:"status"`
+    }
+)
+
+type (
+    AlbumDetailReq {
+        Id string `form:"id"`
+        BasePage
+    }
+    AlbumDetailRes {
+        Base
+        Data AlbumDetailData `json:"data"`
+    }
+    AlbumDetailData {
+        BaseRecord
+        Records []AlbumImageInfo `json:"records"`
+    }
+    AlbumImageInfo {
+        id string `json:"id"`
+        fileName string `json:"file_name"`
+        filePath string `json:"file_path"`
+    }
+)
+
+
+@server(
+    group: album
+    timeout:  20s
+)
+
+service wallpaper_pc_backend {
+    @handler ListAlbum
+    get /album/list (AlbumListReq) returns (AlbumListRes)
+    @handler DetailAlbum
+    get /album/detail (AlbumDetailReq) returns (AlbumDetailRes)
+}
+
+@server(
+    jwt: Auth
+    group: album
+    timeout:  20s
+)
+
+service wallpaper_pc_backend {
+    @handler CreateAlbum
+    post /album/create (AlbumCreateReq) returns (AlbumCreateRes)
+    @handler UpdateAlbum
+    post /album/update (AlbumUpdateReq) returns (AlbumUpdateRes)
+    @handler RemoveAlbum
+    post /album/remove (AlbumRemoveReq) returns (AlbumRemoveRes)
+    @handler ListAlbumAll
+    get /album/list/all (AlbumListReq) returns (AlbumListRes)
+}
