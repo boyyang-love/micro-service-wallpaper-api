@@ -27,11 +27,20 @@ type QqLoginConf struct {
 	RedirectURI string
 }
 
+type WechatLoginConf struct {
+	AppId  string
+	Secret string
+}
+
+type CorsOriginConf []string
+
 type Config struct {
 	rest.RestConf
-	Auth        Auth
-	MySQLConf   MySQLConf
-	QqLoginConf QqLoginConf
-	UploadRpc   zrpc.RpcClientConf
-	UserRpc     zrpc.RpcClientConf
+	Auth            Auth
+	MySQLConf       MySQLConf
+	QqLoginConf     QqLoginConf
+	WechatLoginConf WechatLoginConf
+	CorsOriginConf  CorsOriginConf
+	UploadRpc       zrpc.RpcClientConf
+	UserRpc         zrpc.RpcClientConf
 }

@@ -23,3 +23,29 @@ service wallpaper_pc_backend {
     @handler UpdateUserInfo
     post /user/info/update (UpdateUserInfoReq) returns (UpdateUserInfoRes)
 }
+type (
+    UserInfoReq {
+    }
+    UserInfoRes {
+        Base
+        Data UserInfoResData `json:"data"`
+    }
+    UserInfoResData {
+        Id       string `json:"id"`
+        Username string `json:"username"`
+        Avatar   string `json:"avatar"`
+        Cover    string `json:"cover"`
+        Motto    string `json:"motto"`
+        Role     string `json:"role"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: user
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler GetUserInfo
+    get /user/info (UserInfoReq) returns (UserInfoRes)
+}

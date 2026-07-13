@@ -1,0 +1,104 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    DailyInfoReq {
+        Date string `form:"date,optional"`
+    }
+
+    DailyInfoRes {
+        Base
+        Data DailyInfoData `json:"data,optional"`
+    }
+
+    DailyInfoData {
+        Id             string   `json:"id"`
+        FilePath       string   `json:"file_path"`
+        FileName       string   `json:"file_name"`
+        W              int      `json:"w"`
+        H              int      `json:"h"`
+        Date           string   `json:"date"`
+        Edition        int      `json:"edition"`
+        Description    string   `json:"description"`
+        DownloadsToday int      `json:"downloads_today"`
+        Tags           []string `json:"tags,optional"`
+        PrevDate       string   `json:"prev_date,optional"`
+        NextDate       string   `json:"next_date,optional"`
+    }
+)
+
+type (
+    DailyListReq {
+        BasePage
+    }
+
+    DailyListRes {
+        Base
+        Data DailyListData `json:"data"`
+    }
+
+    DailyListData {
+        BaseRecord
+        Records []DailyListInfo `json:"records"`
+    }
+
+    DailyListInfo {
+        BaseTime
+        DailyId  string `json:"daily_id"`
+        Id       string `json:"id"`
+        FilePath string `json:"file_path"`
+        FileName string `json:"file_name"`
+        Date     string `json:"date"`
+        Edition  int    `json:"edition"`
+        W        int    `json:"w"`
+        H        int    `json:"h"`
+    }
+)
+
+type (
+    DailyCreateReq {
+        UploadId    string `json:"upload_id"`
+        Date        string `json:"date"`
+        Description string `json:"description,optional"`
+    }
+    DailyCreateRes {
+        Base
+    }
+
+    DailyUpdateReq {
+        Id          string `json:"id"`
+        UploadId    string `json:"upload_id,optional"`
+        Date        string `json:"date,optional"`
+        Description string `json:"description,optional"`
+        Status      int    `json:"status,optional"`
+    }
+    DailyUpdateRes {
+        Base
+    }
+)
+
+@server(
+    group: daily
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler DailyInfo
+    get /daily/info (DailyInfoReq) returns (DailyInfoRes)
+
+    @handler DailyList
+    get /daily/list (DailyListReq) returns (DailyListRes)
+}
+
+@server(
+    jwt: Auth
+    group: daily
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler DailyCreate
+    post /daily/create (DailyCreateReq) returns (DailyCreateRes)
+
+    @handler DailyUpdate
+    post /daily/update (DailyUpdateReq) returns (DailyUpdateRes)
+}

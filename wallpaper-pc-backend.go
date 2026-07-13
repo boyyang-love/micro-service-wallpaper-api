@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
+
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/config"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/handler"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
-	"net/http"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -25,16 +26,7 @@ func main() {
 		rest.WithCustomCors(
 			corsMidFn,
 			notAllowedFn,
-			[]string{
-				"http://localhost:3000",
-				"http://localhost:9527",
-				"https://www.boyyang.cn",
-				"https://boyyang.cn",
-				"http://wallpaperadmin.boyyang.cn",
-				"https://wallpaperadmin.boyyang.cn",
-				"wails://wails.localhost:34115",
-				"wails://wails",
-			}...,
+			c.CorsOriginConf...,
 		),
 	)
 	defer server.Stop()

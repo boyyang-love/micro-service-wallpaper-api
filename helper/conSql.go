@@ -58,7 +58,8 @@ func AutoMigrate(db *gorm.DB) (err error) {
 		//&models.Feedback{},
 		//&models.Block{},
 		//&models.Album{},
-		&models.UploadAlbum{},
+		//&models.UploadAlbum{},
+		&models.DailyWallpaper{},
 	}
 
 	for _, table := range tables {
