@@ -68,7 +68,7 @@ func (l *DailyInfoLogic) DailyInfo(req *types.DailyInfoReq) (resp *types.DailyIn
 	var downloadsToday int64
 	l.svcCtx.DB.
 		Model(&models.Download{}).
-		Where("upload_id = ? AND DATE(FROM_UNIXTIME(created/1000)) = ?", daily.UploadId, date).
+		Where("download_id = ? AND DATE(FROM_UNIXTIME(created/1000)) = ?", daily.UploadId, date).
 		Count(&downloadsToday)
 
 	var tags []string

@@ -386,6 +386,7 @@ type DailyListInfo struct {
 	FileName string `json:"file_name"`
 	Date     string `json:"date"`
 	Edition  int    `json:"edition"`
+	Description string `json:"description"`
 	W        int    `json:"w"`
 	H        int    `json:"h"`
 }
@@ -1326,4 +1327,12 @@ type UserLikeListReq struct {
 type UserLikeListRes struct {
 	Base
 	Data UserLikeListData `json:"data"`
+}
+
+type DailyDeleteReq struct {
+	Id string `json:"id"`
+}
+
+type DailyDeleteRes struct {
+	Base
 }

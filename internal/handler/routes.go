@@ -203,6 +203,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/daily/delete",
+				Handler: daily.DailyDeleteHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/daily/create",
 				Handler: daily.DailyCreateHandler(serverCtx),
 			},

@@ -51,6 +51,7 @@ type (
         FileName string `json:"file_name"`
         Date     string `json:"date"`
         Edition  int    `json:"edition"`
+	Description string `json:"description"`
         W        int    `json:"w"`
         H        int    `json:"h"`
     }
@@ -101,4 +102,22 @@ service wallpaper_pc_backend {
 
     @handler DailyUpdate
     post /daily/update (DailyUpdateReq) returns (DailyUpdateRes)
+}
+
+    DailyDeleteReq {
+        Id string `json:"id"`
+    }
+    DailyDeleteRes {
+        Base
+    }
+)
+
+@server(
+    jwt: Auth
+    group: daily
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler DailyDelete
+    post /daily/delete (DailyDeleteReq) returns (DailyDeleteRes)
 }

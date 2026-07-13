@@ -63,6 +63,7 @@ func (l *DailyListLogic) DailyList(req *types.DailyListReq) (resp *types.DailyLi
 			FileName: upload.FileName,
 			Date:     d.Date,
 			Edition:  d.Edition,
+			Description: d.Description,
 			W:        upload.W,
 			H:        upload.H,
 		})
