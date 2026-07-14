@@ -1336,3 +1336,37 @@ type DailyDeleteReq struct {
 type DailyDeleteRes struct {
 	Base
 }
+
+ type UserListReq struct {
+ 	BasePage
+ 	Username string `form:"username,optional"`
+ 	Account  string `form:"account,optional"`
+ 	Role     string `form:"role,optional"`
+ }
+ 
+ type UserListInfo struct {
+ 	BaseTime
+ 	Id       string `json:"id"`
+ 	Username string `json:"username"`
+ 	Account  string `json:"account"`
+ 	Avatar   string `json:"avatar"`
+ 	Role     string `json:"role"`
+ 	Address  string `json:"address"`
+ 	Tel      string `json:"tel"`
+ 	Email    string `json:"email"`
+ 	QQ       string `json:"qq"`
+ 	Wechat   string `json:"wechat"`
+ 	GitHub   string `json:"git_hub"`
+ 	Motto    string `json:"motto"`
+ 	Cover    string `json:"cover"`
+ }
+ 
+ type UserListData struct {
+ 	BaseRecord
+ 	Records []UserListInfo `json:"records"`
+ }
+ 
+ type UserListRes struct {
+ 	Base
+ 	Data UserListData `json:"data"`
+ }

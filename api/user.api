@@ -49,3 +49,48 @@ service wallpaper_pc_backend {
     @handler GetUserInfo
     get /user/info (UserInfoReq) returns (UserInfoRes)
 }
+
+type (
+    UserListReq {
+        BasePage
+        Username string `form:"username,optional"`
+        Account  string `form:"account,optional"`
+        Role     string `form:"role,optional"`
+    }
+
+    UserListInfo {
+        BaseTime
+        Id       string `json:"id"`
+        Username string `json:"username"`
+        Account  string `json:"account"`
+        Avatar   string `json:"avatar"`
+        Role     string `json:"role"`
+        Address  string `json:"address"`
+        Tel      string `json:"tel"`
+        Email    string `json:"email"`
+        QQ       string `json:"qq"`
+        Wechat   string `json:"wechat"`
+        GitHub   string `json:"git_hub"`
+        Motto    string `json:"motto"`
+        Cover    string `json:"cover"`
+    }
+    UserListData {
+        BaseRecord
+        Records []UserListInfo `json:"records"`
+    }
+
+    UserListRes {
+        Base
+        Data UserListData `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: user
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler ListUser
+    get /user/list (UserListReq) returns (UserListRes)
+}

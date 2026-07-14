@@ -657,6 +657,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/info",
 				Handler: user.GetUserInfoHandler(serverCtx),
 			},
+				{
+					Method:  http.MethodGet,
+					Path:    "/user/list",
+					Handler: user.ListUserHandler(serverCtx),
+				},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
