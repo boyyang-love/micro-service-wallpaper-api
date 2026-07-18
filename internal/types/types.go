@@ -329,6 +329,128 @@ type CategoryUpdateRes struct {
 	Base
 }
 
+type CommentCreateData struct {
+	Id string `json:"id"`
+}
+
+type CommentCreateReq struct {
+	PostId  string `json:"post_id"`
+	Content string `json:"content"`
+}
+
+type CommentCreateRes struct {
+	Base
+	Data CommentCreateData `json:"data"`
+}
+
+type CommentDeleteReq struct {
+	Id string `json:"id"`
+}
+
+type CommentDeleteRes struct {
+	Base
+}
+
+type CommentInfo struct {
+	BaseTime
+	Id       string          `json:"id"`
+	Content  string          `json:"content"`
+	UserInfo CommentUserInfo `json:"user_info"`
+}
+
+type CommentListData struct {
+	BaseRecord
+	Records []CommentInfo `json:"records"`
+}
+
+type CommentListReq struct {
+	BasePage
+	PostId string `form:"post_id"`
+}
+
+type CommentListRes struct {
+	Base
+	Data CommentListData `json:"data"`
+}
+
+type CommentReviewListData struct {
+	BaseRecord
+	Records []CommentReviewListItem `json:"records"`
+}
+
+type CommentReviewListItem struct {
+	BaseTime
+	Id           string          `json:"id"`
+	PostId       string          `json:"post_id"`
+	PostTitle    string          `json:"post_title"`
+	Content      string          `json:"content"`
+	Status       int             `json:"status"`
+	RejectReason string          `json:"reject_reason"`
+	UserInfo     CommentUserInfo `json:"user_info"`
+}
+
+type CommentReviewListReq struct {
+	BasePage
+	Status int `form:"status,optional"` // 0=全部 2=待审核 1=已通过 -1=已拒绝
+}
+
+type CommentReviewListRes struct {
+	Base
+	Data CommentReviewListData `json:"data"`
+}
+
+type CommentReviewUpdateReq struct {
+	Id           string `json:"id"`
+	Status       int    `json:"status"` // 1=通过 -1=拒绝
+	RejectReason string `json:"reject_reason,optional"`
+}
+
+type CommentReviewUpdateRes struct {
+	Base
+}
+
+type CommentUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+}
+
+type CommunityFeedData struct {
+	BaseRecord
+	Records []CommunityFeedInfo `json:"records"`
+}
+
+type CommunityFeedInfo struct {
+	BaseTime
+	Id        string            `json:"id"`
+	FileName  string            `json:"file_name"`
+	FilePath  string            `json:"file_path"`
+	W         int               `json:"w"`
+	H         int               `json:"h"`
+	Type      string            `json:"type"`
+	View      int               `json:"view"`
+	Download  int               `json:"download"`
+	LikeCount int64             `json:"like_count"`
+	UserInfo  CommunityUserInfo `json:"user_info"`
+}
+
+type CommunityFeedReq struct {
+	BasePage
+	Sort string `form:"sort,optional"` // "hot" | "new", default "new"
+	Type string `form:"type,optional"` // "pc" | "moa", empty = all
+}
+
+type CommunityFeedRes struct {
+	Base
+	Data CommunityFeedData `json:"data"`
+}
+
+type CommunityUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+}
+
 type CreateTagReq struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
@@ -378,7 +500,7 @@ type DailyInfoReq struct {
 
 type DailyInfoRes struct {
 	Base
-	Data *DailyInfoData `json:"data,optional"`
+	Data DailyInfoData `json:"data,optional"`
 }
 
 type DailyListData struct {
@@ -899,6 +1021,118 @@ type LikeRemoveRes struct {
 	Base
 }
 
+type PostCreateData struct {
+	Id string `json:"id"`
+}
+
+type PostCreateReq struct {
+	Title    string `json:"title"`
+	Content  string `json:"content,optional"`
+	ImageIds string `json:"image_ids"` // 逗号分隔
+}
+
+type PostCreateRes struct {
+	Base
+	Data PostCreateData `json:"data"`
+}
+
+type PostDeleteReq struct {
+	Id string `json:"id"`
+}
+
+type PostDeleteRes struct {
+	Base
+}
+
+type PostDetailReq struct {
+	Id string `form:"id"`
+}
+
+type PostDetailRes struct {
+	Base
+	Data PostFeedInfo `json:"data"`
+}
+
+type PostFeedData struct {
+	BaseRecord
+	Records []PostFeedInfo `json:"records"`
+}
+
+type PostFeedInfo struct {
+	BaseTime
+	Id           string          `json:"id"`
+	Title        string          `json:"title"`
+	Content      string          `json:"content"`
+	Images       []PostImageInfo `json:"images"`
+	UserInfo     PostUserInfo    `json:"user_info"`
+	LikeCount    int64           `json:"like_count"`
+	IsLiked      bool            `json:"is_liked"`
+	CommentCount int64           `json:"comment_count"`
+	Status       int             `json:"status"`
+	RejectReason string          `json:"reject_reason"`
+}
+
+type PostFeedReq struct {
+	BasePage
+	Sort string `form:"sort,optional"` // "hot" | "new", default "new"
+}
+
+type PostFeedRes struct {
+	Base
+	Data PostFeedData `json:"data"`
+}
+
+type PostImageInfo struct {
+	Id       string `json:"id"`
+	FilePath string `json:"file_path"`
+	FileName string `json:"file_name"`
+	W        int    `json:"w"`
+	H        int    `json:"h"`
+}
+
+type PostReviewListData struct {
+	BaseRecord
+	Records []PostReviewListItem `json:"records"`
+}
+
+type PostReviewListItem struct {
+	BaseTime
+	Id           string          `json:"id"`
+	Title        string          `json:"title"`
+	Content      string          `json:"content"`
+	ImageIds     string          `json:"image_ids"`
+	Images       []PostImageInfo `json:"images"`
+	Status       int             `json:"status"`
+	RejectReason string          `json:"reject_reason"`
+	UserInfo     PostUserInfo    `json:"user_info"`
+}
+
+type PostReviewListReq struct {
+	BasePage
+	Status int `form:"status,optional"` // 0=全部 2=待审核 1=已通过 -1=已拒绝
+}
+
+type PostReviewListRes struct {
+	Base
+	Data PostReviewListData `json:"data"`
+}
+
+type PostReviewUpdateReq struct {
+	Id           string `json:"id"`
+	Status       int    `json:"status"` // 1=通过 -1=拒绝
+	RejectReason string `json:"reject_reason,optional"`
+}
+
+type PostReviewUpdateRes struct {
+	Base
+}
+
+type PostUserInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+}
+
 type RecommendCreateReq struct {
 	Name string `json:"name"`
 	Sort int    `json:"sort":"sort"`
@@ -1243,6 +1477,30 @@ type UpdateUserInfoRes struct {
 	Base
 }
 
+type UserCommentListData struct {
+	BaseRecord
+	Records []UserCommentListItem `json:"records"`
+}
+
+type UserCommentListItem struct {
+	BaseTime
+	Id           string `json:"id"`
+	PostId       string `json:"post_id"`
+	PostTitle    string `json:"post_title"`
+	Content      string `json:"content"`
+	Status       int    `json:"status"`
+	RejectReason string `json:"reject_reason"`
+}
+
+type UserCommentListReq struct {
+	BasePage
+}
+
+type UserCommentListRes struct {
+	Base
+	Data UserCommentListData `json:"data"`
+}
+
 type UserDiscoverListData struct {
 	BaseRecord
 	Records []UserDiscoverListInfo `json:"records"`
@@ -1338,6 +1596,31 @@ type UserLikeListRes struct {
 	Data UserLikeListData `json:"data"`
 }
 
+type UserLikePostListData struct {
+	BaseRecord
+	Records []UserLikePostListItem `json:"records"`
+}
+
+type UserLikePostListItem struct {
+	BaseTime
+	Id           string `json:"id"`
+	PostId       string `json:"post_id"`
+	Title        string `json:"title"`
+	Content      string `json:"content"`
+	CoverPath    string `json:"cover_path"`
+	LikeCount    int64  `json:"like_count"`
+	CommentCount int64  `json:"comment_count"`
+}
+
+type UserLikePostListReq struct {
+	BasePage
+}
+
+type UserLikePostListRes struct {
+	Base
+	Data UserLikePostListData `json:"data"`
+}
+
 type UserListData struct {
 	BaseRecord
 	Records []UserListInfo `json:"records"`
@@ -1370,4 +1653,57 @@ type UserListReq struct {
 type UserListRes struct {
 	Base
 	Data UserListData `json:"data"`
+}
+
+type UserPostListReq struct {
+	BasePage
+	UserId string `form:"user_id"`
+}
+
+type UserPostListRes struct {
+	Base
+	Data PostFeedData `json:"data"`
+}
+
+type UserProfileData struct {
+	UserInfo UserProfileInfo  `json:"user_info"`
+	Stats    UserProfileStats `json:"stats"`
+}
+
+type UserProfileInfo struct {
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+	Cover    string `json:"cover"`
+	Motto    string `json:"motto"`
+}
+
+type UserProfileReq struct {
+	UserId string `form:"user_id"`
+}
+
+type UserProfileRes struct {
+	Base
+	Data UserProfileData `json:"data"`
+}
+
+type UserProfileStats struct {
+	UploadCount   int64 `json:"upload_count"`
+	LikeCount     int64 `json:"like_count"`
+	DownloadCount int64 `json:"download_count"`
+}
+
+type UserStatsData struct {
+	PostCount         int64 `json:"post_count"`
+	LikeReceivedCount int64 `json:"like_received_count"`
+	CommentCount      int64 `json:"comment_count"`
+	DownloadCount     int64 `json:"download_count"`
+}
+
+type UserStatsReq struct {
+}
+
+type UserStatsRes struct {
+	Base
+	Data UserStatsData `json:"data"`
 }

@@ -32,24 +32,32 @@ func NewUpdateUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 func (l *UpdateUserInfoLogic) UpdateUserInfo(req *types.UpdateUserInfoReq) (resp *types.UpdateUserInfoRes, err error) {
 	var userId = fmt.Sprintf("%s", l.ctx.Value("Id"))
 
-	if err = l.svcCtx.
-		DB.
-		Model(&models.User{}).
+	// 先查询旧的用户信息
+	var oldUser models.User
+	if err = l.svcCtx.DB.Model(&models.User{}).Where("id = ?", userId).First(&oldUser).Error; err != nil {
+		return nil, err
+	}
+
+	// 更新用户信息
+	if err = l.svcCtx.DB.Model(&models.User{}).
 		Where("id = ?", userId).
 		Updates(&models.User{
 			Avatar:   req.Avatar,
 			Cover:    req.Cover,
 			Username: req.Username,
 			Motto:    req.Motto,
-		}).
-		Error; err != nil {
+		}).Error; err != nil {
 		return nil, err
 	}
 
-	if req.Avatar != "" {
-		if err = l.RemoveUserAvatar(req.Avatar, userId); err != nil {
-			return nil, err
-		}
+	// 如果更新了头像，删除旧头像
+	if req.Avatar != "" && oldUser.Avatar != "" && req.Avatar != oldUser.Avatar {
+		l.RemoveOldImage(userId, "AVATAR", oldUser.Avatar)
+	}
+
+	// 如果更新了封面，删除旧封面
+	if req.Cover != "" && oldUser.Cover != "" && req.Cover != oldUser.Cover {
+		l.RemoveOldImage(userId, "COVER", oldUser.Cover)
 	}
 
 	return &types.UpdateUserInfoRes{
@@ -60,46 +68,46 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(req *types.UpdateUserInfoReq) (resp
 	}, nil
 }
 
-func (l *UpdateUserInfoLogic) RemoveUserAvatar(path string, userId string) error {
-	var upload []models.Upload
-	if err := l.svcCtx.
-		DB.
-		Model(&models.Upload{}).
-		Where("user_id = ? and type = ? and file_path != ?", userId, "USERAVATAR", path).
-		Find(&upload).
-		Error; err != nil {
+// RemoveOldImage 删除用户旧的头像/封面图片
+func (l *UpdateUserInfoLogic) RemoveOldImage(userId string, imageType string, oldPath string) {
+	// 跳过外部链接（QQ头像等）
+	if oldPath == "" || len(oldPath) > 4 && oldPath[:4] == "http" {
+		return
+	}
+
+	var upload models.Upload
+	if err := l.svcCtx.DB.Model(&models.Upload{}).
+		Where("user_id = ? AND type = ? AND file_path = ?", userId, imageType, oldPath).
+		First(&upload).Error; err != nil {
 		if errors.As(err, &gorm.ErrRecordNotFound) {
-			return nil
+			return
 		}
-		return err
+		l.Logger.Error("查询旧图片失败:", err)
+		return
 	}
 
-	if len(upload) == 0 {
-		return nil
+	// 删除数据库记录
+	if err := l.svcCtx.DB.Delete(&upload).Error; err != nil {
+		l.Logger.Error("删除旧图片记录失败:", err)
+		return
 	}
 
-	var willRemovePath []string
-	var ids []string
-	for _, u := range upload {
-		willRemovePath = append(willRemovePath, u.FilePath, u.OriginFilePath)
-		ids = append(ids, u.Id)
+	// 删除存储文件
+	var paths []string
+	if upload.FilePath != "" {
+		paths = append(paths, upload.FilePath)
+	}
+	if upload.OriginFilePath != "" {
+		paths = append(paths, upload.OriginFilePath)
 	}
 
-	if err := l.svcCtx.
-		DB.
-		Model(&models.Upload{}).
-		Delete(&models.Upload{}, ids).
-		Error; err != nil {
-		return err
+	if len(paths) > 0 {
+		_, err := l.svcCtx.UploadService.CosDelete(l.ctx, &uploadclient.ImageDeleteReq{
+			BucketName: "wallpaper",
+			Paths:      paths,
+		})
+		if err != nil {
+			l.Logger.Error("删除旧图片文件失败:", err)
+		}
 	}
-
-	_, err := l.svcCtx.UploadService.CosDelete(l.ctx, &uploadclient.ImageDeleteReq{
-		BucketName: "wallpaper",
-		Paths:      willRemovePath,
-	})
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

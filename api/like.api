@@ -120,3 +120,36 @@ service wallpaper_pc_backend {
     @handler RemoveAllLikeRecord
     get /like/record/remove/all returns (RemoveAllLikeRecordRes)
 }
+type (
+    UserLikePostListReq {
+        BasePage
+    }
+    UserLikePostListRes {
+        Base
+        Data UserLikePostListData `json:"data"`
+    }
+    UserLikePostListData {
+        BaseRecord
+        Records []UserLikePostListItem `json:"records"`
+    }
+    UserLikePostListItem {
+        BaseTime
+        Id string `json:"id"`
+        PostId string `json:"post_id"`
+        Title string `json:"title"`
+        Content string `json:"content"`
+        CoverPath string `json:"cover_path"`
+        LikeCount int64 `json:"like_count"`
+        CommentCount int64 `json:"comment_count"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: like
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler UserLikePostList
+    get /like/post/list (UserLikePostListReq) returns (UserLikePostListRes)
+}

@@ -1,0 +1,81 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    CommunityFeedReq {
+        BasePage
+        Sort string `form:"sort,optional"` // "hot" | "new", default "new"
+        Type string `form:"type,optional"` // "pc" | "moa", empty = all
+    }
+    CommunityFeedRes {
+        Base
+        Data CommunityFeedData `json:"data"`
+    }
+    CommunityFeedData {
+        BaseRecord
+        Records []CommunityFeedInfo `json:"records"`
+    }
+    CommunityFeedInfo {
+        BaseTime
+        Id string `json:"id"`
+        FileName string `json:"file_name"`
+        FilePath string `json:"file_path"`
+        W int `json:"w"`
+        H int `json:"h"`
+        Type string `json:"type"`
+        View int `json:"view"`
+        Download int `json:"download"`
+        LikeCount int64 `json:"like_count"`
+        UserInfo CommunityUserInfo `json:"user_info"`
+    }
+    CommunityUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+    }
+)
+
+type (
+    UserProfileReq {
+        UserId string `form:"user_id"`
+    }
+    UserProfileRes {
+        Base
+        Data UserProfileData `json:"data"`
+    }
+    UserProfileData {
+        UserInfo UserProfileInfo `json:"user_info"`
+        Stats UserProfileStats `json:"stats"`
+    }
+    UserProfileInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+        Cover string `json:"cover"`
+        Motto string `json:"motto"`
+    }
+    UserProfileStats {
+        UploadCount int64 `json:"upload_count"`
+        LikeCount int64 `json:"like_count"`
+        DownloadCount int64 `json:"download_count"`
+    }
+)
+
+@server(
+    group: community
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler CommunityFeed
+    get /community/feed (CommunityFeedReq) returns (CommunityFeedRes)
+}
+
+@server(
+    group: community
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler UserProfile
+    get /user/profile (UserProfileReq) returns (UserProfileRes)
+}

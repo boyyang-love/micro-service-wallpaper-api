@@ -12,6 +12,8 @@ import (
 	block "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/block"
 	carousel "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/carousel"
 	category "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/category"
+	comment "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/comment"
+	community "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/community"
 	daily "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/daily"
 	discover "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/discover"
 	download "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/download"
@@ -20,6 +22,7 @@ import (
 	home "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/home"
 	like "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/like"
 	login "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/login"
+	post "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/post"
 	recommend "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/recommend"
 	search "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/search"
 	sitmap "github.com/boyyang-love/micro-service-wallpaper-api/internal/handler/sitmap"
@@ -180,6 +183,85 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/comment/list",
+				Handler: comment.CommentListHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/comment/create",
+				Handler: comment.CommentCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/comment/delete",
+				Handler: comment.CommentDeleteHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/comment/review/list",
+				Handler: comment.CommentReviewListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/comment/review/update",
+				Handler: comment.CommentReviewUpdateHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/comment/user/list",
+				Handler: comment.UserCommentListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/community/feed",
+				Handler: community.CommunityFeedHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/user/profile",
+				Handler: community.UserProfileHandler(serverCtx),
+			},
+		},
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 
@@ -419,6 +501,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/like/post/list",
+				Handler: like.UserLikePostListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
 				Method:  http.MethodPost,
 				Path:    "/signin",
 				Handler: login.SignInHandler(serverCtx),
@@ -461,6 +555,61 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: login.SignInByWechatHandler(serverCtx),
 			},
 		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/post/detail",
+				Handler: post.PostDetailHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/post/feed",
+				Handler: post.PostFeedHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/post/create",
+				Handler: post.PostCreateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/post/delete",
+				Handler: post.PostDeleteHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/post/user/list",
+				Handler: post.UserPostListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/post/review/list",
+				Handler: post.PostReviewListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/post/review/update",
+				Handler: post.PostReviewUpdateHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),
 	)
 
@@ -675,6 +824,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/user/list",
 				Handler: user.ListUserHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/user/stats",
+				Handler: user.GetUserStatsHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

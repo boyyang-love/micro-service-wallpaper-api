@@ -37,7 +37,7 @@ func (l *DailyInfoLogic) DailyInfo(req *types.DailyInfoReq) (resp *types.DailyIn
 		First(&daily).Error; err != nil {
 		return &types.DailyInfoRes{
 			Base: types.Base{Code: 1, Msg: "ok"},
-			Data: nil,
+			Data: types.DailyInfoData{},
 		}, nil
 	}
 
@@ -91,7 +91,7 @@ func (l *DailyInfoLogic) DailyInfo(req *types.DailyInfoReq) (resp *types.DailyIn
 
 	return &types.DailyInfoRes{
 		Base: types.Base{Code: 1, Msg: "ok"},
-		Data: &types.DailyInfoData{
+		Data: types.DailyInfoData{
 			Id:             upload.Id,
 			FilePath:       upload.FilePath,
 			FileName:       upload.FileName,

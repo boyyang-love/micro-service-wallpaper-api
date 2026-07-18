@@ -26,3 +26,16 @@ func NewToken(g *JwtStruct, secretKey string, expire int64) (string, error) {
 
 	return claims.SignedString([]byte(secretKey))
 }
+
+func ParseToken(tokenString string, secretKey string) (*JwtStruct, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JwtStruct{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secretKey), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*JwtStruct); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, jwt.ErrTokenInvalidClaims
+}

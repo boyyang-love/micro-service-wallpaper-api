@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+
 	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
-	"io"
-	"net/http"
-	"net/url"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -203,19 +204,6 @@ func (l *SignInByQqLogic) CreateOrUpdate(openId string, userInfo *QQUserInfo) (e
 		} else {
 			return err
 		}
-	}
-
-	if err = l.svcCtx.
-		DB.
-		Model(&models.User{}).
-		Where("open_id = ?", openId).
-		Select("username", "avatar").
-		Updates(&models.User{
-			Username: userInfo.Nickname,
-			Avatar:   userInfo.Avatar,
-		}).
-		Error; err != nil {
-		return err
 	}
 
 	return err

@@ -95,3 +95,30 @@ service wallpaper_pc_backend {
     @handler ListUser
     get /user/list (UserListReq) returns (UserListRes)
 }
+
+// ===== 用户统计 =====
+
+type (
+    UserStatsReq {
+    }
+    UserStatsRes {
+        Base
+        Data UserStatsData `json:"data"`
+    }
+    UserStatsData {
+        PostCount int64 `json:"post_count"`
+        LikeReceivedCount int64 `json:"like_received_count"`
+        CommentCount int64 `json:"comment_count"`
+        DownloadCount int64 `json:"download_count"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: user
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler GetUserStats
+    get /user/stats (UserStatsReq) returns (UserStatsRes)
+}

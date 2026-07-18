@@ -1,0 +1,160 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+    CommentListReq {
+        BasePage
+        PostId string `form:"post_id"`
+    }
+    CommentListRes {
+        Base
+        Data CommentListData `json:"data"`
+    }
+    CommentListData {
+        BaseRecord
+        Records []CommentInfo `json:"records"`
+    }
+    CommentInfo {
+        BaseTime
+        Id string `json:"id"`
+        Content string `json:"content"`
+        UserInfo CommentUserInfo `json:"user_info"`
+    }
+    CommentUserInfo {
+        Id string `json:"id"`
+        Username string `json:"username"`
+        Avatar string `json:"avatar"`
+    }
+)
+
+type (
+    CommentCreateReq {
+        PostId string `json:"post_id"`
+        Content string `json:"content"`
+    }
+    CommentCreateRes {
+        Base
+        Data CommentCreateData `json:"data"`
+    }
+    CommentCreateData {
+        Id string `json:"id"`
+    }
+)
+
+type (
+    CommentDeleteReq {
+        Id string `json:"id"`
+    }
+    CommentDeleteRes {
+        Base
+    }
+)
+
+@server(
+    group: comment
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler CommentList
+    get /comment/list (CommentListReq) returns (CommentListRes)
+}
+
+@server(
+    jwt: Auth
+    group: comment
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler CommentCreate
+    post /comment/create (CommentCreateReq) returns (CommentCreateRes)
+
+    @handler CommentDelete
+    post /comment/delete (CommentDeleteReq) returns (CommentDeleteRes)
+}
+
+// ===== 管理端：评论审核 =====
+
+type (
+    CommentReviewListReq {
+        BasePage
+        Status int `form:"status,optional"` // 0=全部 2=待审核 1=已通过 -1=已拒绝
+    }
+    CommentReviewListRes {
+        Base
+        Data CommentReviewListData `json:"data"`
+    }
+    CommentReviewListData {
+        BaseRecord
+        Records []CommentReviewListItem `json:"records"`
+    }
+    CommentReviewListItem {
+        BaseTime
+        Id string `json:"id"`
+        PostId string `json:"post_id"`
+        PostTitle string `json:"post_title"`
+        Content string `json:"content"`
+        Status int `json:"status"`
+        RejectReason string `json:"reject_reason"`
+        UserInfo CommentUserInfo `json:"user_info"`
+    }
+)
+
+type (
+    CommentReviewUpdateReq {
+        Id string `json:"id"`
+        Status int `json:"status"` // 1=通过 -1=拒绝
+        RejectReason string `json:"reject_reason,optional"`
+    }
+    CommentReviewUpdateRes {
+        Base
+    }
+)
+
+@server(
+    jwt: Auth
+    group: comment
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler CommentReviewList
+    get /comment/review/list (CommentReviewListReq) returns (CommentReviewListRes)
+
+    @handler CommentReviewUpdate
+    post /comment/review/update (CommentReviewUpdateReq) returns (CommentReviewUpdateRes)
+}
+
+// ===== 用户端：我的评论列表 =====
+
+type (
+    UserCommentListReq {
+        BasePage
+    }
+    UserCommentListRes {
+        Base
+        Data UserCommentListData `json:"data"`
+    }
+    UserCommentListData {
+        BaseRecord
+        Records []UserCommentListItem `json:"records"`
+    }
+    UserCommentListItem {
+        BaseTime
+        Id string `json:"id"`
+        PostId string `json:"post_id"`
+        PostTitle string `json:"post_title"`
+        Content string `json:"content"`
+        Status int `json:"status"`
+        RejectReason string `json:"reject_reason"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: comment
+    timeout: 20s
+)
+service wallpaper_pc_backend {
+    @handler UserCommentList
+    get /comment/user/list (UserCommentListReq) returns (UserCommentListRes)
+}
