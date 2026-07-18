@@ -27,6 +27,18 @@ QqLoginConf:
   AppKey: QQAppKey
   RedirectURI: https://xxx.com/back
 
+# 微信小程序登录
+WechatLoginConf:
+  AppId: AppId
+  Secret: Secret
+
+# 跨域域名配置
+CorsOriginConf:
+  - "http://localhost:3000"
+  - "http://localhost:9527"
+  - "wails://wails.localhost:34115"
+  - "wails://wails"
+
 UploadRpc:
   Etcd:
     Hosts:
@@ -41,14 +53,14 @@ UserRpc:
     Key: user.rpc
   Timeout: 30000
 
-# 微信小程序登录
-WechatLoginConf:
-  AppId: AppId
-  Secret: Secret
 
-# 跨域域名配置
-CorsOriginConf:
-  - "http://localhost:3000"
-  - "http://localhost:9527"
-  - "wails://wails.localhost:34115"
-  - "wails://wails"
+#UploadRpc:
+#  Endpoints:
+#    - 127.0.0.1:8080
+#  Timeout: 30000
+#
+#UserRpc:
+#  Endpoints:
+#    - 127.0.0.1:8081
+#  Timeout: 30000
+

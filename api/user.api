@@ -8,6 +8,7 @@ type (
         Avatar string `json:"avatar,optional"`
         Cover string `json:"cover,optional"`
         Username string `json:"username,optional"`
+        Motto string `json:"motto,optional"`
     }
     UpdateUserInfoRes {
         Base

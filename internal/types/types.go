@@ -349,6 +349,14 @@ type DailyCreateRes struct {
 	Base
 }
 
+type DailyDeleteReq struct {
+	Id string `json:"id"`
+}
+
+type DailyDeleteRes struct {
+	Base
+}
+
 type DailyInfoData struct {
 	Id             string   `json:"id"`
 	FilePath       string   `json:"file_path"`
@@ -370,7 +378,7 @@ type DailyInfoReq struct {
 
 type DailyInfoRes struct {
 	Base
-	Data *DailyInfoData `json:"data,omitempty"`
+	Data *DailyInfoData `json:"data,optional"`
 }
 
 type DailyListData struct {
@@ -380,15 +388,15 @@ type DailyListData struct {
 
 type DailyListInfo struct {
 	BaseTime
-	DailyId  string `json:"daily_id"`
-	Id       string `json:"id"`
-	FilePath string `json:"file_path"`
-	FileName string `json:"file_name"`
-	Date     string `json:"date"`
-	Edition  int    `json:"edition"`
+	DailyId     string `json:"daily_id"`
+	Id          string `json:"id"`
+	FilePath    string `json:"file_path"`
+	FileName    string `json:"file_name"`
+	Date        string `json:"date"`
+	Edition     int    `json:"edition"`
 	Description string `json:"description"`
-	W        int    `json:"w"`
-	H        int    `json:"h"`
+	W           int    `json:"w"`
+	H           int    `json:"h"`
 }
 
 type DailyListReq struct {
@@ -1228,6 +1236,7 @@ type UpdateUserInfoReq struct {
 	Avatar   string `json:"avatar,optional"`
 	Cover    string `json:"cover,optional"`
 	Username string `json:"username,optional"`
+	Motto    string `json:"motto,optional"`
 }
 
 type UpdateUserInfoRes struct {
@@ -1329,44 +1338,36 @@ type UserLikeListRes struct {
 	Data UserLikeListData `json:"data"`
 }
 
-type DailyDeleteReq struct {
-	Id string `json:"id"`
+type UserListData struct {
+	BaseRecord
+	Records []UserListInfo `json:"records"`
 }
 
-type DailyDeleteRes struct {
+type UserListInfo struct {
+	BaseTime
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Account  string `json:"account"`
+	Avatar   string `json:"avatar"`
+	Role     string `json:"role"`
+	Address  string `json:"address"`
+	Tel      string `json:"tel"`
+	Email    string `json:"email"`
+	QQ       string `json:"qq"`
+	Wechat   string `json:"wechat"`
+	GitHub   string `json:"git_hub"`
+	Motto    string `json:"motto"`
+	Cover    string `json:"cover"`
+}
+
+type UserListReq struct {
+	BasePage
+	Username string `form:"username,optional"`
+	Account  string `form:"account,optional"`
+	Role     string `form:"role,optional"`
+}
+
+type UserListRes struct {
 	Base
+	Data UserListData `json:"data"`
 }
-
- type UserListReq struct {
- 	BasePage
- 	Username string `form:"username,optional"`
- 	Account  string `form:"account,optional"`
- 	Role     string `form:"role,optional"`
- }
- 
- type UserListInfo struct {
- 	BaseTime
- 	Id       string `json:"id"`
- 	Username string `json:"username"`
- 	Account  string `json:"account"`
- 	Avatar   string `json:"avatar"`
- 	Role     string `json:"role"`
- 	Address  string `json:"address"`
- 	Tel      string `json:"tel"`
- 	Email    string `json:"email"`
- 	QQ       string `json:"qq"`
- 	Wechat   string `json:"wechat"`
- 	GitHub   string `json:"git_hub"`
- 	Motto    string `json:"motto"`
- 	Cover    string `json:"cover"`
- }
- 
- type UserListData struct {
- 	BaseRecord
- 	Records []UserListInfo `json:"records"`
- }
- 
- type UserListRes struct {
- 	Base
- 	Data UserListData `json:"data"`
- }

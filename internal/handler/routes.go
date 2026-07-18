@@ -203,11 +203,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/daily/delete",
-				Handler: daily.DailyDeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/daily/create",
 				Handler: daily.DailyCreateHandler(serverCtx),
 			},
@@ -215,6 +210,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/daily/update",
 				Handler: daily.DailyUpdateHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/daily/delete",
+				Handler: daily.DailyDeleteHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
@@ -657,11 +664,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/info",
 				Handler: user.GetUserInfoHandler(serverCtx),
 			},
-				{
-					Method:  http.MethodGet,
-					Path:    "/user/list",
-					Handler: user.ListUserHandler(serverCtx),
-				},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/user/list",
+				Handler: user.ListUserHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(20000*time.Millisecond),

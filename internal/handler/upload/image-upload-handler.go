@@ -27,6 +27,7 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
+
 		userid := fmt.Sprintf("%s", r.Context().Value("Id"))
 
 		file, fileHeader, err := r.FormFile("file")
@@ -95,8 +96,6 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				httpx.ErrorCtx(r.Context(), w, err)
 				return
 			}
-
-			fmt.Println("xxxyyyyzzzjjjj")
 
 			uploadInfo := models.Upload{
 				Hash:           imageUpload.Data.OriETag,

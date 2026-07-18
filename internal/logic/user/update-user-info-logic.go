@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 	"github.com/boyyang-love/micro-service-wallpaper-rpc/upload/uploadclient"
 	"gorm.io/gorm"
@@ -39,6 +40,7 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(req *types.UpdateUserInfoReq) (resp
 			Avatar:   req.Avatar,
 			Cover:    req.Cover,
 			Username: req.Username,
+			Motto:    req.Motto,
 		}).
 		Error; err != nil {
 		return nil, err

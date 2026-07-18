@@ -3,6 +3,7 @@ package download
 import (
 	"context"
 	"fmt"
+
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
@@ -51,6 +52,7 @@ func (l *UserDownloadListLogic) UserDownloadList(req *types.DownlaodUserListReq)
 
 	DB := l.svcCtx.
 		DB.
+		Group("download_id").
 		Order("updated desc").
 		Preload("Upload", func(db *gorm.DB) *gorm.DB {
 			db = db.Select("id", "file_path", "file_name", "w", "h", "type")

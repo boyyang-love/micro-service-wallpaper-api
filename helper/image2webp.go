@@ -2,7 +2,8 @@ package helper
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
+
 	"github.com/nickalie/go-webpbin"
 )
 
@@ -23,7 +24,7 @@ func Image2Webp(fileBytes *[]byte, quality uint) (compressedImage *CompressedIma
 		Input(bytes.NewReader(*fileBytes)).
 		Output(buf).
 		Run(); err != nil {
-		return nil, errors.New("图片转为webp格式失败")
+		return nil, fmt.Errorf("图片转为webp格式失败: %v", err)
 	}
 
 	reader := bytes.NewReader(buf.Bytes())
