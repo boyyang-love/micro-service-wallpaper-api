@@ -57,15 +57,15 @@ func (l *DailyListLogic) DailyList(req *types.DailyListReq) (resp *types.DailyLi
 				Created: d.Created,
 				Updated: d.Updated,
 			},
-			Id:       upload.Id,
-			DailyId:  d.Id,
-			FilePath: upload.FilePath,
-			FileName: upload.FileName,
-			Date:     d.Date,
-			Edition:  d.Edition,
+			Id:          upload.Id,
+			DailyId:     d.Id,
+			FilePath:    upload.FilePath,
+			FileName:    upload.FileName,
+			Date:        d.Date,
+			Edition:     d.Edition,
 			Description: d.Description,
-			W:        upload.W,
-			H:        upload.H,
+			W:           upload.W,
+			H:           upload.H,
 		})
 	}
 

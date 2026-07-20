@@ -3,10 +3,10 @@ package download
 import (
 	"context"
 	"fmt"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -808,6 +808,7 @@ type ImageInfo struct {
 	Download       int             `json:"download"`
 	View           int             `json:"view"`
 	Like           int             `json:"like"`
+	IsLiked        bool            `json:"is_liked"`
 	Tags           []TagInfo       `json:"tags"`
 	Category       []CategoryInfo  `json:"category"`
 	Recommend      []RecommendInfo `json:"recommend"`
@@ -1551,6 +1552,16 @@ type UserDownloadAndLikeSummaryData struct {
 type UserDownloadAndLikeSummaryRes struct {
 	Base
 	Data UserDownloadAndLikeSummaryData `json:"data"`
+}
+
+type UserImageListReq struct {
+	BasePage
+	Type string `form:"type,optional"`
+}
+
+type UserImageListRes struct {
+	Base
+	Data ImageInfoResdata `json:"data"`
 }
 
 type UserInfoReq struct {

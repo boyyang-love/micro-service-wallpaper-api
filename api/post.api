@@ -3,166 +3,166 @@ syntax = "v1"
 import "base.api"
 
 type (
-    PostFeedReq {
-        BasePage
-        Sort string `form:"sort,optional"` // "hot" | "new", default "new"
-    }
-    PostFeedRes {
-        Base
-        Data PostFeedData `json:"data"`
-    }
-    PostFeedData {
-        BaseRecord
-        Records []PostFeedInfo `json:"records"`
-    }
-    PostFeedInfo {
-        BaseTime
-        Id string `json:"id"`
-        Title string `json:"title"`
-        Content string `json:"content"`
-        Images []PostImageInfo `json:"images"`
-        UserInfo PostUserInfo `json:"user_info"`
-        LikeCount int64 `json:"like_count"`
-        IsLiked bool `json:"is_liked"`
-        CommentCount int64 `json:"comment_count"`
-        Status int `json:"status"`
-        RejectReason string `json:"reject_reason"`
-    }
-    PostImageInfo {
-        Id string `json:"id"`
-        FilePath string `json:"file_path"`
-        FileName string `json:"file_name"`
-        W int `json:"w"`
-        H int `json:"h"`
-    }
-    PostUserInfo {
-        Id string `json:"id"`
-        Username string `json:"username"`
-        Avatar string `json:"avatar"`
-    }
+	PostFeedReq {
+		BasePage
+		Sort string `form:"sort,optional"` // "hot" | "new", default "new"
+	}
+	PostFeedRes {
+		Base
+		Data PostFeedData `json:"data"`
+	}
+	PostFeedData {
+		BaseRecord
+		Records []PostFeedInfo `json:"records"`
+	}
+	PostFeedInfo {
+		BaseTime
+		Id           string          `json:"id"`
+		Title        string          `json:"title"`
+		Content      string          `json:"content"`
+		Images       []PostImageInfo `json:"images"`
+		UserInfo     PostUserInfo    `json:"user_info"`
+		LikeCount    int64           `json:"like_count"`
+		IsLiked      bool            `json:"is_liked"`
+		CommentCount int64           `json:"comment_count"`
+		Status       int             `json:"status"`
+		RejectReason string          `json:"reject_reason"`
+	}
+	PostImageInfo {
+		Id       string `json:"id"`
+		FilePath string `json:"file_path"`
+		FileName string `json:"file_name"`
+		W        int    `json:"w"`
+		H        int    `json:"h"`
+	}
+	PostUserInfo {
+		Id       string `json:"id"`
+		Username string `json:"username"`
+		Avatar   string `json:"avatar"`
+	}
 )
 
 type (
-    PostDetailReq {
-        Id string `form:"id"`
-    }
-    PostDetailRes {
-        Base
-        Data PostFeedInfo `json:"data"`
-    }
+	PostDetailReq {
+		Id string `form:"id"`
+	}
+	PostDetailRes {
+		Base
+		Data PostFeedInfo `json:"data"`
+	}
 )
 
 type (
-    PostCreateReq {
-        Title string `json:"title"`
-        Content string `json:"content,optional"`
-        ImageIds string `json:"image_ids"` // 逗号分隔
-    }
-    PostCreateRes {
-        Base
-        Data PostCreateData `json:"data"`
-    }
-    PostCreateData {
-        Id string `json:"id"`
-    }
+	PostCreateReq {
+		Title    string `json:"title"`
+		Content  string `json:"content,optional"`
+		ImageIds string `json:"image_ids"` // 逗号分隔
+	}
+	PostCreateRes {
+		Base
+		Data PostCreateData `json:"data"`
+	}
+	PostCreateData {
+		Id string `json:"id"`
+	}
 )
 
 type (
-    PostDeleteReq {
-        Id string `json:"id"`
-    }
-    PostDeleteRes {
-        Base
-    }
+	PostDeleteReq {
+		Id string `json:"id"`
+	}
+	PostDeleteRes {
+		Base
+	}
 )
 
 type (
-    UserPostListReq {
-        BasePage
-        UserId string `form:"user_id"`
-    }
-    UserPostListRes {
-        Base
-        Data PostFeedData `json:"data"`
-    }
+	UserPostListReq {
+		BasePage
+		UserId string `form:"user_id"`
+	}
+	UserPostListRes {
+		Base
+		Data PostFeedData `json:"data"`
+	}
 )
 
-@server(
-    group: "post"
-    timeout: 20s
+@server (
+	group:   "post"
+	timeout: 20s
 )
 service wallpaper_pc_backend {
-    @handler PostFeed
-    get /post/feed (PostFeedReq) returns (PostFeedRes)
+	@handler PostFeed
+	get /post/feed (PostFeedReq) returns (PostFeedRes)
 
-    @handler PostDetail
-    get /post/detail (PostDetailReq) returns (PostDetailRes)
+	@handler PostDetail
+	get /post/detail (PostDetailReq) returns (PostDetailRes)
+
+	@handler UserPostList
+	get /post/user/list (UserPostListReq) returns (UserPostListRes)
 }
 
-@server(
-    jwt: Auth
-    group: "post"
-    timeout: 20s
+@server (
+	jwt:     Auth
+	group:   "post"
+	timeout: 20s
 )
 service wallpaper_pc_backend {
-    @handler PostCreate
-    post /post/create (PostCreateReq) returns (PostCreateRes)
+	@handler PostCreate
+	post /post/create (PostCreateReq) returns (PostCreateRes)
 
-    @handler PostDelete
-    post /post/delete (PostDeleteReq) returns (PostDeleteRes)
-
-    @handler UserPostList
-    get /post/user/list (UserPostListReq) returns (UserPostListRes)
+	@handler PostDelete
+	post /post/delete (PostDeleteReq) returns (PostDeleteRes)
 }
 
 // ===== 管理端：帖子审核 =====
-
 type (
-    PostReviewListReq {
-        BasePage
-        Status int `form:"status,optional"` // 0=全部 2=待审核 1=已通过 -1=已拒绝
-    }
-    PostReviewListRes {
-        Base
-        Data PostReviewListData `json:"data"`
-    }
-    PostReviewListData {
-        BaseRecord
-        Records []PostReviewListItem `json:"records"`
-    }
-    PostReviewListItem {
-        BaseTime
-        Id string `json:"id"`
-        Title string `json:"title"`
-        Content string `json:"content"`
-        ImageIds string `json:"image_ids"`
-        Images []PostImageInfo `json:"images"`
-        Status int `json:"status"`
-        RejectReason string `json:"reject_reason"`
-        UserInfo PostUserInfo `json:"user_info"`
-    }
+	PostReviewListReq {
+		BasePage
+		Status int `form:"status,optional"` // 0=全部 2=待审核 1=已通过 -1=已拒绝
+	}
+	PostReviewListRes {
+		Base
+		Data PostReviewListData `json:"data"`
+	}
+	PostReviewListData {
+		BaseRecord
+		Records []PostReviewListItem `json:"records"`
+	}
+	PostReviewListItem {
+		BaseTime
+		Id           string          `json:"id"`
+		Title        string          `json:"title"`
+		Content      string          `json:"content"`
+		ImageIds     string          `json:"image_ids"`
+		Images       []PostImageInfo `json:"images"`
+		Status       int             `json:"status"`
+		RejectReason string          `json:"reject_reason"`
+		UserInfo     PostUserInfo    `json:"user_info"`
+	}
 )
 
 type (
-    PostReviewUpdateReq {
-        Id string `json:"id"`
-        Status int `json:"status"` // 1=通过 -1=拒绝
-        RejectReason string `json:"reject_reason,optional"`
-    }
-    PostReviewUpdateRes {
-        Base
-    }
+	PostReviewUpdateReq {
+		Id           string `json:"id"`
+		Status       int    `json:"status"` // 1=通过 -1=拒绝
+		RejectReason string `json:"reject_reason,optional"`
+	}
+	PostReviewUpdateRes {
+		Base
+	}
 )
 
-@server(
-    jwt: Auth
-    group: post
-    timeout: 20s
+@server (
+	jwt:     Auth
+	group:   "post"
+	timeout: 20s
 )
 service wallpaper_pc_backend {
-    @handler PostReviewList
-    get /post/review/list (PostReviewListReq) returns (PostReviewListRes)
+	@handler PostReviewList
+	get /post/review/list (PostReviewListReq) returns (PostReviewListRes)
 
-    @handler PostReviewUpdate
-    post /post/review/update (PostReviewUpdateReq) returns (PostReviewUpdateRes)
+	@handler PostReviewUpdate
+	post /post/review/update (PostReviewUpdateReq) returns (PostReviewUpdateRes)
 }
+

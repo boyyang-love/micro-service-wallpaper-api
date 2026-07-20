@@ -534,6 +534,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/signin/wechat",
+				Handler: login.SignInByWechatHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/signup",
 				Handler: login.SignUpHandler(serverCtx),
 			},
@@ -550,17 +555,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
-				Path:    "/signin/wechat",
-				Handler: login.SignInByWechatHandler(serverCtx),
-			},
-		},
-		rest.WithTimeout(20000*time.Millisecond),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
 				Method:  http.MethodGet,
 				Path:    "/post/detail",
 				Handler: post.PostDetailHandler(serverCtx),
@@ -569,6 +563,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/post/feed",
 				Handler: post.PostFeedHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/post/user/list",
+				Handler: post.UserPostListHandler(serverCtx),
 			},
 		},
 		rest.WithTimeout(20000*time.Millisecond),
@@ -585,11 +584,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/post/delete",
 				Handler: post.PostDeleteHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/post/user/list",
-				Handler: post.UserPostListHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
@@ -792,6 +786,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(50000*time.Millisecond),
 		rest.WithMaxBytes(52428800),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/image/user/list",
+				Handler: upload.UserImageListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(20000*time.Millisecond),
 	)
 
 	server.AddRoutes(

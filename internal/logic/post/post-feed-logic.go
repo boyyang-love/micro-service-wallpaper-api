@@ -3,6 +3,7 @@ package post
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
@@ -41,7 +42,13 @@ func (l *PostFeedLogic) PostFeed(req *types.PostFeedReq, authHeader string) (res
 
 	switch req.Sort {
 	case "hot":
-		db = db.Order("created DESC")
+		// 热度算法：点赞数 * 3 + 评论数 * 2 + 最近7天内加10分
+		db = db.Select(`posts.*, 
+			((SELECT COUNT(*) FROM likes WHERE likes.upload_id = posts.id AND status = true) * 3 + 
+			 (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id AND status = 1) * 2 + 
+			 CASE WHEN posts.created > ? THEN 10 ELSE 0 END) as hot_score`, 
+			getWeekAgoTimestamp()).
+			Order("hot_score DESC, created DESC")
 	default:
 		db = db.Order("created DESC")
 	}
@@ -109,6 +116,11 @@ func (l *PostFeedLogic) PostFeed(req *types.PostFeedReq, authHeader string) (res
 			Records: records,
 		},
 	}, nil
+}
+
+// getWeekAgoTimestamp 获取7天前的时间戳（毫秒）
+func getWeekAgoTimestamp() int64 {
+	return time.Now().AddDate(0, 0, -7).UnixMilli()
 }
 
 func (l *PostFeedLogic) parseUserId(authHeader string) string {

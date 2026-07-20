@@ -40,11 +40,24 @@ func (l *UserPostListLogic) UserPostList(req *types.UserPostListReq) (resp *type
 		req.Limit = 20
 	}
 
+	// 获取当前登录用户ID（可能为空）
+	userId := fmt.Sprintf("%s", l.ctx.Value("Id"))
+	
+	// 判断是否是查看自己的帖子
+	isSelf := userId != "" && userId != "<nil>" && userId == req.UserId
+
+	// 构建查询条件
+	query := l.svcCtx.DB.Model(&models.Post{}).Where("user_id = ?", req.UserId)
+	
+	// 如果不是查看自己的帖子，只返回已审核通过的
+	if !isSelf {
+		query = query.Where("status = ?", 1)
+	}
+
 	var posts []models.Post
 	var count int64
 
-	if err = l.svcCtx.DB.Model(&models.Post{}).
-		Where("user_id = ?", req.UserId).
+	if err = query.
 		Order("created DESC").
 		Offset((req.Page - 1) * req.Limit).
 		Limit(req.Limit).
@@ -54,8 +67,6 @@ func (l *UserPostListLogic) UserPostList(req *types.UserPostListReq) (resp *type
 		Error; err != nil {
 		return nil, err
 	}
-
-	userId := fmt.Sprintf("%s", l.ctx.Value("Id"))
 
 	records := make([]types.PostFeedInfo, 0, len(posts))
 	for _, p := range posts {
@@ -121,8 +132,8 @@ func (l *UserPostListLogic) UserPostList(req *types.UserPostListReq) (resp *type
 			UserInfo:     userInfo,
 			LikeCount:    likeCount,
 			CommentCount: commentCount,
-			Status:        p.Status,
-			RejectReason:  p.RejectReason,
+			Status:       p.Status,
+			RejectReason: p.RejectReason,
 			IsLiked:      isLiked,
 		})
 	}

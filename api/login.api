@@ -104,6 +104,25 @@ type (
     }
 )
 
+type (
+    SignInByWechatReq {
+        Code string `json:"code"`
+    }
+    SignInByWechatRes {
+        Base
+        Data SignInByWechatResData `json:"data"`
+    }
+    SignInByWechatResData {
+        Token    string                 `json:"token"`
+        UserInfo SignInByWechatUserInfo `json:"user_info"`
+    }
+    SignInByWechatUserInfo {
+        Id       string `json:"id"`
+        Username string `json:"username"`
+        Avatar   string `json:"avatar"`
+    }
+)
+
 @server(
     group: login
     maxBytes: 20971520
@@ -127,33 +146,7 @@ service wallpaper_pc_backend {
 
     @handler SignInByApple
     post /signin/apple (SignInByAppleReq) returns (SignInByAppleRes)
-}
 
-
-type (
-    SignInByWechatReq {
-        Code string `json:"code"`
-    }
-    SignInByWechatRes {
-        Base
-        Data SignInByWechatResData `json:"data"`
-    }
-    SignInByWechatResData {
-        Token    string                 `json:"token"`
-        UserInfo SignInByWechatUserInfo `json:"user_info"`
-    }
-    SignInByWechatUserInfo {
-        Id       string `json:"id"`
-        Username string `json:"username"`
-        Avatar   string `json:"avatar"`
-    }
-)
-
-@server(
-    group: login
-    timeout: 20s
-)
-service wallpaper_pc_backend {
     @handler SignInByWechat
     post /signin/wechat (SignInByWechatReq) returns (SignInByWechatRes)
 }

@@ -93,7 +93,7 @@ func (l *DailyInfoLogic) DailyInfo(req *types.DailyInfoReq) (resp *types.DailyIn
 		Base: types.Base{Code: 1, Msg: "ok"},
 		Data: types.DailyInfoData{
 			Id:             upload.Id,
-			FilePath:       upload.FilePath,
+			FilePath:       upload.OriginFilePath,
 			FileName:       upload.FileName,
 			W:              upload.W,
 			H:              upload.H,

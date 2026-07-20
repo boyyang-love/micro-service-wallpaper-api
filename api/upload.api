@@ -8,252 +8,272 @@ import "group.api"
 import "album.api"
 
 type (
-    ImageUploadReq {
-        FileName string `form:"file_name"`
-        Type string `form:"type,optional"`
-        RootDir string `form:"root_dir"`
-        Dir string `form:"dir"`
-        BucketName string `form:"bucket_name"`
-        Quality uint32 `form:"quality"`
-        Status int `form:"status"`
-        Tags string `form:"tags,optional"`
-        Category string `form:"category,optional"`
-        Recommend string `form:"recommend,optional"`
-        Group string `form:"group,optional"`
-        Album string `form:"album,optional"`
-    }
-    ImageUploadRes {
-        Base
-        Data ImageUploadResdata `json:"data"`
-    }
-    ImageUploadResdata {
-        Id string `json:"id"`
-        FileName string `json:"file_name"`
-        Path string `json:"path"`
-        OriginPath string `json:"origin_path"`
-    }
+	ImageUploadReq {
+		FileName   string `form:"file_name"`
+		Type       string `form:"type,optional"`
+		RootDir    string `form:"root_dir"`
+		Dir        string `form:"dir"`
+		BucketName string `form:"bucket_name"`
+		Quality    uint32 `form:"quality"`
+		Status     int    `form:"status"`
+		Tags       string `form:"tags,optional"`
+		Category   string `form:"category,optional"`
+		Recommend  string `form:"recommend,optional"`
+		Group      string `form:"group,optional"`
+		Album      string `form:"album,optional"`
+	}
+	ImageUploadRes {
+		Base
+		Data ImageUploadResdata `json:"data"`
+	}
+	ImageUploadResdata {
+		Id         string `json:"id"`
+		FileName   string `json:"file_name"`
+		Path       string `json:"path"`
+		OriginPath string `json:"origin_path"`
+	}
 )
 
 type (
-    ImageInfoReq {
-        BasePage
-        FileName string `form:"file_name,optional"`
-        Type string `form:"type,optional"`
-        Status int `form:"status,optional"`
-    }
-    ImageInfoRes {
-        Base
-        Data ImageInfoResdata `json:"data"`
-    }
-    ImageInfoResdata {
-        BaseRecord
-        Records []ImageInfo `json:"records"`
-    }
-    ImageInfo {
-        BaseTime
-        Id string `json:"id"`
-        Hash string `json:"hash"`
-        FileName string `json:"file_name"`
-        OriginFileSize int64 `json:"origin_file_size"`
-        FileSize int64 `json:"file_size"`
-        OriginType string `json:"origin_type"`
-        FileType string `json:"file_type"`
-        OriginFilePath string `json:"origin_file_path"`
-        FilePath string `json:"file_path"`
-        Type string `json:"type"`
-        W int `json:"w"`
-        H int `json:"h"`
-        Status int `json:"status"`
-        UserId string `json:"user_id"`
-        Download int `json:"download"`
-        View int `json:"view"`
-        Like int `json:"like"`
-        Tags []TagInfo `json:"tags"`
-        Category []CategoryInfo `json:"category"`
-        Recommend []RecommendInfo `json:"recommend"`
-        Group []GroupListInfo `json:"group"`
-        Album []Album `json:"album"`
-    }
+	ImageInfoReq {
+		BasePage
+		FileName string `form:"file_name,optional"`
+		Type     string `form:"type,optional"`
+		Status   int    `form:"status,optional"`
+	}
+	ImageInfoRes {
+		Base
+		Data ImageInfoResdata `json:"data"`
+	}
+	ImageInfoResdata {
+		BaseRecord
+		Records []ImageInfo `json:"records"`
+	}
+	ImageInfo {
+		BaseTime
+		Id             string          `json:"id"`
+		Hash           string          `json:"hash"`
+		FileName       string          `json:"file_name"`
+		OriginFileSize int64           `json:"origin_file_size"`
+		FileSize       int64           `json:"file_size"`
+		OriginType     string          `json:"origin_type"`
+		FileType       string          `json:"file_type"`
+		OriginFilePath string          `json:"origin_file_path"`
+		FilePath       string          `json:"file_path"`
+		Type           string          `json:"type"`
+		W              int             `json:"w"`
+		H              int             `json:"h"`
+		Status         int             `json:"status"`
+		UserId         string          `json:"user_id"`
+		Download       int             `json:"download"`
+		View           int             `json:"view"`
+		Like           int             `json:"like"`
+		IsLiked        bool            `json:"is_liked"`
+		Tags           []TagInfo       `json:"tags"`
+		Category       []CategoryInfo  `json:"category"`
+		Recommend      []RecommendInfo `json:"recommend"`
+		Group          []GroupListInfo `json:"group"`
+		Album          []Album         `json:"album"`
+	}
 )
 
 type (
-    ImageInfoByIdReq {
-        Id string `form:"id"`
-    }
-    ImageInfoByIdRes {
-        Base
-        Data ImageInfo `json:"data"`
-    }
+	ImageInfoByIdReq {
+		Id string `form:"id"`
+	}
+	ImageInfoByIdRes {
+		Base
+		Data ImageInfo `json:"data"`
+	}
 )
 
 type (
-    ImageInfoByCategoryReq {
-        BasePage
-        Type string `form:"type"`
-        SortType string `form:"sort_type,optional"`
-        CategoryId string `form:"category_id,optional"`
-    }
-
-    ImageInfoByCategoryRes {
-        Base
-        Data ImageInfoByCategoryResdata `json:"data"`
-    }
-    ImageInfoByCategoryResdata {
-        BaseRecord
-        Records []ImageInfoCategory `json:"records"`
-    }
-    ImageInfoCategory {
-        BaseTime
-        Id string `json:"id"`
-        FileName string `json:"file_name"`
-        FilePath string `json:"file_path"`
-        W int `json:"w"`
-        H int `json:"h"`
-        Download int `json:"download"`
-        View int `json:"view"`
-    }
+	ImageInfoByCategoryReq {
+		BasePage
+		Type       string `form:"type"`
+		SortType   string `form:"sort_type,optional"`
+		CategoryId string `form:"category_id,optional"`
+	}
+	ImageInfoByCategoryRes {
+		Base
+		Data ImageInfoByCategoryResdata `json:"data"`
+	}
+	ImageInfoByCategoryResdata {
+		BaseRecord
+		Records []ImageInfoCategory `json:"records"`
+	}
+	ImageInfoCategory {
+		BaseTime
+		Id       string `json:"id"`
+		FileName string `json:"file_name"`
+		FilePath string `json:"file_path"`
+		W        int    `json:"w"`
+		H        int    `json:"h"`
+		Download int    `json:"download"`
+		View     int    `json:"view"`
+	}
 )
 
 type (
-    ImageInfoByHotReq {
-        BasePage
-        Type string `form:"type"`
-    }
-    ImageInfoByHotRes {
-        Base
-        Data ImageInfoByHotResdata `json:"data"`
-    }
-    ImageInfoByHotResdata {
-        BaseRecord
-        Records []ImageInfoHot `json:"records"`
-    }
-    ImageInfoHot {
-        BaseTime
-        Id string `json:"id"`
-        FileName string `json:"file_name"`
-        FilePath string `json:"file_path"`
-        W int `json:"w"`
-        H int `json:"h"`
-    }
+	ImageInfoByHotReq {
+		BasePage
+		Type string `form:"type"`
+	}
+	ImageInfoByHotRes {
+		Base
+		Data ImageInfoByHotResdata `json:"data"`
+	}
+	ImageInfoByHotResdata {
+		BaseRecord
+		Records []ImageInfoHot `json:"records"`
+	}
+	ImageInfoHot {
+		BaseTime
+		Id       string `json:"id"`
+		FileName string `json:"file_name"`
+		FilePath string `json:"file_path"`
+		W        int    `json:"w"`
+		H        int    `json:"h"`
+	}
 )
 
 type (
-    ImageUpdateReq {
-        Id string `json:"id"`
-        FileName string `json:"file_name"`
-        Type string `json:"type"`
-        Status int `json:"status"`
-        Tags []string `json:"tags,optional"`
-        Category []string `json:"category,optional"`
-        Recommend []string `json:"recommend,optional"`
-        Group []string `json:"group,optional"`
-        Album []string  `json:"album,optional"`
-    }
-    ImageUpdateRes {
-        Base
-    }
+	ImageUpdateReq {
+		Id        string   `json:"id"`
+		FileName  string   `json:"file_name"`
+		Type      string   `json:"type"`
+		Status    int      `json:"status"`
+		Tags      []string `json:"tags,optional"`
+		Category  []string `json:"category,optional"`
+		Recommend []string `json:"recommend,optional"`
+		Group     []string `json:"group,optional"`
+		Album     []string `json:"album,optional"`
+	}
+	ImageUpdateRes {
+		Base
+	}
 )
 
 type (
-    ImageDeleteReq {
-        BucketName string `json:"bucket_name"`
-        Id string `json:"id"`
-        Paths []string `json:"paths"`
-    }
-    ImageDeleteRes {
-        Base
-    }
+	ImageDeleteReq {
+		BucketName string   `json:"bucket_name"`
+		Id         string   `json:"id"`
+		Paths      []string `json:"paths"`
+	}
+	ImageDeleteRes {
+		Base
+	}
 )
 
 type (
-    ImageSummaryUpdateReq {
-        Id string `json:"id"`
-        Type string `json:"type,options=download|view"`
-    }
-    ImageSummaryUpdateRes {
-        Base
-    }
+	ImageSummaryUpdateReq {
+		Id   string `json:"id"`
+		Type string `json:"type,options=download|view"`
+	}
+	ImageSummaryUpdateRes {
+		Base
+	}
 )
 
 type (
-    ImageInfoByGroupReq {
-        GroupId string `form:"group_id"`
-        Type string `form:"type"`
-    }
-
-    ImageInfoByGroupRes {
-        Base
-        Data ImageInfoByGroupResdata `json:"data"`
-    }
-    ImageInfoByGroupResdata {
-        Records []ImageInfoGroup `json:"records"`
-    }
-    ImageInfoGroup {
-        BaseTime
-        Id string `json:"id"`
-        FileName string `json:"file_name"`
-        FilePath string `json:"file_path"`
-        W int `json:"w"`
-        H int `json:"h"`
-    }
+	ImageInfoByGroupReq {
+		GroupId string `form:"group_id"`
+		Type    string `form:"type"`
+	}
+	ImageInfoByGroupRes {
+		Base
+		Data ImageInfoByGroupResdata `json:"data"`
+	}
+	ImageInfoByGroupResdata {
+		Records []ImageInfoGroup `json:"records"`
+	}
+	ImageInfoGroup {
+		BaseTime
+		Id       string `json:"id"`
+		FileName string `json:"file_name"`
+		FilePath string `json:"file_path"`
+		W        int    `json:"w"`
+		H        int    `json:"h"`
+	}
 )
 
 type (
-    ImageSummaryReq{}
-    ImageSummaryRes {
-        Base
-        Data ImageSummaryResdata `json:"data"`
-    }
-    ImageSummaryResdata {
-        Pc int64 `json:"pc"`
-        Moa int64 `json:"moa"`
-    }
+	ImageSummaryReq  {}
+	ImageSummaryRes {
+		Base
+		Data ImageSummaryResdata `json:"data"`
+	}
+	ImageSummaryResdata {
+		Pc  int64 `json:"pc"`
+		Moa int64 `json:"moa"`
+	}
 )
 
-@server(
-    group: upload
-    timeout:  30s
+@server (
+	group:   upload
+	timeout: 30s
 )
 service wallpaper_pc_backend {
-    @handler ImageSummary
-    get /image/summary (ImageSummaryReq) returns (ImageSummaryRes)
+	@handler ImageSummary
+	get /image/summary (ImageSummaryReq) returns (ImageSummaryRes)
 
-    @handler ImageInfo
-    get /image/info (ImageInfoReq) returns (ImageInfoRes)
+	@handler ImageInfo
+	get /image/info (ImageInfoReq) returns (ImageInfoRes)
 
-    @handler ImageInfoById
-    get /image/info/id (ImageInfoByIdReq) returns (ImageInfoByIdRes)
+	@handler ImageInfoById
+	get /image/info/id (ImageInfoByIdReq) returns (ImageInfoByIdRes)
 
-    @handler ImageInfoByCategory
-    get /image/info/category (ImageInfoByCategoryReq) returns (ImageInfoByCategoryRes)
+	@handler ImageInfoByCategory
+	get /image/info/category (ImageInfoByCategoryReq) returns (ImageInfoByCategoryRes)
 
-    @handler ImageInfoByHot
-    get /image/info/hot (ImageInfoByHotReq) returns (ImageInfoByHotRes)
+	@handler ImageInfoByHot
+	get /image/info/hot (ImageInfoByHotReq) returns (ImageInfoByHotRes)
 
-    @handler ImageSummaryUpdate
-    post /image/summary/update (ImageSummaryUpdateReq) returns (ImageSummaryUpdateRes)
+	@handler ImageSummaryUpdate
+	post /image/summary/update (ImageSummaryUpdateReq) returns (ImageSummaryUpdateRes)
 
-    @handler ImageInfoByGroup
-    get /image/info/group (ImageInfoByGroupReq) returns (ImageInfoByGroupRes)
+	@handler ImageInfoByGroup
+	get /image/info/group (ImageInfoByGroupReq) returns (ImageInfoByGroupRes)
 }
 
-@server(
-    jwt: Auth
-    group: upload
-    maxBytes: 52428800
-    timeout:  50s
+@server (
+	jwt:      Auth
+	group:    upload
+	maxBytes: 52428800
+	timeout:  50s
 )
 service wallpaper_pc_backend {
-    @handler ImageUpload
-    post /image/upload (ImageUploadReq) returns (ImageUploadRes)
+	@handler ImageUpload
+	post /image/upload (ImageUploadReq) returns (ImageUploadRes)
 
-    @handler ImageUploadByBytes
-    post /image/upload/bytes (ImageUploadReq) returns (ImageUploadRes)
+	@handler ImageUploadByBytes
+	post /image/upload/bytes (ImageUploadReq) returns (ImageUploadRes)
 
-    @handler ImageUpdate
-    post /image/update (ImageUpdateReq) returns (ImageUpdateRes)
+	@handler ImageUpdate
+	post /image/update (ImageUpdateReq) returns (ImageUpdateRes)
 
-    @handler ImageDelete
-    post /image/delete (ImageDeleteReq) returns (ImageDeleteRes)
+	@handler ImageDelete
+	post /image/delete (ImageDeleteReq) returns (ImageDeleteRes)
+}
+
+type (
+	UserImageListReq {
+		BasePage
+		Type string `form:"type,optional"`
+	}
+	UserImageListRes {
+		Base
+		Data ImageInfoResdata `json:"data"`
+	}
+)
+
+@server (
+	jwt:     Auth
+	group:   upload
+	timeout: 20s
+)
+service wallpaper_pc_backend {
+	@handler UserImageList
+	get /image/user/list (UserImageListReq) returns (UserImageListRes)
 }
 

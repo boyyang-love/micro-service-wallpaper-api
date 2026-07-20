@@ -3,9 +3,10 @@ package login
 import (
 	"context"
 	"fmt"
-	uuid "github.com/satori/go.uuid"
 	"net/url"
 	"strings"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
@@ -37,7 +38,7 @@ func (l *SignInByQqUrlLogic) SignInByQqUrl() (resp *types.SignInByQqUrlRes, err 
 	params.Add("client_id", l.svcCtx.Config.QqLoginConf.AppId)
 	params.Add("state", state)
 	params.Add("redirect_uri", l.svcCtx.Config.QqLoginConf.RedirectURI)
-	baseUrl := "https:/graph.qq.com/oauth2.0/authorize"
+	baseUrl := "https://graph.qq.com/oauth2.0/authorize"
 
 	u := fmt.Sprintf("%s?%s", baseUrl, params.Encode())
 
