@@ -2,7 +2,6 @@ package post
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
@@ -93,7 +92,7 @@ func (l *PostDetailLogic) PostDetail(req *types.PostDetailReq, authHeader string
 	if userId != "" {
 		var like models.Like
 		if l.svcCtx.DB.Model(&models.Like{}).
-			Where("upload_id = ? AND user_id = ? AND status = ?", post.Id, userId, true).
+			Where("upload_id = ? AND user_id = ? AND status = ?", req.Id, userId, true).
 			First(&like).Error == nil {
 			isLiked = true
 		}
