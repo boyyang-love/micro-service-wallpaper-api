@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
 	"github.com/boyyang-love/micro-service-wallpaper-models/models"
@@ -26,7 +27,7 @@ func NewPostDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PostDe
 	}
 }
 
-func (l *PostDetailLogic) PostDetail(req *types.PostDetailReq) (resp *types.PostDetailRes, err error) {
+func (l *PostDetailLogic) PostDetail(req *types.PostDetailReq, authHeader string) (resp *types.PostDetailRes, err error) {
 	if req.Id == "" {
 		return &types.PostDetailRes{
 			Base: types.Base{Code: 0, Msg: "id is required"},
@@ -86,10 +87,10 @@ func (l *PostDetailLogic) PostDetail(req *types.PostDetailReq) (resp *types.Post
 		Where("post_id = ? AND status = ?", post.Id, 1).
 		Count(&commentCount)
 
-	// 是否已点赞
+	// 是否已点赞（可选认证）
 	isLiked := false
-	userId := fmt.Sprintf("%s", l.ctx.Value("Id"))
-	if userId != "" && userId != "<nil>" {
+	userId := l.parseUserId(authHeader)
+	if userId != "" {
 		var like models.Like
 		if l.svcCtx.DB.Model(&models.Like{}).
 			Where("upload_id = ? AND user_id = ? AND status = ?", post.Id, userId, true).
@@ -115,4 +116,16 @@ func (l *PostDetailLogic) PostDetail(req *types.PostDetailReq) (resp *types.Post
 			IsLiked:      isLiked,
 		},
 	}, nil
+}
+
+func (l *PostDetailLogic) parseUserId(authHeader string) string {
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+		return ""
+	}
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	claims, err := helper.ParseToken(token, l.svcCtx.Config.Auth.AccessSecret)
+	if err != nil {
+		return ""
+	}
+	return claims.Id
 }

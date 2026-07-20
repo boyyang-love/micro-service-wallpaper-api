@@ -21,7 +21,7 @@ func PostDetailHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := post.NewPostDetailLogic(r.Context(), svcCtx)
-		resp, err := l.PostDetail(&req)
+		resp, err := l.PostDetail(&req, r.Header.Get("Authorization"))
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
