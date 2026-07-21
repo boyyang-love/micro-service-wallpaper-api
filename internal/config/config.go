@@ -34,6 +34,11 @@ type WechatLoginConf struct {
 
 type CorsOriginConf []string
 
+type UploadConf struct {
+	MaxFileSize   int64 `json:",default=10485760"` // 10MB 默认限制
+	MaxConcurrent int   `json:",default=10"`       // 最大并发数
+}
+
 type Config struct {
 	rest.RestConf
 	Auth            Auth
@@ -43,4 +48,5 @@ type Config struct {
 	CorsOriginConf  CorsOriginConf
 	UploadRpc       zrpc.RpcClientConf
 	UserRpc         zrpc.RpcClientConf
+	UploadConf      UploadConf
 }

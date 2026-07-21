@@ -329,6 +329,71 @@ type CategoryUpdateRes struct {
 	Base
 }
 
+type ChunkCheckReq struct {
+	FileHash    string `form:"fileHash"`
+	TotalChunks int    `form:"totalChunks"`
+}
+
+type ChunkCheckRes struct {
+	Base
+	Data ChunkCheckResData `json:"data"`
+}
+
+type ChunkCheckResData struct {
+	FileHash       string `json:"fileHash"`
+	TotalChunks    int    `json:"totalChunks"`
+	UploadedChunks []int  `json:"uploadedChunks"`
+	UploadedCount  int    `json:"uploadedCount"`
+}
+
+type ChunkMergeReq struct {
+	FileHash    string `json:"fileHash"`
+	FileName    string `json:"fileName"`
+	TotalChunks int    `json:"totalChunks"`
+	UserId      string `json:"userId"`
+	RootDir     string `json:"rootDir"`
+	Dir         string `json:"dir"`
+	BucketName  string `json:"bucketName"`
+	Quality     uint32 `json:"quality"`
+	Type        string `json:"type,optional"`
+	Status      int    `json:"status"`
+	Tags        string `json:"tags,optional"`
+	Category    string `json:"category,optional"`
+	Recommend   string `json:"recommend,optional"`
+	Group       string `json:"group,optional"`
+	Album       string `json:"album,optional"`
+}
+
+type ChunkMergeRes struct {
+	Base
+	Data ChunkMergeResData `json:"data"`
+}
+
+type ChunkMergeResData struct {
+	FileHash    string `json:"fileHash"`
+	FileName    string `json:"fileName"`
+	FileSize    int    `json:"fileSize"`
+	TotalChunks int    `json:"totalChunks"`
+}
+
+type ChunkUploadReq struct {
+	FileHash    string `form:"fileHash"`
+	ChunkIndex  int    `form:"chunkIndex"`
+	TotalChunks int    `form:"totalChunks"`
+	FileName    string `form:"fileName"`
+	FileSize    int64  `form:"fileSize,optional"`
+}
+
+type ChunkUploadRes struct {
+	Base
+	Data ChunkUploadResData `json:"data"`
+}
+
+type ChunkUploadResData struct {
+	ChunkIndex int  `json:"chunkIndex"`
+	Uploaded   bool `json:"uploaded"`
+}
+
 type CommentCreateData struct {
 	Id string `json:"id"`
 }
@@ -1091,6 +1156,14 @@ type PostImageInfo struct {
 	H        int    `json:"h"`
 }
 
+type PostLikeRemoveReq struct {
+	UploadId string `json:"upload_id"`
+}
+
+type PostLikeRemoveRes struct {
+	Base
+}
+
 type PostReviewListData struct {
 	BaseRecord
 	Records []PostReviewListItem `json:"records"`
@@ -1132,6 +1205,20 @@ type PostUserInfo struct {
 	Id       string `json:"id"`
 	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
+}
+
+type QueueStatsReq struct {
+}
+
+type QueueStatsRes struct {
+	Base
+	Data QueueStatsResData `json:"data"`
+}
+
+type QueueStatsResData struct {
+	WorkerCount int `json:"workerCount"`
+	QueueSize   int `json:"queueSize"`
+	QueueLength int `json:"queueLength"`
 }
 
 type RecommendCreateReq struct {

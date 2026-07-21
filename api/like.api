@@ -20,7 +20,14 @@ type (
     LikeRemoveRes {
         Base
     }
+    PostLikeRemoveReq {
+        UploadId string `json:"upload_id"`
+    }
+    PostLikeRemoveRes {
+        Base
+    }
 )
+
 
 type (
     LikeListReq {
@@ -87,39 +94,6 @@ type(
     }
 )
 
-@server(
-    group: like
-    timeout:  20s
-)
-service wallpaper_pc_backend {
-    @handler LikeNum
-    get /like/num (LikeNumReq) returns (LikeNumRes)
-}
-
-@server(
-    jwt: Auth
-    group: like
-    timeout:  20s
-)
-service wallpaper_pc_backend {
-    @handler LikeCreate
-    post /like/create (LikeCreateOrUpdateReq) returns (LikeCreateOrUpdateRes)
-
-    @handler LikeRemove
-    post /like/remove (LikeRemoveReq) returns (LikeRemoveRes)
-
-    @handler LikeList
-    get /like/list (LikeListReq) returns (LikeListRes)
-
-    @handler UserLikeList
-    get /like/user/list (UserLikeListReq) returns (UserLikeListRes)
-
-    @handler UserDownloadAndLikeSummary
-    get /like/user/downloadAndLikeSummary () returns (UserDownloadAndLikeSummaryRes)
-
-    @handler RemoveAllLikeRecord
-    get /like/record/remove/all returns (RemoveAllLikeRecordRes)
-}
 type (
     UserLikePostListReq {
         BasePage
@@ -145,11 +119,42 @@ type (
 )
 
 @server(
-    jwt: Auth
     group: like
-    timeout: 20s
+    timeout:  20s
 )
 service wallpaper_pc_backend {
+    @handler LikeNum
+    get /like/num (LikeNumReq) returns (LikeNumRes)
+}
+
+@server(
+    jwt: Auth
+    group: like
+    timeout:  20s
+)
+service wallpaper_pc_backend {
+    @handler LikeCreate
+    post /like/create (LikeCreateOrUpdateReq) returns (LikeCreateOrUpdateRes)
+
+    @handler LikeRemove
+    post /like/remove (LikeRemoveReq) returns (LikeRemoveRes)
+
+    @handler LikeRemovePost
+    post /like/remove/post (PostLikeRemoveReq) returns (PostLikeRemoveRes)
+
+    @handler LikeList
+    get /like/list (LikeListReq) returns (LikeListRes)
+
+    @handler UserLikeList
+    get /like/user/list (UserLikeListReq) returns (UserLikeListRes)
+
+    @handler UserDownloadAndLikeSummary
+    get /like/user/downloadAndLikeSummary () returns (UserDownloadAndLikeSummaryRes)
+
+    @handler RemoveAllLikeRecord
+    get /like/record/remove/all returns (RemoveAllLikeRecordRes)
+
     @handler UserLikePostList
     get /like/post/list (UserLikePostListReq) returns (UserLikePostListRes)
 }
+

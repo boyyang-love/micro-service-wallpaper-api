@@ -475,6 +475,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/like/post/list",
+				Handler: like.UserLikePostListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/like/record/remove/all",
 				Handler: like.RemoveAllLikeRecordHandler(serverCtx),
 			},
@@ -482,6 +487,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/like/remove",
 				Handler: like.LikeRemoveHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/like/remove/post",
+				Handler: like.LikeRemovePostHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
@@ -492,18 +502,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/like/user/list",
 				Handler: like.UserLikeListHandler(serverCtx),
-			},
-		},
-		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
-		rest.WithTimeout(20000*time.Millisecond),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/like/post/list",
-				Handler: like.UserLikePostListHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
@@ -779,13 +777,65 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/image/upload/async",
+				Handler: upload.ImageUploadAsyncHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/image/upload/bytes",
 				Handler: upload.ImageUploadByBytesHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/image/upload/stream",
+				Handler: upload.ImageUploadStreamHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithTimeout(50000*time.Millisecond),
 		rest.WithMaxBytes(52428800),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/chunk/check",
+				Handler: upload.ChunkCheckHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/chunk/upload",
+				Handler: upload.ChunkUploadHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(30000*time.Millisecond),
+		rest.WithMaxBytes(2097152),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/chunk/merge",
+				Handler: upload.ChunkMergeHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithTimeout(60000*time.Millisecond),
+		rest.WithMaxBytes(52428800),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/queue/stats",
+				Handler: upload.QueueStatsHandler(serverCtx),
+			},
+		},
+		rest.WithTimeout(10000*time.Millisecond),
 	)
 
 	server.AddRoutes(

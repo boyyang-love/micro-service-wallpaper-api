@@ -44,9 +44,9 @@ func (l *PostFeedLogic) PostFeed(req *types.PostFeedReq, authHeader string) (res
 	case "hot":
 		// 热度算法：点赞数 * 3 + 评论数 * 2 + 最近7天内加10分
 		db = db.Select(`posts.*, 
-			((SELECT COUNT(*) FROM likes WHERE likes.upload_id = posts.id AND status = true) * 3 + 
+			((SELECT COUNT(*) FROM like WHERE like.upload_id = posts.id AND status = true) * 3 + 
 			 (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id AND status = 1) * 2 + 
-			 CASE WHEN posts.created > ? THEN 10 ELSE 0 END) as hot_score`, 
+			 CASE WHEN posts.created > ? THEN 10 ELSE 0 END) as hot_score`,
 			getWeekAgoTimestamp()).
 			Order("hot_score DESC, created DESC")
 	default:

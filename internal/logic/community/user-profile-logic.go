@@ -46,23 +46,23 @@ func (l *UserProfileLogic) UserProfile(req *types.UserProfileReq) (resp *types.U
 	}
 
 	// 统计上传数
-	var uploadCount int64
-	l.svcCtx.DB.Model(&models.Upload{}).
+	var postCount int64
+	l.svcCtx.DB.Model(&models.Post{}).
 		Where("user_id = ? AND status = ?", req.UserId, 1).
-		Count(&uploadCount)
+		Count(&postCount)
 
 	// 统计获赞数（该用户上传的所有壁纸的点赞总数）
 	var likeCount int64
 	l.svcCtx.DB.Model(&models.Like{}).
 		Where("upload_id IN (?) AND status = ?",
-			l.svcCtx.DB.Model(&models.Upload{}).Select("id").Where("user_id = ?", req.UserId),
+			l.svcCtx.DB.Model(&models.Post{}).Select("id").Where("user_id = ?", req.UserId),
 			true,
 		).Count(&likeCount)
 
 	// 统计下载数（该用户上传的所有壁纸的 download 字段总和）
 	var downloadCount int64
 	l.svcCtx.DB.Model(&models.Upload{}).
-		Where("user_id = ? AND status = ?", req.UserId, 1).
+		Where("user_id = ?", req.UserId).
 		Select("COALESCE(SUM(download), 0)").
 		Scan(&downloadCount)
 
@@ -80,7 +80,7 @@ func (l *UserProfileLogic) UserProfile(req *types.UserProfileReq) (resp *types.U
 				Motto:    user.Motto,
 			},
 			Stats: types.UserProfileStats{
-				UploadCount:   uploadCount,
+				UploadCount:   postCount,
 				LikeCount:     likeCount,
 				DownloadCount: downloadCount,
 			},

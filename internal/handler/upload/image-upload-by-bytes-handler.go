@@ -3,12 +3,6 @@ package upload
 import (
 	"bytes"
 	"fmt"
-	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
-	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
-	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
-	"github.com/boyyang-love/micro-service-wallpaper-models/models"
-	upload2 "github.com/boyyang-love/micro-service-wallpaper-rpc/upload/pb/upload"
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"image"
 	"image/jpeg"
 	_ "image/jpeg"
@@ -16,10 +10,23 @@ import (
 	_ "image/png"
 	"net/http"
 	"strings"
+
+	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
+	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
+	"github.com/boyyang-love/micro-service-wallpaper-api/internal/types"
+	"github.com/boyyang-love/micro-service-wallpaper-models/models"
+	upload2 "github.com/boyyang-love/micro-service-wallpaper-rpc/upload/pb/upload"
+
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		initSemaphore(svcCtx.Config.UploadConf.MaxConcurrent)
+		uploadSemaphore <- struct{}{}
+		defer func() { <-uploadSemaphore }()
+
 		var req types.ImageUploadReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
@@ -28,10 +35,22 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		userid := fmt.Sprintf("%s", r.Context().Value("Id"))
 
+		maxFileSize := svcCtx.Config.UploadConf.MaxFileSize
+		if maxFileSize <= 0 {
+			maxFileSize = 10 << 20
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, maxFileSize)
+
 		file := r.FormValue("file")
+
+		logx.Infof("用户 %s 通过 bytes 方式上传文件", userid)
 
 		img, imgType, err := image.Decode(bytes.NewBufferString(file))
 		if err != nil {
+			if err.Error() == "http: request body too large" {
+				httpx.ErrorCtx(r.Context(), w, fmt.Errorf("文件大小超过限制，最大允许 %dMB", maxFileSize/(1<<20)))
+				return
+			}
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
@@ -59,10 +78,7 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		if is {
 			httpx.OkJsonCtx(r.Context(), w, types.ImageUploadRes{
-				Base: types.Base{
-					Code: 1,
-					Msg:  "文件上传成功",
-				},
+				Base: types.Base{Code: 1, Msg: "文件上传成功"},
 				Data: types.ImageUploadResdata{
 					Id:         info.Id,
 					FileName:   info.FileName,
@@ -72,17 +88,16 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			})
 			return
 		} else {
-			imageUpload, err := svcCtx.
-				UploadService.
-				CosUpload(
-					r.Context(),
-					&upload2.ImageUploadReq{
-						File:       originBuffer.Bytes(),
-						Path:       comPath,
-						OriPath:    oriPath,
-						Quality:    req.Quality,
-						BucketName: req.BucketName,
-					})
+			imageUpload, err := svcCtx.UploadService.CosUpload(
+				r.Context(),
+				&upload2.ImageUploadReq{
+					File:       originBuffer.Bytes(),
+					Path:       comPath,
+					OriPath:    oriPath,
+					Quality:    req.Quality,
+					BucketName: req.BucketName,
+				},
+			)
 			if err != nil {
 				httpx.ErrorCtx(r.Context(), w, err)
 				return
@@ -103,31 +118,17 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				Status:         req.Status,
 				UserId:         userid,
 			}
-			if err := svcCtx.
-				DB.
-				Model(&models.Upload{}).
-				Create(&uploadInfo).Error; err != nil {
+			if err := svcCtx.DB.Model(&models.Upload{}).Create(&uploadInfo).Error; err != nil {
 				httpx.ErrorCtx(r.Context(), w, err)
 				return
 			}
 
 			if req.Tags != "" {
 				var uploadTags []models.UploadTag
-
 				for _, v := range strings.Split(req.Tags, ",") {
-					uploadTags = append(
-						uploadTags,
-						models.UploadTag{
-							UploadId: uploadInfo.Id,
-							TagId:    v,
-						},
-					)
+					uploadTags = append(uploadTags, models.UploadTag{UploadId: uploadInfo.Id, TagId: v})
 				}
-
-				if err = svcCtx.DB.
-					Model(&models.UploadTag{}).
-					Create(&uploadTags).
-					Error; err != nil {
+				if err = svcCtx.DB.Model(&models.UploadTag{}).Create(&uploadTags).Error; err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
 					return
 				}
@@ -135,21 +136,10 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 			if req.Category != "" {
 				var uploadCategory []models.UploadCategory
-
 				for _, v := range strings.Split(req.Category, ",") {
-					uploadCategory = append(
-						uploadCategory,
-						models.UploadCategory{
-							UploadId:   uploadInfo.Id,
-							CategoryId: v,
-						},
-					)
+					uploadCategory = append(uploadCategory, models.UploadCategory{UploadId: uploadInfo.Id, CategoryId: v})
 				}
-
-				if err = svcCtx.DB.
-					Model(&models.UploadCategory{}).
-					Create(&uploadCategory).
-					Error; err != nil {
+				if err = svcCtx.DB.Model(&models.UploadCategory{}).Create(&uploadCategory).Error; err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
 					return
 				}
@@ -157,21 +147,10 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 			if req.Recommend != "" {
 				var uploadRecommend []models.UploadRecommend
-
 				for _, v := range strings.Split(req.Recommend, ",") {
-					uploadRecommend = append(
-						uploadRecommend,
-						models.UploadRecommend{
-							UploadId:    uploadInfo.Id,
-							RecommendId: v,
-						},
-					)
+					uploadRecommend = append(uploadRecommend, models.UploadRecommend{UploadId: uploadInfo.Id, RecommendId: v})
 				}
-
-				if err = svcCtx.DB.
-					Model(&models.UploadRecommend{}).
-					Create(&uploadRecommend).
-					Error; err != nil {
+				if err = svcCtx.DB.Model(&models.UploadRecommend{}).Create(&uploadRecommend).Error; err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
 					return
 				}
@@ -180,26 +159,16 @@ func ImageUploadByBytesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			if req.Group != "" {
 				var uploadGroup []models.UploadGroup
 				for _, v := range strings.Split(req.Group, ",") {
-					uploadGroup = append(uploadGroup, models.UploadGroup{
-						UploadId: uploadInfo.Id,
-						GroupId:  v,
-					})
+					uploadGroup = append(uploadGroup, models.UploadGroup{UploadId: uploadInfo.Id, GroupId: v})
 				}
-
-				if err = svcCtx.DB.
-					Model(&models.UploadGroup{}).
-					Create(&uploadGroup).
-					Error; err != nil {
+				if err = svcCtx.DB.Model(&models.UploadGroup{}).Create(&uploadGroup).Error; err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
 					return
 				}
 			}
 
 			httpx.OkJsonCtx(r.Context(), w, &types.ImageUploadRes{
-				Base: types.Base{
-					Code: 1,
-					Msg:  "文件上传成功",
-				},
+				Base: types.Base{Code: 1, Msg: "文件上传成功"},
 				Data: types.ImageUploadResdata{
 					Id:         uploadInfo.Id,
 					FileName:   req.FileName,

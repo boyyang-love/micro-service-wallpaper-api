@@ -105,6 +105,12 @@ func (l *PostDeleteLogic) PostDelete(req *types.PostDeleteReq) (resp *types.Post
 			tx.Rollback()
 			return nil, err
 		}
+
+		// 删除下载记录
+		if err = tx.Where("download_id IN (?)", imageIds).Delete(&models.Download{}).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
 	}
 
 	tx.Commit()

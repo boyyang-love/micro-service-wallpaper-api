@@ -209,6 +209,86 @@ type (
 	}
 )
 
+// ========== 分片上传相关类型 ==========
+type (
+	ChunkUploadReq {
+		FileHash    string `form:"fileHash"`
+		ChunkIndex  int    `form:"chunkIndex"`
+		TotalChunks int    `form:"totalChunks"`
+		FileName    string `form:"fileName"`
+		FileSize    int64  `form:"fileSize,optional"`
+	}
+	ChunkUploadRes {
+		Base
+		Data ChunkUploadResData `json:"data"`
+	}
+	ChunkUploadResData {
+		ChunkIndex int  `json:"chunkIndex"`
+		Uploaded   bool `json:"uploaded"`
+	}
+)
+
+type (
+	ChunkCheckReq {
+		FileHash    string `form:"fileHash"`
+		TotalChunks int    `form:"totalChunks"`
+	}
+	ChunkCheckRes {
+		Base
+		Data ChunkCheckResData `json:"data"`
+	}
+	ChunkCheckResData {
+		FileHash       string `json:"fileHash"`
+		TotalChunks    int    `json:"totalChunks"`
+		UploadedChunks []int  `json:"uploadedChunks"`
+		UploadedCount  int    `json:"uploadedCount"`
+	}
+)
+
+type (
+	ChunkMergeReq {
+		FileHash    string `json:"fileHash"`
+		FileName    string `json:"fileName"`
+		TotalChunks int    `json:"totalChunks"`
+		UserId      string `json:"userId"`
+		RootDir     string `json:"rootDir"`
+		Dir         string `json:"dir"`
+		BucketName  string `json:"bucketName"`
+		Quality     uint32 `json:"quality"`
+		Type        string `json:"type,optional"`
+		Status      int    `json:"status"`
+		Tags        string `json:"tags,optional"`
+		Category    string `json:"category,optional"`
+		Recommend   string `json:"recommend,optional"`
+		Group       string `json:"group,optional"`
+		Album       string `json:"album,optional"`
+	}
+	ChunkMergeRes {
+		Base
+		Data ChunkMergeResData `json:"data"`
+	}
+	ChunkMergeResData {
+		FileHash    string `json:"fileHash"`
+		FileName    string `json:"fileName"`
+		FileSize    int    `json:"fileSize"`
+		TotalChunks int    `json:"totalChunks"`
+	}
+)
+
+// ========== 队列状态相关类型 ==========
+type (
+	QueueStatsReq  {}
+	QueueStatsRes {
+		Base
+		Data QueueStatsResData `json:"data"`
+	}
+	QueueStatsResData {
+		WorkerCount int `json:"workerCount"`
+		QueueSize   int `json:"queueSize"`
+		QueueLength int `json:"queueLength"`
+	}
+)
+
 @server (
 	group:   upload
 	timeout: 30s
@@ -254,6 +334,52 @@ service wallpaper_pc_backend {
 
 	@handler ImageDelete
 	post /image/delete (ImageDeleteReq) returns (ImageDeleteRes)
+
+	// 流式上传接口（优化内存使用）
+	@handler ImageUploadStream
+	post /image/upload/stream (ImageUploadReq) returns (ImageUploadRes)
+
+	// 异步上传接口（使用队列）
+	@handler ImageUploadAsync
+	post /image/upload/async (ImageUploadReq) returns (ImageUploadRes)
+}
+
+@server (
+	jwt:      Auth
+	group:    upload
+	maxBytes: 2097152
+	timeout:  30s
+)
+service wallpaper_pc_backend {
+	// 分片上传接口
+	@handler ChunkUpload
+	post /chunk/upload (ChunkUploadReq) returns (ChunkUploadRes)
+
+	// 检查已上传分片
+	@handler ChunkCheck
+	get /chunk/check (ChunkCheckReq) returns (ChunkCheckRes)
+}
+
+@server (
+	jwt:      Auth
+	group:    upload
+	maxBytes: 52428800
+	timeout:  60s
+)
+service wallpaper_pc_backend {
+	// 合并分片
+	@handler ChunkMerge
+	post /chunk/merge (ChunkMergeReq) returns (ChunkMergeRes)
+}
+
+@server (
+	group:   upload
+	timeout: 10s
+)
+service wallpaper_pc_backend {
+	// 查询队列状态
+	@handler QueueStats
+	get /queue/stats (QueueStatsReq) returns (QueueStatsRes)
 }
 
 type (
