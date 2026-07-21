@@ -23,6 +23,11 @@ import (
 
 func ImageUploadAsyncHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// 添加并发控制
+		InitUploadLimiter(svcCtx.Config.UploadConf.MaxConcurrent)
+		AcquireUpload()
+		defer ReleaseUpload()
+
 		var req types.ImageUploadReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

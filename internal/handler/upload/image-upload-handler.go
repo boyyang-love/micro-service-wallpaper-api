@@ -9,7 +9,6 @@ import (
 	"image/png"
 	"net/http"
 	"strings"
-	"sync"
 
 	"github.com/boyyang-love/micro-service-wallpaper-api/helper"
 	"github.com/boyyang-love/micro-service-wallpaper-api/internal/svc"
@@ -22,25 +21,14 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-var (
-	uploadSemaphore chan struct{}
-	once            sync.Once
-)
-
-func initSemaphore(maxConcurrent int) {
-	once.Do(func() {
-		if maxConcurrent <= 0 {
-			maxConcurrent = 10
-		}
-		uploadSemaphore = make(chan struct{}, maxConcurrent)
-	})
-}
-
 func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+	// 初始化限流器
+	InitUploadLimiter(svcCtx.Config.UploadConf.MaxConcurrent)
+	
 	return func(w http.ResponseWriter, r *http.Request) {
-		initSemaphore(svcCtx.Config.UploadConf.MaxConcurrent)
-		uploadSemaphore <- struct{}{}
-		defer func() { <-uploadSemaphore }()
+		// 获取上传许可
+		AcquireUpload()
+		defer ReleaseUpload()
 
 		var req types.ImageUploadReq
 		if err := httpx.Parse(r, &req); err != nil {
